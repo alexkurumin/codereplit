@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberFocus | Pomodoro Gamificado</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-panel: #12121a;
+            --bg-card: #1a1a26;
+            --primary: #00ff88;
+            --secondary: #7b00ff;
+            --danger: #ff0055;
+            --warning: #ffaa00;
+            --text: #e0e0e8;
+            --text-dim: #80808a;
+            --border: #25253a;
+            --glow-primary: 0 0 30px rgba(0, 255, 136, 0.5);
+            --glow-secondary: 0 0 30px rgba(123, 0, 255, 0.5);
+        }
+
+        [data-theme="light"] {
+            --bg: #f0f2f5;
+            --bg-panel: #ffffff;
+            --bg-card: #f8f9fc;
+            --primary: #00c96b;
+            --secondary: #6200ea;
+            --danger: #d50032;
+            --warning: #ff6f00;
+            --text: #1a1a2e;
+            --text-dim: #5a5a6e;
+            --border: #d0d5dd;
+            --glow-primary: 0 0 20px rgba(0, 201, 107, 0.3);
+            --glow-secondary: 0 0 20px rgba(98, 0, 234, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(123, 0, 255, 0.05) 0%, transparent 40%),
+                linear-gradient(180deg, var(--bg) 0%, #050508 100%);
+        }
+
+      .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+      .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: var(--glow-primary);
+            letter-spacing: 2px;
+        }
+
+      .header-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+      .theme-toggle {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+      .theme-toggle:hover {
+            border-color: var(--primary);
+            box-shadow: var(--glow-primary);
+            transform: scale(1.05);
+        }
+
+      .player-stats {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+      .stat {
+            text-align: center;
+        }
+
+      .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+      .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+      .xp-bar {
+            width: 150px;
+            height: 8px;
+            background: var(--bg);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+      .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            box-shadow: var(--glow-primary);
+            transition: width 0.5s ease;
+        }
+
+      .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+      .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+      .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+      .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+      .timer-display {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+      .timer-mode {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 0.5rem;
+        }
+
+      .timer-time {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.3));
+            margin-bottom: 1rem;
+        }
+
+      .timer-progress {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+      .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+      .progress-ring-bg {
+            fill: none;
+            stroke: var(--bg-card);
+            stroke-width: 8;
+        }
+
+      .progress-ring-fill {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 8;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 10px var(--primary));
+            transition: stroke-dashoffset 1s linear;
+        }
+
+      .timer-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+      .btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.875rem 1.75rem;
+            border-radius: 10px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+      .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+      .btn-primary {
+            background: var(--primary);
+            color: var(--bg);
+            border-color: var(--primary);
+            box-shadow: var(--glow-primary);
+        }
+
+      .btn-primary:hover {
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.6);
+        }
+
+      .btn-danger {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+      .btn i {
+            margin-right: 0.5rem;
+        }
+
+      .todo-input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+      .todo-input {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.875rem 1rem;
+            border-radius: 10px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+      .todo-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+      .todo-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+      .todo-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: move;
+            transition: all 0.3s ease;
+        }
+
+      .todo-item:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+      .todo-item.dragging {
+            opacity: 0.5;
+            border-color: var(--secondary);
+        }
+
+      .todo-item.completed {
+            opacity: 0.6;
+        }
+
+      .todo-item.completed.todo-text {
+            text-decoration: line-through;
+            color: var(--text-dim);
+        }
+
+      .todo-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+      .todo-checkbox:hover {
+            border-color: var(--primary);
+        }
+
+      .todo-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: var(--glow-primary);
+        }
+
+      .todo-text {
+            flex: 1;
+            font-weight: 600;
+        }
+
+      .todo-delete {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+
+      .todo-delete:hover {
+            color: var(--danger);
+        }
+
+      .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+      .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+      .stat-card-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+      .stat-card-label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 968px) {
+          .main-grid {
+                grid-template-columns: 1fr;
+            }
+          .player-stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+      .todo-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+      .todo-list::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+      .todo-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <header>
+            <div class="logo">CYBERFOCUS</div>
+            <div class="header-controls">
+                <div class="player-stats">
+                    <div class="stat">
+                        <div class="stat-label">Level</div>
+                        <div class="stat-value" id="level">1</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">XP</div>
+                        <div class="xp-bar">
+                            <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <div class="panel">
+                <h2 class="panel-title">
+                    <i class="fa-solid fa-clock"></i>
+                    POMODORO TIMER
+                </h2>
+                <div class="timer-display">
+                    <div class="timer-mode" id="timerMode">FOCO</div>
+                    <div class="timer-progress">
+                        <svg class="progress-ring" width="200" height="200">
+                            <circle class="progress-ring-bg" cx="100" cy="100" r="90"></circle>
+                            <circle class="progress-ring-fill" cx="100" cy="100" r="90"
+                                    stroke-dasharray="565.48"
+                                    stroke-dashoffset="565.48"
+                                    id="progressCircle"></circle>
+                        </svg>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                            <div class="timer-time" id="timerTime">25:00</div>
+                        </div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="btn btn-primary" id="startBtn">
+                            <i class="fa-solid fa-play"></i>Iniciar
+                        </button>
+                        <button class="btn" id="pauseBtn" style="display:none;">
+                            <i class="fa-solid fa-pause"></i>Pausar
+                        </button>
+                        <button class="btn btn-danger" id="resetBtn">
+                            <i class="fa-solid fa-stop"></i>Reset
+                        </button>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="todayPomodoros">0</div>
+                        <div class="stat-card-label">Pomodoros</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="todayTasks">0</div>
+                        <div class="stat-card-label">Tarefas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="todayXP">0</div>
+                        <div class="stat-card-label">XP Hoje</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2 class="panel-title">
+                    <i class="fa-solid fa-list-check"></i>
+                    QUEST LOG
+                </h2>
+                <div class="todo-input-group">
+                    <input type="text" class="todo-input" id="todoInput" placeholder="Adicionar nova quest...">
+                    <button class="btn btn-primary" id="addTodoBtn">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+                <div class="todo-list" id="todoList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        // Estado
+        let timer = null;
+        let timeLeft = 25 * 60;
+        let isRunning = false;
+        let mode = 'focus'; // focus, shortBreak, longBreak
+        let pomodorosCompleted = 0;
+        let todos = [];
+        let stats = { level: 1, xp: 0, todayPomodoros: 0, todayTasks: 0, todayXP: 0 };
+
+        const TIMES = { focus: 25 * 60, shortBreak: 5 * 60, longBreak: 15 * 60 };
+        const XP_PER_TASK = 25;
+        const XP_PER_POMODORO = 50;
+        const XP_PER_LEVEL = 100;
+
+        // Áudio
+        const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+        const playSound = (freq, duration) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.value = freq;
+            osc.type = 'sine';
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        };
+
+        // Notificações
+        const requestNotifPermission = () => {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        };
+
+        const notify = (title, body) => {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, { body, icon: 'https://cdn-icons-png.flaticon.com/512/3176/3176366.png' });
+            }
+        };
+
+        // LocalStorage
+        const saveState = () => {
+            const today = new Date().toDateString();
+            localStorage.setItem('cyberfocus', JSON.stringify({
+                todos, stats, mode, pomodorosCompleted, lastDate: today
+            }));
+        };
+
+        const loadState = () => {
+            const saved = localStorage.getItem('cyberfocus');
+            if (saved) {
+                const data = JSON.parse(saved);
+                const today = new Date().toDateString();
+                if (data.lastDate!== today) {
+                    data.stats.todayPomodoros = 0;
+                    data.stats.todayTasks = 0;
+                    data.stats.todayXP = 0;
+                }
+                todos = data.todos || [];
+                stats = data.stats || stats;
+                pomodorosCompleted = data.pomodorosCompleted || 0;
+            }
+            updateUI();
+            renderTodos();
+        };
+
+        // Timer
+        const updateTimerDisplay = () => {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            document.getElementById('timerTime').textContent =
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            const total = TIMES[mode];
+            const progress = (total - timeLeft) / total;
+            const offset = 565.48 * (1 - progress);
+            document.getElementById('progressCircle').style.strokeDashoffset = offset;
+        };
+
+        const switchMode = (newMode) => {
+            mode = newMode;
+            timeLeft = TIMES[mode];
+            const modeNames = { focus: 'FOCO', shortBreak: 'PAUSA CURTA', longBreak: 'PAUSA LONGA' };
+            document.getElementById('timerMode').textContent = modeNames[mode];
+            updateTimerDisplay();
+        };
+
+        const startTimer = () => {
+            if (isRunning) return;
+            isRunning = true;
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('pauseBtn').style.display = 'inline-block';
+            playSound(800, 0.1);
+
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    completeCycle();
+                }
+            }, 1000);
+        };
+
+        const pauseTimer = () => {
+            isRunning = false;
+            clearInterval(timer);
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('pauseBtn').style.display = 'none';
+        };
+
+        const resetTimer = () => {
+            pauseTimer();
+            switchMode('focus');
+        };
+
+        const completeCycle = () => {
+            pauseTimer();
+            playSound(1000, 0.3);
+
+            if (mode === 'focus') {
+                pomodorosCompleted++;
+                addXP(XP_PER_POMODORO);
+                stats.todayPomodoros++;
+
+                if (pomodorosCompleted % 4 === 0) {
+                    switchMode('longBreak');
+                    notify('Pomodoro Completo!', 'Hora da pausa longa. Você merece!');
+                } else {
+                    switchMode('shortBreak');
+                    notify('Pomodoro Completo!', 'Hora da pausa curta.');
+                }
+                showToast('Pomodoro completo! +50 XP', 'success');
+            } else {
+                switchMode('focus');
+                notify('Pausa Finalizada', 'Hora de focar novamente!');
+            }
+            saveState();
+            updateUI();
+        };
+
+        // XP System
+        const addXP = (amount) => {
+            stats.xp += amount;
+            stats.todayXP += amount;
+
+            while (stats.xp >= XP_PER_LEVEL) {
+                stats.xp -= XP_PER_LEVEL;
+                stats.level++;
+                showToast(`LEVEL UP! Você é level ${stats.level}`, 'levelup');
+                playSound(1200, 0.5);
+            }
+            updateUI();
+        };
+
+        const updateUI = () => {
+            document.getElementById('level').textContent = stats.level;
+            document.getElementById('xpFill').style.width = `${(stats.xp / XP_PER_LEVEL) * 100}%`;
+            document.getElementById('todayPomodoros').textContent = stats.todayPomodoros;
+            document.getElementById('todayTasks').textContent = stats.todayTasks;
+            document.getElementById('todayXP').textContent = stats.todayXP;
+        };
+
+        // Todos
+        const addTodo = () => {
+            const input = document.getElementById('todoInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            todos.push({ id: Date.now(), text, completed: false });
+            input.value = '';
+            renderTodos();
+            saveState();
+        };
+
+        const toggleTodo = (id) => {
+            const todo = todos.find(t => t.id === id);
+            if (todo &&!todo.completed) {
+                todo.completed = true;
+                stats.todayTasks++;
+                addXP(XP_PER_TASK);
+                showToast(`Quest completa! +${XP_PER_TASK} XP`, 'success');
+                playSound(900, 0.2);
+            }
+            renderTodos();
+            saveState();
+            updateUI();
+        };
+
+        const deleteTodo = (id) => {
+            todos = todos.filter(t => t.id!== id);
+            renderTodos();
+            saveState();
+        };
+
+        const renderTodos = () => {
+            const list = document.getElementById('todoList');
+            list.innerHTML = todos.map(todo => `
+                <div class="todo-item ${todo.completed? 'completed' : ''}" draggable="true" data-id="${todo.id}">
+                    <div class="todo-checkbox ${todo.completed? 'checked' : ''}" onclick="toggleTodo(${todo.id})">
+                        ${todo.completed? '<i class="fa-solid fa-check" style="font-size:0.8rem;"></i>' : ''}
+                    </div>
+                    <div class="todo-text">${todo.text}</div>
+                    <button class="todo-delete" onclick="deleteTodo(${todo.id})">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            // Drag and Drop
+            const items = list.querySelectorAll('.todo-item');
+            items.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    item.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                item.addEventListener('dragend', () => {
+                    item.classList.remove('dragging');
+                });
+            });
+
+            list.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const dragging = list.querySelector('.dragging');
+                const afterElement = getDragAfterElement(list, e.clientY);
+                if (afterElement == null) {
+                    list.appendChild(dragging);
+                } else {
+                    list.insertBefore(dragging, afterElement);
+                }
+            });
+
+            list.addEventListener('drop', () => {
+                const newOrder = Array.from(list.children).map(item =>
+                    todos.find(t => t.id == item.dataset.id)
+                );
+                todos = newOrder;
+                saveState();
+            });
+        };
+
+        const getDragAfterElement = (container, y) => {
+            const draggableElements = [...container.querySelectorAll('.todo-item:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        };
+
+        // Toast
+        const showToast = (text, type) => {
+            const colors = {
+                success: 'linear-gradient(90deg, #00ff88, #00cc70)',
+                levelup: 'linear-gradient(90deg, #7b00ff, #ff00e5)'
+            };
+            Toastify({
+                text, duration: 3000, gravity: "bottom", position: "center",
+                style: { background: colors[type] || colors.success, fontWeight: '700' }
+            }).showToast();
+        };
+
+        // Theme
+        const toggleTheme = () => {
+            const body = document.body;
+            const current = body.getAttribute('data-theme');
+            const newTheme = current === 'dark'? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            document.getElementById('themeToggle').innerHTML =
+                newTheme === 'dark'? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+            localStorage.setItem('theme', newTheme);
+        };
+
+        // Events
+        document.getElementById('startBtn').onclick = startTimer;
+        document.getElementById('pauseBtn').onclick = pauseTimer;
+        document.getElementById('resetBtn').onclick = resetTimer;
+        document.getElementById('addTodoBtn').onclick = addTodo;
+        document.getElementById('todoInput').onkeypress = (e) => {
+            if (e.key === 'Enter') addTodo();
+        };
+        document.getElementById('themeToggle').onclick = toggleTheme;
+
+        // Init
+        requestNotifPermission();
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        document.getElementById('themeToggle').innerHTML =
+            savedTheme === 'dark'? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+
+        loadState();
+        updateTimerDisplay();
+    </script>
+</body>
+</html>

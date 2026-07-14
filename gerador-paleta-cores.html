@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chroma // Gerador de Paleta de Cores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#050608;
+  --panel:#0c1016;
+  --panel2:#0f141b;
+  --cyan:#00f0ff;
+  --magenta:#ff2e9a;
+  --violet:#8b5cf6;
+  --text:#eef3f7;
+  --muted:#7c8899;
+  --line:rgba(0,240,255,.18);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif;
+  display:flex; flex-direction:column; min-height:100vh; overflow-x:hidden;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,240,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,240,255,.05) 1px, transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse 100% 70% at 50% 0%, black 30%, transparent 100%);
+}
+h1,.mono{font-family:'JetBrains Mono',monospace;}
+.brand-font{font-family:'Orbitron',sans-serif;}
+
+/* ---------- HEADER ---------- */
+header{
+  position:relative; z-index:2; padding:20px 26px 16px;
+  border-bottom:1px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand i{color:var(--magenta); font-size:1.3rem; filter:drop-shadow(0 0 8px var(--magenta));}
+.brand-font{font-size:1.15rem; font-weight:800; letter-spacing:.06em; color:var(--cyan); text-shadow:0 0 14px rgba(0,240,255,.35);}
+.brand small{display:block; font-size:.68rem; color:var(--muted); letter-spacing:.15em; font-weight:600; margin-top:2px;}
+
+.hint{font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:8px;}
+.kbd{
+  background:var(--panel2); border:1px solid var(--line); border-radius:5px; padding:2px 8px;
+  font-family:'JetBrains Mono'; font-size:.72rem; color:var(--cyan);
+}
+
+/* ---------- TOOLBAR ---------- */
+.toolbar{
+  position:relative; z-index:2; display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  padding:16px 26px; border-bottom:1px solid var(--line); background:rgba(9,12,16,.6); backdrop-filter:blur(8px);
+}
+.tb-group{display:flex; align-items:center; gap:10px;}
+.tb-label{font-size:.72rem; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; font-weight:700;}
+
+.color-swatch-input{
+  width:42px; height:42px; border-radius:10px; border:2px solid var(--line); background:none; cursor:pointer; padding:0; overflow:hidden;
+}
+.color-swatch-input::-webkit-color-swatch-wrapper{padding:0;}
+.color-swatch-input::-webkit-color-swatch{border:none; border-radius:8px;}
+
+select#schemeSelect{
+  background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px;
+  padding:10px 14px; font-family:'Rajdhani'; font-weight:600; font-size:.9rem; cursor:pointer;
+}
+select#schemeSelect:focus{outline:2px solid var(--cyan);}
+
+.count-ctrl{display:flex; align-items:center; gap:8px; background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:4px;}
+.count-ctrl button{
+  width:28px; height:28px; border-radius:6px; border:none; background:transparent; color:var(--cyan); cursor:pointer; font-size:.9rem;
+  transition:.2s;
+}
+.count-ctrl button:hover{background:rgba(0,240,255,.15);}
+.count-ctrl span{font-family:'JetBrains Mono'; font-weight:700; font-size:.9rem; width:18px; text-align:center;}
+
+.btn{
+  display:inline-flex; align-items:center; gap:8px; text-decoration:none; cursor:pointer; border:none;
+  font-family:'Rajdhani'; font-weight:700; letter-spacing:.03em; font-size:.9rem; border-radius:9px; padding:12px 20px;
+  transition:.2s;
+}
+.btn-primary{
+  background:linear-gradient(120deg, var(--cyan), var(--violet));
+  color:#04070a; box-shadow:0 0 22px rgba(0,240,255,.3);
+}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 0 28px rgba(0,240,255,.5);}
+.btn-outline{background:transparent; border:1px solid var(--line); color:var(--text);}
+.btn-outline:hover{border-color:var(--magenta); color:var(--magenta);}
+.btn:active{transform:scale(.96);}
+.spacer{flex:1;}
+
+/* ---------- PALETTE ---------- */
+.palette-wrap{position:relative; z-index:1; flex:1; display:flex; min-height:60vh;}
+.palette{display:flex; flex:1; width:100%;}
+.swatch{
+  flex:1; display:flex; flex-direction:column; justify-content:space-between;
+  position:relative; transition:flex-grow .35s ease, filter .2s;
+  border-right:1px solid rgba(0,0,0,.25);
+}
+.swatch:last-child{border-right:none;}
+.swatch:hover{flex-grow:1.35; z-index:3;}
+.swatch-top{display:flex; justify-content:center; padding-top:22px;}
+.swatch-mid{flex:1; display:flex; align-items:center; justify-content:center;}
+.swatch-bottom{display:flex; flex-direction:column; align-items:center; gap:10px; padding-bottom:26px;}
+
+.icon-btn{
+  width:42px; height:42px; border-radius:50%; border:1.5px solid currentColor; background:rgba(0,0,0,.18);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem; color:inherit;
+  backdrop-filter:blur(4px); transition:.2s;
+}
+.icon-btn:hover{background:rgba(0,0,0,.32); transform:scale(1.08);}
+.icon-btn.locked{background:rgba(255,255,255,.22);}
+
+.hex-label{
+  font-family:'JetBrains Mono'; font-weight:700; font-size:1.05rem; letter-spacing:.03em; cursor:pointer;
+  padding:8px 16px; border-radius:8px; border:1px solid currentColor; background:rgba(0,0,0,.12);
+}
+.hex-label:hover{background:rgba(0,0,0,.28);}
+.copy-hint{font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; opacity:.75;}
+
+@media (max-width:760px){
+  .palette{flex-direction:column;}
+  .swatch{border-right:none; border-bottom:1px solid rgba(0,0,0,.25); min-height:110px;}
+  .swatch:last-child{border-bottom:none;}
+  .swatch:hover{flex-grow:1.15;}
+  .swatch-top{padding-top:14px;}
+  .swatch-bottom{padding-bottom:14px;}
+  .toolbar{gap:10px;}
+}
+
+/* ---------- TOAST ---------- */
+.toast{
+  position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--panel2); border:1px solid var(--cyan); color:var(--cyan);
+  font-family:'JetBrains Mono'; font-size:.85rem; padding:12px 22px; border-radius:10px;
+  opacity:0; pointer-events:none; transition:.3s; z-index:100; display:flex; align-items:center; gap:10px;
+  box-shadow:0 0 24px rgba(0,240,255,.2);
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+/* ---------- MODAL ---------- */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(2,4,6,.78); backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center; z-index:200;
+  opacity:0; pointer-events:none; transition:.25s;
+}
+.modal-overlay.show{opacity:1; pointer-events:auto;}
+.modal{
+  background:var(--panel); border:1px solid var(--line); border-radius:14px; width:min(560px, 92vw);
+  max-height:82vh; display:flex; flex-direction:column; position:relative; overflow:hidden;
+  box-shadow:0 0 60px rgba(0,240,255,.1);
+}
+.modal-head{display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid var(--line);}
+.modal-head h3{font-family:'Orbitron'; font-size:.95rem; letter-spacing:.05em; color:var(--cyan);}
+.modal-head button{background:none; border:none; color:var(--muted); font-size:1.2rem; cursor:pointer;}
+.modal-head button:hover{color:var(--magenta);}
+.modal-tabs{display:flex; gap:6px; padding:14px 22px 0;}
+.modal-tab{
+  background:var(--panel2); border:1px solid var(--line); color:var(--muted); font-family:'Rajdhani'; font-weight:700;
+  font-size:.78rem; padding:8px 14px; border-radius:7px 7px 0 0; cursor:pointer; letter-spacing:.03em;
+}
+.modal-tab.active{color:var(--bg); background:var(--cyan);}
+.modal-body{padding:18px 22px 22px; overflow:auto;}
+.modal-body pre{
+  background:#03060a; border:1px solid var(--line); border-radius:10px; padding:16px; font-family:'JetBrains Mono';
+  font-size:.82rem; color:#c8f7ff; white-space:pre-wrap; word-break:break-all;
+}
+.modal-actions{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;}
+
+footer{
+  position:relative; z-index:2; text-align:center; padding:16px; font-size:.75rem; color:var(--muted);
+  border-top:1px solid var(--line);
+}
+footer span{color:var(--violet);}
+::selection{background:var(--magenta); color:#04070a;}
+@media (prefers-reduced-motion: reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <i class="fa-solid fa-swatchbook"></i>
+    <div>
+      <div class="brand-font">CHROMA // PALETTE ENGINE</div>
+      <small>gerador de paletas de cores</small>
+    </div>
+  </div>
+  <div class="hint"><span class="kbd">Espaço</span> gera uma nova paleta</div>
+</header>
+
+<div class="toolbar">
+  <div class="tb-group">
+    <span class="tb-label">Base</span>
+    <input type="color" id="baseColor" class="color-swatch-input" value="#8b5cf6">
+  </div>
+
+  <div class="tb-group">
+    <span class="tb-label">Esquema</span>
+    <select id="schemeSelect">
+      <option value="random" selected>Aleatório</option>
+      <option value="analogous">Análoga</option>
+      <option value="complementary">Complementar</option>
+      <option value="triadic">Triádica</option>
+      <option value="mono">Monocromática</option>
+    </select>
+  </div>
+
+  <div class="tb-group">
+    <span class="tb-label">Cores</span>
+    <div class="count-ctrl">
+      <button id="countMinus" aria-label="Diminuir"><i class="fa-solid fa-minus"></i></button>
+      <span id="countDisplay">5</span>
+      <button id="countPlus" aria-label="Aumentar"><i class="fa-solid fa-plus"></i></button>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <button class="btn btn-outline" id="unlockAllBtn"><i class="fa-solid fa-lock-open"></i> Destravar tudo</button>
+  <button class="btn btn-outline" id="exportBtn"><i class="fa-solid fa-file-export"></i> Exportar</button>
+  <button class="btn btn-primary" id="generateBtn"><i class="fa-solid fa-dice"></i> Gerar paleta</button>
+</div>
+
+<div class="palette-wrap">
+  <div class="palette" id="palette"></div>
+</div>
+
+<footer>Feito com <span>&hearts;</span> em HTML, CSS e JS puro — clique no HEX para copiar</footer>
+
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastMsg">Copiado!</span></div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3><i class="fa-solid fa-code"></i> Exportar paleta</h3>
+      <button id="closeModal"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" data-format="css">CSS</button>
+      <button class="modal-tab" data-format="scss">SCSS</button>
+      <button class="modal-tab" data-format="json">JSON</button>
+    </div>
+    <div class="modal-body">
+      <pre id="exportCode"></pre>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="copyExportBtn"><i class="fa-solid fa-copy"></i> Copiar código</button>
+        <button class="btn btn-outline" id="downloadExportBtn"><i class="fa-solid fa-download"></i> Baixar arquivo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------------- COLOR MATH ---------------- */
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+function mod360(h){return ((h%360)+360)%360;}
+function rand(min,max){return Math.random()*(max-min)+min;}
+
+function hslToHex(h,s,l){
+  h=mod360(h); s=clamp(s,0,100)/100; l=clamp(l,0,100)/100;
+  const c=(1-Math.abs(2*l-1))*s;
+  const x=c*(1-Math.abs((h/60)%2-1));
+  const m=l-c/2;
+  let r,g,b;
+  if(h<60){r=c;g=x;b=0;} else if(h<120){r=x;g=c;b=0;}
+  else if(h<180){r=0;g=c;b=x;} else if(h<240){r=0;g=x;b=c;}
+  else if(h<300){r=x;g=0;b=c;} else {r=c;g=0;b=x;}
+  const toHex=v=>Math.round((v+m)*255).toString(16).padStart(2,'0');
+  return "#"+toHex(r)+toHex(g)+toHex(b);
+}
+
+function hexToRgb(hex){
+  hex=hex.replace('#','');
+  if(hex.length===3) hex=hex.split('').map(c=>c+c).join('');
+  const num=parseInt(hex,16);
+  return {r:(num>>16)&255, g:(num>>8)&255, b:num&255};
+}
+
+function hexToHsl(hex){
+  let {r,g,b}=hexToRgb(hex);
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){h=0; s=0;}
+  else{
+    const d=max-min;
+    s=l>0.5? d/(2-max-min): d/(max+min);
+    switch(max){
+      case r: h=(g-b)/d+(g<b?6:0); break;
+      case g: h=(b-r)/d+2; break;
+      case b: h=(r-g)/d+4; break;
+    }
+    h*=60;
+  }
+  return {h, s:s*100, l:l*100};
+}
+
+function contrastColor(hex){
+  const {r,g,b}=hexToRgb(hex);
+  const lum=(0.299*r+0.587*g+0.114*b)/255;
+  return lum>0.58? '#0a0d10':'#f4f8fb';
+}
+
+/* ---------------- SCHEME GENERATION ---------------- */
+function schemeHSLs(scheme, count, base){
+  const arr=[];
+  if(scheme==='random'){
+    for(let i=0;i<count;i++) arr.push({h:rand(0,360), s:rand(58,90), l:rand(38,68)});
+  } else if(scheme==='analogous'){
+    const span=55;
+    for(let i=0;i<count;i++){
+      const offset = count===1? 0 : -span + i*(2*span/(count-1));
+      arr.push({h:mod360(base.h+offset), s:clamp(base.s+rand(-6,6),40,92), l:clamp(base.l+rand(-8,8)+ (i-count/2)*2,25,78)});
+    }
+  } else if(scheme==='complementary'){
+    for(let i=0;i<count;i++){
+      const h = i%2===1 ? mod360(base.h+180) : base.h;
+      const l = count===1? base.l : 22 + i*(58/(count-1));
+      arr.push({h, s:clamp(base.s,48,92), l});
+    }
+  } else if(scheme==='triadic'){
+    for(let i=0;i<count;i++){
+      const h=mod360(base.h + (i%3)*120);
+      const l=clamp(28 + Math.floor(i/3)*18 + rand(-4,8), 20, 82);
+      arr.push({h, s:clamp(base.s,48,92), l});
+    }
+  } else if(scheme==='mono'){
+    for(let i=0;i<count;i++){
+      const l = count===1? base.l : 16 + i*(72/(count-1));
+      arr.push({h:base.h, s:clamp(base.s,32,88), l});
+    }
+  }
+  return arr;
+}
+
+/* ---------------- STATE ---------------- */
+let palette = []; // array of {hex, locked}
+const paletteEl = document.getElementById('palette');
+const schemeSelect = document.getElementById('schemeSelect');
+const baseColorInput = document.getElementById('baseColor');
+const countDisplay = document.getElementById('countDisplay');
+let count = 5;
+
+function initPalette(){
+  const base = hexToHsl(baseColorInput.value);
+  const hsls = schemeHSLs(schemeSelect.value, count, base);
+  palette = hsls.map(c=>({hex:hslToHex(c.h,c.s,c.l), locked:false}));
+  render();
+}
+
+function generate(){
+  const base = hexToHsl(baseColorInput.value);
+  const hsls = schemeHSLs(schemeSelect.value, count, base);
+  palette = palette.map((sw,i)=> sw.locked ? sw : {hex:hslToHex(hsls[i].h,hsls[i].s,hsls[i].l), locked:false});
+  render();
+}
+
+function render(){
+  paletteEl.innerHTML='';
+  palette.forEach((sw,i)=>{
+    const color = contrastColor(sw.hex);
+    const div=document.createElement('div');
+    div.className='swatch';
+    div.style.background=sw.hex;
+    div.style.color=color;
+    div.innerHTML=`
+      <div class="swatch-top">
+        <button class="icon-btn lock-btn ${sw.locked?'locked':''}" data-i="${i}" aria-label="Travar/destravar cor">
+          <i class="fa-solid ${sw.locked?'fa-lock':'fa-lock-open'}"></i>
+        </button>
+      </div>
+      <div class="swatch-mid"></div>
+      <div class="swatch-bottom">
+        <span class="hex-label copy-hex" data-hex="${sw.hex}">${sw.hex.toUpperCase()}</span>
+        <span class="copy-hint">clique para copiar</span>
+      </div>
+    `;
+    paletteEl.appendChild(div);
+  });
+
+  document.querySelectorAll('.lock-btn').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation();
+      const i=+btn.dataset.i;
+      palette[i].locked = !palette[i].locked;
+      render();
+    });
+  });
+  document.querySelectorAll('.copy-hex').forEach(el=>{
+    el.addEventListener('click', ()=> copyText(el.dataset.hex, `Copiado ${el.dataset.hex.toUpperCase()}`));
+  });
+}
+
+function copyText(text, msg){
+  const done = ()=> showToast(msg || 'Copiado!');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));
+  } else {
+    fallbackCopy(text,done);
+  }
+}
+function fallbackCopy(text,cb){
+  const ta=document.createElement('textarea');
+  ta.value=text; document.body.appendChild(ta); ta.select();
+  try{document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+  cb && cb();
+}
+
+let toastTimer;
+function showToast(msg){
+  const toast=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove('show'), 1800);
+}
+
+/* ---------------- CONTROLS ---------------- */
+document.getElementById('generateBtn').addEventListener('click', generate);
+document.getElementById('unlockAllBtn').addEventListener('click', ()=>{
+  palette.forEach(sw=>sw.locked=false);
+  render();
+  showToast('Todas as cores destravadas');
+});
+schemeSelect.addEventListener('change', generate);
+baseColorInput.addEventListener('input', ()=>{ if(schemeSelect.value!=='random') generate(); });
+
+document.getElementById('countPlus').addEventListener('click', ()=>{
+  if(count>=8) return;
+  count++;
+  countDisplay.textContent=count;
+  const base = hexToHsl(baseColorInput.value);
+  const hsls = schemeHSLs(schemeSelect.value, count, base);
+  while(palette.length<count) palette.push({hex:hslToHex(hsls[palette.length].h,hsls[palette.length].s,hsls[palette.length].l), locked:false});
+  render();
+});
+document.getElementById('countMinus').addEventListener('click', ()=>{
+  if(count<=3) return;
+  count--;
+  countDisplay.textContent=count;
+  palette=palette.slice(0,count);
+  render();
+});
+
+document.addEventListener('keydown', e=>{
+  if(e.code==='Space' && !['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)){
+    e.preventDefault();
+    generate();
+  }
+});
+
+/* ---------------- EXPORT MODAL ---------------- */
+const modalOverlay=document.getElementById('modalOverlay');
+const exportCode=document.getElementById('exportCode');
+let currentFormat='css';
+
+function buildExport(format){
+  if(format==='css'){
+    return ":root {\n" + palette.map((sw,i)=>`  --color-${i+1}: ${sw.hex};`).join('\n') + "\n}";
+  }
+  if(format==='scss'){
+    return palette.map((sw,i)=>`$color-${i+1}: ${sw.hex};`).join('\n');
+  }
+  if(format==='json'){
+    return JSON.stringify(palette.map(sw=>sw.hex), null, 2);
+  }
+}
+
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  currentFormat='css';
+  document.querySelectorAll('.modal-tab').forEach(t=>t.classList.toggle('active', t.dataset.format==='css'));
+  exportCode.textContent=buildExport('css');
+  modalOverlay.classList.add('show');
+});
+document.getElementById('closeModal').addEventListener('click', ()=> modalOverlay.classList.remove('show'));
+modalOverlay.addEventListener('click', e=>{ if(e.target===modalOverlay) modalOverlay.classList.remove('show'); });
+
+document.querySelectorAll('.modal-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    currentFormat=tab.dataset.format;
+    exportCode.textContent=buildExport(currentFormat);
+  });
+});
+
+document.getElementById('copyExportBtn').addEventListener('click', ()=>{
+  copyText(exportCode.textContent, 'Código copiado!');
+});
+document.getElementById('downloadExportBtn').addEventListener('click', ()=>{
+  const ext = currentFormat==='json' ? 'json' : currentFormat==='scss' ? 'scss' : 'css';
+  const blob=new Blob([exportCode.textContent], {type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`paleta.${ext}`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Arquivo baixado!');
+});
+
+/* ---------------- INIT ---------------- */
+initPalette();
+</script>
+</body>
+</html>
