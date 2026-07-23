@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TraMonInStu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0e13;
+    --surface: #10161d;
+    --surface-2: #161d26;
+    --line: #232c37;
+    --text: #dde6ee;
+    --text-dim: #7c8a99;
+    --text-faint: #4d5a68;
+    --area1: #45d6c4; /* teal */
+    --area2: #e0a94e; /* amber ribbon */
+    --area3: #9d8cf0; /* violet */
+    --danger: #e05a5a;
+    --radius: 14px;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: radial-gradient(circle at 50% 0%, #0e141b 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 84px;
+  }
+  ::selection{ background: var(--area1); color:#04120f; }
+
+  .scanline{
+    position: fixed; inset:0; pointer-events:none; z-index:0;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+    mix-blend-mode: overlay;
+  }
+
+  header.app-top{
+    position: sticky; top:0; z-index: 20;
+    background: rgba(10,14,19,0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    padding: 16px 18px 12px;
+  }
+  .brand{
+    display:flex; align-items:baseline; gap:10px;
+  }
+  .brand .mark{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:800;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(120deg, var(--area1), var(--area3));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color: transparent;
+  }
+  .brand .sub{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--text-faint);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  .searchwrap{ margin-top: 12px; position: relative; }
+  .searchwrap input{
+    width:100%;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 11px 14px 11px 36px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+  }
+  .searchwrap input:focus{ border-color: var(--area1); box-shadow: 0 0 0 3px rgba(69,214,196,0.12); }
+  .searchwrap svg{ position:absolute; left:12px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-faint); }
+  .searchwrap input::placeholder{ color: var(--text-faint); }
+
+  main{ position:relative; z-index:1; max-width: 720px; margin: 0 auto; padding: 18px 14px 0; }
+
+  .search-results{
+    display:none;
+    margin: 10px 2px 22px;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 10px;
+    background: rgba(255,255,255,0.015);
+  }
+  .search-results.show{ display:block; }
+  .search-results .sr-head{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text-faint); letter-spacing: 1px; text-transform:uppercase;
+    padding: 2px 6px 8px;
+  }
+
+  .tabs{
+    display:flex; gap:6px; padding: 4px; background: var(--surface);
+    border: 1px solid var(--line); border-radius: 12px; margin-bottom: 16px;
+  }
+  .tab{
+    flex:1; text-align:center; padding: 9px 6px; border-radius: 9px;
+    font-size: 12.5px; font-weight:600; color: var(--text-dim);
+    cursor:pointer; user-select:none; transition: all .15s ease;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .tab .dot{ width:6px; height:6px; border-radius:50%; background: var(--text-faint); }
+  .tab.active{ background: var(--surface-2); color: var(--text); }
+  .tab[data-area="1"].active .dot{ background: var(--area1); box-shadow:0 0 6px var(--area1); }
+  .tab[data-area="2"].active .dot{ background: var(--area2); box-shadow:0 0 6px var(--area2); }
+  .tab[data-area="3"].active .dot{ background: var(--area3); box-shadow:0 0 6px var(--area3); }
+
+  .area{ display:none; }
+  .area.active{ display:block; animation: fadeIn .2s ease; }
+  @keyframes fadeIn{ from{ opacity:0; transform: translateY(4px);} to{opacity:1; transform:none;} }
+
+  .panel{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent, var(--area1));
+    border-radius: var(--radius);
+    padding: 16px 16px 14px;
+    margin-bottom: 18px;
+  }
+  .area[data-area="1"] .panel{ --accent: var(--area1); }
+  .area[data-area="2"] .panel{ --accent: var(--area2); }
+  .area[data-area="3"] .panel{ --accent: var(--area3); }
+
+  .panel-title{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--text-faint); text-transform:uppercase; letter-spacing:1.2px;
+    margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .panel-title .count{ color: var(--accent); font-weight:700; }
+
+  .field{ margin-bottom: 12px; }
+  .field label{
+    display:block; font-size: 11.5px; color: var(--text-dim); margin-bottom: 5px; font-weight:600;
+  }
+  .field .req{ color: var(--accent); }
+  .field input{
+    width:100%; background: var(--surface-2); border: 1px solid var(--line);
+    color: var(--text); padding: 10px 12px; border-radius: 9px; font-size: 14.5px;
+    font-family: 'Inter', sans-serif; outline:none; transition: border-color .15s;
+  }
+  .field input:focus{ border-color: var(--accent); }
+  .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .save-btn{
+    width:100%; margin-top:6px; padding: 12px; border-radius: 10px; border:none;
+    background: var(--accent); color: #05100d; font-weight:700; font-size: 14px;
+    cursor:pointer; font-family:'JetBrains Mono', monospace; letter-spacing: 0.4px;
+    transition: filter .15s, transform .1s;
+  }
+  .save-btn:active{ transform: scale(0.98); }
+  .save-btn:hover{ filter: brightness(1.08); }
+
+  .hint{ font-size: 11px; color: var(--text-faint); margin-top:8px; text-align:center; }
+
+  .entries{ display:flex; flex-direction:column; gap:10px; }
+  .entry{
+    background: var(--surface); border:1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; position:relative; overflow:hidden;
+  }
+  .entry::before{
+    content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background: var(--accent);
+  }
+  .entry-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .entry-book{ font-weight:700; font-size: 14.5px; color: var(--text); }
+  .entry-date{ font-family:'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text-faint); white-space:nowrap; margin-top:2px; }
+  .entry-ref{
+    font-family:'JetBrains Mono', monospace; font-size: 13px; color: var(--accent);
+    margin-top: 6px; font-weight:600;
+  }
+  .entry-part{ font-size: 13px; color: var(--text-dim); margin-top: 6px; line-height:1.4; font-style:italic; }
+  .entry-del{
+    background:none; border:none; color: var(--text-faint); cursor:pointer; font-size:16px;
+    padding: 2px 4px; line-height:1; border-radius:6px; flex-shrink:0;
+  }
+  .entry-del:hover{ color: var(--danger); background: rgba(224,90,90,0.08); }
+
+  .empty{
+    text-align:center; padding: 30px 10px; color: var(--text-faint); font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .toast{
+    position: fixed; bottom: 90px; left:50%; transform: translateX(-50%) translateY(20px);
+    background: var(--surface-2); border:1px solid var(--line); color: var(--text);
+    padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight:600;
+    opacity:0; pointer-events:none; transition: all .25s ease; z-index: 50;
+    border-left: 3px solid var(--area1);
+  }
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+  nav.bottom-nav{
+    position: fixed; bottom:0; left:0; right:0; z-index: 30;
+    background: rgba(10,14,19,0.92); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    display:flex; padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    max-width: 720px; margin: 0 auto;
+  }
+  nav.bottom-nav .nitem{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+    padding: 6px 4px; border-radius:10px; cursor:pointer; color: var(--text-faint);
+  }
+  nav.bottom-nav .nitem .nb{
+    width:8px; height:8px; border-radius:50%; background: var(--text-faint);
+  }
+  nav.bottom-nav .nitem.active{ color: var(--text); }
+  nav.bottom-nav .nitem[data-area="1"].active .nb{ background: var(--area1); box-shadow:0 0 6px var(--area1); }
+  nav.bottom-nav .nitem[data-area="2"].active .nb{ background: var(--area2); box-shadow:0 0 6px var(--area2); }
+  nav.bottom-nav .nitem[data-area="3"].active .nb{ background: var(--area3); box-shadow:0 0 6px var(--area3); }
+  nav.bottom-nav .nitem span{ font-size: 11px; font-weight:600; font-family:'JetBrains Mono', monospace; }
+
+  @media (min-width: 680px){
+    body{ padding-bottom: 30px; }
+    nav.bottom-nav{ display:none; }
+    .tabs{ margin-bottom: 20px; }
+    .tab{ padding: 11px 6px; font-size: 13px; }
+    main{ padding-top: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+
+<header class="app-top">
+  <div class="brand">
+    <span class="mark">TraMonInStu</span>
+    <span class="sub">Estudo Literário</span>
+  </div>
+  <div class="searchwrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="searchInput" type="text" placeholder="Buscar por data ou nome do livro...">
+  </div>
+</header>
+
+<main>
+  <div class="search-results" id="searchResults">
+    <div class="sr-head">Resultados</div>
+    <div class="entries" id="searchResultsList"></div>
+  </div>
+
+  <div id="normalView">
+    <div class="tabs">
+      <div class="tab active" data-area="1"><span class="dot"></span>Área 1</div>
+      <div class="tab" data-area="2"><span class="dot"></span>Área 2</div>
+      <div class="tab" data-area="3"><span class="dot"></span>Área 3</div>
+    </div>
+
+    <div class="area active" data-area="1">
+      <div class="panel">
+        <div class="panel-title">Novo registro <span class="count" id="count-1">0 registros</span></div>
+        <form class="entry-form" data-area="1">
+          <div class="field">
+            <label>Data <span class="req">*</span></label>
+            <input type="date" name="data" required>
+          </div>
+          <div class="field">
+            <label>Nome do livro <span class="req">*</span></label>
+            <input type="text" name="livro" placeholder="Ex: Gênesis" required>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>Capítulo <span class="req">*</span></label>
+              <input type="number" name="capitulo" min="0" placeholder="0" required>
+            </div>
+            <div class="field">
+              <label>Verso <span class="req">*</span></label>
+              <input type="number" name="verso" min="0" placeholder="0" required>
+            </div>
+          </div>
+          <div class="field">
+            <label>Parte do verso</label>
+            <input type="text" name="parte" placeholder="Opcional">
+          </div>
+          <button type="submit" class="save-btn">Gravar registro</button>
+        </form>
+        <div class="hint">Os dados ficam salvos automaticamente neste dispositivo/conta.</div>
+      </div>
+      <div class="entries" id="list-1"></div>
+    </div>
+
+    <div class="area" data-area="2">
+      <div class="panel">
+        <div class="panel-title">Novo registro <span class="count" id="count-2">0 registros</span></div>
+        <form class="entry-form" data-area="2">
+          <div class="field">
+            <label>Data <span class="req">*</span></label>
+            <input type="date" name="data" required>
+          </div>
+          <div class="field">
+            <label>Nome do livro <span class="req">*</span></label>
+            <input type="text" name="livro" placeholder="Ex: Êxodo" required>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>Capítulo <span class="req">*</span></label>
+              <input type="number" name="capitulo" min="0" placeholder="0" required>
+            </div>
+            <div class="field">
+              <label>Verso <span class="req">*</span></label>
+              <input type="number" name="verso" min="0" placeholder="0" required>
+            </div>
+          </div>
+          <div class="field">
+            <label>Parte do verso</label>
+            <input type="text" name="parte" placeholder="Opcional">
+          </div>
+          <button type="submit" class="save-btn">Gravar registro</button>
+        </form>
+        <div class="hint">Os dados ficam salvos automaticamente neste dispositivo/conta.</div>
+      </div>
+      <div class="entries" id="list-2"></div>
+    </div>
+
+    <div class="area" data-area="3">
+      <div class="panel">
+        <div class="panel-title">Novo registro <span class="count" id="count-3">0 registros</span></div>
+        <form class="entry-form" data-area="3">
+          <div class="field">
+            <label>Data <span class="req">*</span></label>
+            <input type="date" name="data" required>
+          </div>
+          <div class="field">
+            <label>Nome do livro <span class="req">*</span></label>
+            <input type="text" name="livro" placeholder="Ex: Levítico" required>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>Capítulo <span class="req">*</span></label>
+              <input type="number" name="capitulo" min="0" placeholder="0" required>
+            </div>
+            <div class="field">
+              <label>Verso <span class="req">*</span></label>
+              <input type="number" name="verso" min="0" placeholder="0" required>
+            </div>
+          </div>
+          <div class="field">
+            <label>Parte do verso</label>
+            <input type="text" name="parte" placeholder="Opcional">
+          </div>
+          <button type="submit" class="save-btn">Gravar registro</button>
+        </form>
+        <div class="hint">Os dados ficam salvos automaticamente neste dispositivo/conta.</div>
+      </div>
+      <div class="entries" id="list-3"></div>
+    </div>
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <div class="nitem active" data-area="1"><span class="nb"></span><span>Área 1</span></div>
+  <div class="nitem" data-area="2"><span class="nb"></span><span>Área 2</span></div>
+  <div class="nitem" data-area="3"><span class="nb"></span><span>Área 3</span></div>
+</nav>
+
+<div class="toast" id="toast">Registro salvo</div>
+
+<script>
+(function(){
+  const AREAS = ['1','2','3'];
+  const STORAGE_KEYS = { '1':'tramoninstu:area1', '2':'tramoninstu:area2', '3':'tramoninstu:area3' };
+  let data = { '1':[], '2':[], '3':[] };
+  let currentArea = '1';
+
+  async function loadAll(){
+    for(const a of AREAS){
+      try{
+        const res = await window.storage.get(STORAGE_KEYS[a], false);
+        data[a] = res && res.value ? JSON.parse(res.value) : [];
+      }catch(e){
+        data[a] = [];
+      }
+    }
+    renderAll();
+  }
+
+  async function saveArea(a){
+    try{
+      await window.storage.set(STORAGE_KEYS[a], JSON.stringify(data[a]), false);
+    }catch(e){
+      console.error('Erro ao salvar', e);
+      showToast('Erro ao salvar. Tente novamente.');
+    }
+  }
+
+  function formatDate(iso){
+    if(!iso) return '';
+    const parts = iso.split('-');
+    if(parts.length !== 3) return iso;
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+
+  function entryHTML(entry, area){
+    const parte = entry.parte ? `<div class="entry-part">"${escapeHTML(entry.parte)}"</div>` : '';
+    return `
+      <div class="entry" data-id="${entry.id}" data-area="${area}">
+        <div class="entry-top">
+          <div>
+            <div class="entry-book">${escapeHTML(entry.livro)}</div>
+            <div class="entry-date">${formatDate(entry.data)}</div>
+          </div>
+          <button class="entry-del" title="Excluir" data-id="${entry.id}" data-area="${area}">&times;</button>
+        </div>
+        <div class="entry-ref">Cap. ${entry.capitulo} : Vs. ${entry.verso}</div>
+        ${parte}
+      </div>`;
+  }
+
+  function escapeHTML(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function renderArea(a){
+    const list = document.getElementById('list-'+a);
+    const count = document.getElementById('count-'+a);
+    const sorted = [...data[a]].sort((x,y)=> (y.data||'').localeCompare(x.data||'') || y.id - x.id);
+    count.textContent = data[a].length + (data[a].length === 1 ? ' registro' : ' registros');
+    if(sorted.length === 0){
+      list.innerHTML = '<div class="empty">Nenhum registro ainda. Adicione o primeiro acima.</div>';
+      return;
+    }
+    list.innerHTML = sorted.map(e => entryHTML(e, a)).join('');
+  }
+
+  function renderAll(){ AREAS.forEach(renderArea); }
+
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=> t.classList.remove('show'), 1800);
+  }
+
+  // Form submit
+  document.querySelectorAll('.entry-form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const area = form.getAttribute('data-area');
+      const fd = new FormData(form);
+      const entry = {
+        id: Date.now(),
+        data: fd.get('data'),
+        livro: (fd.get('livro') || '').trim(),
+        capitulo: fd.get('capitulo'),
+        verso: fd.get('verso'),
+        parte: (fd.get('parte') || '').trim()
+      };
+      if(!entry.data || !entry.livro || entry.capitulo === '' || entry.verso === ''){
+        showToast('Preencha os campos obrigatórios.');
+        return;
+      }
+      data[area].push(entry);
+      await saveArea(area);
+      renderArea(area);
+      form.reset();
+      form.querySelector('[name="livro"]').focus();
+      showToast('Registro salvo com sucesso.');
+    });
+  });
+
+  // Delete (event delegation)
+  document.getElementById('normalView').addEventListener('click', async (e) => {
+    const btn = e.target.closest('.entry-del');
+    if(!btn) return;
+    const area = btn.getAttribute('data-area');
+    const id = Number(btn.getAttribute('data-id'));
+    data[area] = data[area].filter(en => en.id !== id);
+    await saveArea(area);
+    renderArea(area);
+    showToast('Registro removido.');
+  });
+
+  // Tabs
+  function setArea(a){
+    currentArea = a;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-area') === a));
+    document.querySelectorAll('.area').forEach(el => el.classList.toggle('active', el.getAttribute('data-area') === a));
+    document.querySelectorAll('.nitem').forEach(n => n.classList.toggle('active', n.getAttribute('data-area') === a));
+  }
+  document.querySelectorAll('.tab, .nitem').forEach(el => {
+    el.addEventListener('click', () => setArea(el.getAttribute('data-area')));
+  });
+
+  // Search
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.getElementById('searchResults');
+  const searchResultsList = document.getElementById('searchResultsList');
+  const normalView = document.getElementById('normalView');
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    if(!q){
+      searchResults.classList.remove('show');
+      normalView.style.display = '';
+      return;
+    }
+    normalView.style.display = 'none';
+    searchResults.classList.add('show');
+    let matches = [];
+    AREAS.forEach(a => {
+      data[a].forEach(en => {
+        const dateStr = formatDate(en.data).toLowerCase();
+        if((en.livro||'').toLowerCase().includes(q) || dateStr.includes(q) || (en.data||'').includes(q)){
+          matches.push({entry: en, area: a});
+        }
+      });
+    });
+    matches.sort((x,y) => (y.entry.data||'').localeCompare(x.entry.data||''));
+    if(matches.length === 0){
+      searchResultsList.innerHTML = '<div class="empty">Nenhum resultado encontrado.</div>';
+    }else{
+      searchResultsList.innerHTML = matches.map(m => entryHTML(m.entry, m.area)).join('');
+    }
+  });
+
+  searchResults.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.entry-del');
+    if(!btn) return;
+    const area = btn.getAttribute('data-area');
+    const id = Number(btn.getAttribute('data-id'));
+    data[area] = data[area].filter(en => en.id !== id);
+    await saveArea(area);
+    renderArea(area);
+    searchInput.dispatchEvent(new Event('input'));
+    showToast('Registro removido.');
+  });
+
+  // Default today's date in forms
+  const today = new Date().toISOString().split('T')[0];
+  document.querySelectorAll('input[name="data"]').forEach(inp => inp.value = today);
+
+  loadAll();
+})();
+</script>
+</body>
+</html>
