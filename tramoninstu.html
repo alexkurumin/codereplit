@@ -12,9 +12,9 @@
     --surface: #10161d;
     --surface-2: #161d26;
     --line: #232c37;
-    --text: #dde6ee;
-    --text-dim: #7c8a99;
-    --text-faint: #4d5a68;
+    --text: #f3f8fc;
+    --text-dim: #9fb0c0;
+    --text-faint: #6b7988;
     --area1: #45d6c4; /* teal */
     --area2: #e0a94e; /* amber ribbon */
     --area3: #9d8cf0; /* violet */
@@ -22,6 +22,7 @@
     --radius: 14px;
   }
   *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  html{ color-scheme: dark; }
   html,body{ margin:0; padding:0; }
   body{
     background: radial-gradient(circle at 50% 0%, #0e141b 0%, var(--bg) 55%);
@@ -66,7 +67,8 @@
     text-transform: uppercase;
   }
 
-  .searchwrap{ margin-top: 12px; position: relative; }
+  .searchwrap{ margin-top: 12px; display:flex; gap:8px; }
+  .searchwrap .inputbox{ position: relative; flex:1; }
   .searchwrap input{
     width:100%;
     background: var(--surface);
@@ -77,10 +79,23 @@
     font-size: 14px;
     font-family: 'Inter', sans-serif;
     outline: none;
+    color-scheme: dark;
   }
   .searchwrap input:focus{ border-color: var(--area1); box-shadow: 0 0 0 3px rgba(69,214,196,0.12); }
   .searchwrap svg{ position:absolute; left:12px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-faint); }
-  .searchwrap input::placeholder{ color: var(--text-faint); }
+  .searchwrap input::placeholder{ color: var(--text-dim); opacity:1; }
+  .search-btn{
+    flex-shrink:0; padding: 0 16px; border-radius: 10px; border: 1px solid var(--area1);
+    background: rgba(69,214,196,0.1); color: var(--area1); font-weight:700; font-size: 13px;
+    cursor:pointer; font-family:'JetBrains Mono', monospace;
+  }
+  .search-btn:hover{ background: rgba(69,214,196,0.18); }
+  .search-clear{
+    flex-shrink:0; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--text-dim); font-weight:700; font-size: 13px;
+    cursor:pointer; display:none;
+  }
+  .search-clear.show{ display:inline-block; }
 
   main{ position:relative; z-index:1; max-width: 720px; margin: 0 auto; padding: 18px 14px 0; }
 
@@ -148,7 +163,10 @@
     width:100%; background: var(--surface-2); border: 1px solid var(--line);
     color: var(--text); padding: 10px 12px; border-radius: 9px; font-size: 14.5px;
     font-family: 'Inter', sans-serif; outline:none; transition: border-color .15s;
+    color-scheme: dark;
+    font-weight: 500;
   }
+  .field input::placeholder{ color: var(--text-dim); opacity:1; }
   .field input:focus{ border-color: var(--accent); }
   .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
@@ -178,7 +196,7 @@
     font-family:'JetBrains Mono', monospace; font-size: 13px; color: var(--accent);
     margin-top: 6px; font-weight:600;
   }
-  .entry-part{ font-size: 13px; color: var(--text-dim); margin-top: 6px; line-height:1.4; font-style:italic; }
+  .entry-part{ font-size: 13px; color: var(--text); opacity:0.85; margin-top: 6px; line-height:1.4; font-style:italic; }
   .entry-del{
     background:none; border:none; color: var(--text-faint); cursor:pointer; font-size:16px;
     padding: 2px 4px; line-height:1; border-radius:6px; flex-shrink:0;
@@ -237,8 +255,12 @@
     <span class="sub">Estudo Literário</span>
   </div>
   <div class="searchwrap">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-    <input id="searchInput" type="text" placeholder="Buscar por data ou nome do livro...">
+    <div class="inputbox">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="searchInput" type="text" placeholder="Buscar por data ou nome do livro...">
+    </div>
+    <button class="search-btn" id="searchBtn">Buscar</button>
+    <button class="search-clear" id="searchClear">Limpar</button>
   </div>
 </header>
 
@@ -371,11 +393,37 @@
   let data = { '1':[], '2':[], '3':[] };
   let currentArea = '1';
 
+  const hasCloudStorage = () => (typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function');
+
+  async function getItem(key){
+    if(hasCloudStorage()){
+      try{
+        const res = await window.storage.get(key, false);
+        return res && res.value ? res.value : null;
+      }catch(e){
+        // key not found or cloud storage failed for this call; fall through to local
+      }
+    }
+    try{ return window.localStorage.getItem(key); }catch(e){ return null; }
+  }
+
+  async function setItem(key, value){
+    let ok = false;
+    if(hasCloudStorage()){
+      try{
+        const res = await window.storage.set(key, value, false);
+        ok = !!res;
+      }catch(e){ ok = false; }
+    }
+    try{ window.localStorage.setItem(key, value); ok = true; }catch(e){ /* ignore */ }
+    return ok;
+  }
+
   async function loadAll(){
     for(const a of AREAS){
+      const raw = await getItem(STORAGE_KEYS[a]);
       try{
-        const res = await window.storage.get(STORAGE_KEYS[a], false);
-        data[a] = res && res.value ? JSON.parse(res.value) : [];
+        data[a] = raw ? JSON.parse(raw) : [];
       }catch(e){
         data[a] = [];
       }
@@ -384,11 +432,9 @@
   }
 
   async function saveArea(a){
-    try{
-      await window.storage.set(STORAGE_KEYS[a], JSON.stringify(data[a]), false);
-    }catch(e){
-      console.error('Erro ao salvar', e);
-      showToast('Erro ao salvar. Tente novamente.');
+    const ok = await setItem(STORAGE_KEYS[a], JSON.stringify(data[a]));
+    if(!ok){
+      showToast('Não foi possível salvar. Verifique o navegador.');
     }
   }
 
@@ -494,19 +540,23 @@
 
   // Search
   const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const searchClear = document.getElementById('searchClear');
   const searchResults = document.getElementById('searchResults');
   const searchResultsList = document.getElementById('searchResultsList');
   const normalView = document.getElementById('normalView');
 
-  searchInput.addEventListener('input', () => {
+  function runSearch(){
     const q = searchInput.value.trim().toLowerCase();
     if(!q){
       searchResults.classList.remove('show');
       normalView.style.display = '';
+      searchClear.classList.remove('show');
       return;
     }
     normalView.style.display = 'none';
     searchResults.classList.add('show');
+    searchClear.classList.add('show');
     let matches = [];
     AREAS.forEach(a => {
       data[a].forEach(en => {
@@ -522,6 +572,15 @@
     }else{
       searchResultsList.innerHTML = matches.map(m => entryHTML(m.entry, m.area)).join('');
     }
+  }
+
+  searchBtn.addEventListener('click', runSearch);
+  searchInput.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); runSearch(); } });
+  searchClear.addEventListener('click', () => {
+    searchInput.value = '';
+    searchResults.classList.remove('show');
+    normalView.style.display = '';
+    searchClear.classList.remove('show');
   });
 
   searchResults.addEventListener('click', async (e) => {
@@ -532,7 +591,7 @@
     data[area] = data[area].filter(en => en.id !== id);
     await saveArea(area);
     renderArea(area);
-    searchInput.dispatchEvent(new Event('input'));
+    runSearch();
     showToast('Registro removido.');
   });
 
