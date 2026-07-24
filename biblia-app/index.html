@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Estudando a Bíblia Sagrada</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Literata:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===================== TOPO ===================== -->
+  <header class="app-header" id="appHeader">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark">✝</span>
+        <div class="brand-text">
+          <strong>Estudando a Bíblia</strong>
+          <small id="headerSubtitle">Sagrada Escritura</small>
+        </div>
+      </div>
+      <button class="icon-btn" id="darkModeToggle" title="Alternar modo noturno" aria-label="Alternar modo noturno">
+        <svg id="iconSun" viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 4.5a1 1 0 0 1-1-1V2a1 1 0 1 1 2 0v1.5a1 1 0 0 1-1 1Zm0 15a1 1 0 0 1 1 1V22a1 1 0 1 1-2 0v-1.5a1 1 0 0 1 1-1ZM4.5 13H2a1 1 0 1 1 0-2h1.5a1 1 0 1 1 0 2Zm18 0h-1.5a1 1 0 1 1 0-2H22a1 1 0 1 1 0 2ZM6.34 7.76 5.28 6.7A1 1 0 1 1 6.7 5.28l1.06 1.06a1 1 0 1 1-1.42 1.42Zm11.68 9.92-1.06-1.06a1 1 0 0 1 1.42-1.42l1.06 1.06a1 1 0 0 1-1.42 1.42ZM6.34 16.24a1 1 0 0 1 1.42 1.42l-1.06 1.06a1 1 0 1 1-1.42-1.42ZM17.6 6.4a1 1 0 0 1 1.42-1.42l1.06 1.06a1 1 0 1 1-1.42 1.42ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z"/></svg>
+        <svg id="iconMoon" viewBox="0 0 24 24" width="20" height="20" style="display:none"><path fill="currentColor" d="M20.7 14.9a9 9 0 1 1-11.6-11.6 1 1 0 0 1 1.3 1.2 7 7 0 0 0 9.1 9.1 1 1 0 0 1 1.2 1.3Z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================== VIEWS ===================== -->
+  <main class="views">
+
+    <!-- ---------- LEITURA ---------- -->
+    <section class="view" id="view-leitura" data-view="leitura">
+      <div class="reader-toolbar">
+        <div class="selectors">
+          <select id="bookSelect" aria-label="Livro"></select>
+          <select id="chapterSelect" aria-label="Capítulo"></select>
+        </div>
+        <div class="reader-actions">
+          <button class="icon-btn" id="fontMinus" title="Diminuir fonte" aria-label="Diminuir fonte">A-</button>
+          <button class="icon-btn" id="fontPlus" title="Aumentar fonte" aria-label="Aumentar fonte">A+</button>
+          <button class="icon-btn" id="bookmarkBtn" title="Marcar esta página" aria-label="Marcar esta página">🔖</button>
+          <button class="icon-btn" id="focusModeBtn" title="Modo Foco" aria-label="Modo Foco">⛶</button>
+        </div>
+      </div>
+
+      <div class="reader-page" id="readerPage">
+        <div class="chapter-heading">
+          <span class="chapter-eyebrow" id="chapterEyebrow">Antigo Testamento</span>
+          <h1 id="chapterTitle">Gênesis 1</h1>
+        </div>
+        <div id="verseContainer" class="verse-container"></div>
+      </div>
+
+      <div class="reader-nav">
+        <button id="prevChapterBtn" class="ghost-btn">← Anterior</button>
+        <span id="readerProgressLabel" class="reader-progress-label"></span>
+        <button id="nextChapterBtn" class="ghost-btn">Próximo →</button>
+      </div>
+    </section>
+
+    <!-- ---------- MODO FOCO (overlay) ---------- -->
+    <div class="focus-overlay" id="focusOverlay">
+      <button class="focus-exit" id="focusExitBtn" aria-label="Sair do modo foco">✕</button>
+      <div class="focus-page">
+        <h1 id="focusChapterTitle">Gênesis 1</h1>
+        <div id="focusVerseContainer" class="verse-container"></div>
+      </div>
+      <div class="focus-nav">
+        <button id="focusPrevBtn" class="ghost-btn">←</button>
+        <button id="focusNextBtn" class="ghost-btn">→</button>
+      </div>
+    </div>
+
+    <!-- ---------- PLANO DE LEITURA ---------- -->
+    <section class="view" id="view-plano" data-view="plano">
+      <div class="section-head">
+        <span class="section-eyebrow">Disciplina de leitura</span>
+        <h2>Plano de Leitura</h2>
+        <p class="section-desc">Gere um plano para ler a Bíblia inteira em quantos dias você quiser, e acompanhe seu progresso dia a dia.</p>
+      </div>
+
+      <div id="planSetup" class="plan-setup card">
+        <label for="planDuration">Duração do plano</label>
+        <select id="planDuration">
+          <option value="365">365 dias — 1 ano</option>
+          <option value="180">180 dias — 6 meses</option>
+          <option value="90">90 dias — 3 meses</option>
+          <option value="30">30 dias — 1 mês</option>
+        </select>
+        <button id="generatePlanBtn" class="primary-btn">Gerar plano</button>
+      </div>
+
+      <div id="planDashboard" class="plan-dashboard" style="display:none">
+        <div class="progress-card card">
+          <div class="progress-ring-wrap">
+            <svg viewBox="0 0 120 120" class="progress-ring">
+              <circle cx="60" cy="60" r="52" class="ring-bg"/>
+              <circle cx="60" cy="60" r="52" class="ring-fg" id="planRingFg"/>
+            </svg>
+            <div class="progress-ring-label">
+              <strong id="planPercentLabel">0%</strong>
+              <small>da Bíblia lida</small>
+            </div>
+          </div>
+          <div class="progress-stats">
+            <div><strong id="planDaysDone">0</strong><small>dias concluídos</small></div>
+            <div><strong id="planDaysTotal">365</strong><small>dias no plano</small></div>
+            <div><strong id="planStreak">0</strong><small>sequência atual</small></div>
+          </div>
+          <button id="resetPlanBtn" class="ghost-btn small">Recomeçar plano</button>
+        </div>
+
+        <div class="plan-today card" id="planTodayCard">
+          <span class="section-eyebrow">Hoje</span>
+          <h3 id="planTodayTitle">Dia 1</h3>
+          <p id="planTodayReading"></p>
+          <button id="planTodayDoneBtn" class="primary-btn">Marcar dia como concluído</button>
+        </div>
+
+        <div class="plan-checklist card">
+          <span class="section-eyebrow">Todos os dias</span>
+          <div id="planChecklist" class="checklist-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- QUIZ ---------- -->
+    <section class="view" id="view-quiz" data-view="quiz">
+      <div class="section-head">
+        <span class="section-eyebrow">Teste seu conhecimento</span>
+        <h2>Quiz Bíblico</h2>
+      </div>
+
+      <div id="quizIntro" class="quiz-intro card">
+        <div class="quiz-scores">
+          <div><strong id="quizHighScoreLabel">0</strong><small>recorde pessoal</small></div>
+        </div>
+        <label for="quizCategory">Categoria</label>
+        <select id="quizCategory">
+          <option value="todas">Todas as categorias</option>
+          <option value="at">Antigo Testamento</option>
+          <option value="nt">Novo Testamento</option>
+          <option value="personagens">Personagens</option>
+        </select>
+        <button id="startQuizBtn" class="primary-btn">Começar quiz</button>
+      </div>
+
+      <div id="quizPlay" class="quiz-play card" style="display:none">
+        <div class="quiz-hud">
+          <span id="quizProgressLabel">Pergunta 1/10</span>
+          <span id="quizTimer" class="quiz-timer">00:00</span>
+          <span id="quizScoreLabel">0 pts</span>
+        </div>
+        <h3 id="quizQuestionText"></h3>
+        <div id="quizOptions" class="quiz-options"></div>
+        <button id="quizNextBtn" class="primary-btn" style="display:none">Próxima pergunta</button>
+      </div>
+
+      <div id="quizResult" class="quiz-result card" style="display:none">
+        <span class="section-eyebrow">Resultado</span>
+        <h3 id="quizResultTitle"></h3>
+        <p id="quizResultDetail"></p>
+        <button id="quizPlayAgainBtn" class="primary-btn">Jogar novamente</button>
+      </div>
+    </section>
+
+    <!-- ---------- CRONOLOGIA ---------- -->
+    <section class="view" id="view-cronologia" data-view="cronologia">
+      <div class="section-head">
+        <span class="section-eyebrow">A história da Escritura</span>
+        <h2>Cronologia Bíblica</h2>
+        <p class="section-desc">Uma linha do tempo dos principais períodos, do Éden ao Apocalipse.</p>
+      </div>
+
+      <div class="timeline-filters" id="timelineFilters"></div>
+      <div class="timeline-river" id="timelineRiver"></div>
+    </section>
+
+  </main>
+
+  <!-- ===================== NAV INFERIOR ===================== -->
+  <nav class="tab-bar" id="tabBar">
+    <button class="tab-btn active" data-tab="leitura">
+      <span class="tab-icon">📖</span><span>Leitura</span>
+    </button>
+    <button class="tab-btn" data-tab="plano">
+      <span class="tab-icon">📅</span><span>Plano</span>
+    </button>
+    <button class="tab-btn" data-tab="quiz">
+      <span class="tab-icon">✦</span><span>Quiz</span>
+    </button>
+    <button class="tab-btn" data-tab="cronologia">
+      <span class="tab-icon">⧖</span><span>Linha do Tempo</span>
+    </button>
+  </nav>
+
+</div>
+
+<script src="js/books-meta.js"></script>
+<script src="js/bible-data.js"></script>
+<script src="data/quiz-questions.js"></script>
+<script src="data/timeline-data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/reader.js"></script>
+<script src="js/plans.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
