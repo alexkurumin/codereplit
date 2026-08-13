@@ -164,6 +164,44 @@
   .field textarea::placeholder{ color: var(--text-dim); opacity:1; }
   .field textarea:focus{ border-color: var(--accent); }
   .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opt-hint{ color: var(--text-faint); font-weight:500; text-transform:none; letter-spacing:0; font-size: 10.5px; }
+  .field input[type="file"]{
+    width:100%; background: var(--surface-2); border: 1px dashed var(--line);
+    color: var(--text-dim); padding: 9px 10px; border-radius: 9px; font-size: 12.5px;
+    font-family: 'Inter', sans-serif; cursor:pointer;
+  }
+  .field input[type="file"]::file-selector-button{
+    background: var(--accent); color:#05100d; border:none; padding:6px 12px; border-radius:7px;
+    font-weight:700; font-size:11.5px; margin-right:10px; cursor:pointer; font-family:'JetBrains Mono', monospace;
+  }
+  .attach-current{
+    display:none; align-items:center; gap:8px; margin-top:8px; padding: 7px 10px;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
+    font-size: 12px; color: var(--text-dim);
+  }
+  .attach-current.show{ display:flex; }
+  .attach-current .att-name{ flex:1; color: var(--text); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .attach-current .att-remove{
+    background:none; border:none; color: var(--danger); font-size: 11px; cursor:pointer;
+    font-family:'JetBrains Mono', monospace; text-decoration: underline;
+  }
+  .entry-attach{
+    display:flex; align-items:center; gap:8px; margin-top: 8px; padding: 6px 10px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 8px;
+  }
+  .entry-attach .att-icon{ color: var(--accent); font-size: 13px; flex-shrink:0; }
+  .entry-attach .att-info{ flex:1; min-width:0; font-size: 11.5px; color: var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .entry-attach .att-dl{
+    flex-shrink:0; background: none; border: 1px solid var(--accent); color: var(--accent);
+    font-size: 10.5px; font-weight:700; padding: 4px 9px; border-radius: 6px; cursor:pointer;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .entry-attach .att-dl:hover{ background: rgba(69,214,196,0.12); }
+  .modal-banner{
+    font-size: 12px; color: var(--area2); background: rgba(224,169,78,0.1);
+    border: 1px solid rgba(224,169,78,0.35); border-radius: 9px; padding: 9px 11px; margin-bottom: 12px; line-height:1.4;
+  }
+  .modal-lastbackup{ font-size: 11px; color: var(--text-faint); margin: -6px 0 14px; font-family:'JetBrains Mono', monospace; }
 
   .form-actions{ display:flex; gap:8px; margin-top:6px; }
   .save-btn{
@@ -358,6 +396,11 @@
             <label>Estudo</label>
             <textarea name="estudo" placeholder="Breve interpretação do texto (opcional)"></textarea>
           </div>
+          <div class="field">
+            <label>Anexo (PDF ou TXT) <span class="opt-hint">— para estudos extensos, opcional, até 3 MB</span></label>
+            <input type="file" name="anexo" id="fileInput-1" accept=".pdf,.txt,application/pdf,text/plain">
+            <div class="attach-current" id="attachCurrent-1"></div>
+          </div>
           <div class="form-actions">
             <button type="submit" class="save-btn" id="saveBtn-1">Gravar registro</button>
             <button type="button" class="cancel-edit-btn" id="cancelEdit-1" data-cancel-area="1">Cancelar</button>
@@ -401,6 +444,11 @@
           <div class="field">
             <label>Estudo</label>
             <textarea name="estudo" placeholder="Breve interpretação do texto (opcional)"></textarea>
+          </div>
+          <div class="field">
+            <label>Anexo (PDF ou TXT) <span class="opt-hint">— para estudos extensos, opcional, até 3 MB</span></label>
+            <input type="file" name="anexo" id="fileInput-2" accept=".pdf,.txt,application/pdf,text/plain">
+            <div class="attach-current" id="attachCurrent-2"></div>
           </div>
           <div class="form-actions">
             <button type="submit" class="save-btn" id="saveBtn-2">Gravar registro</button>
@@ -446,6 +494,11 @@
             <label>Estudo</label>
             <textarea name="estudo" placeholder="Breve interpretação do texto (opcional)"></textarea>
           </div>
+          <div class="field">
+            <label>Anexo (PDF ou TXT) <span class="opt-hint">— para estudos extensos, opcional, até 3 MB</span></label>
+            <input type="file" name="anexo" id="fileInput-3" accept=".pdf,.txt,application/pdf,text/plain">
+            <div class="attach-current" id="attachCurrent-3"></div>
+          </div>
           <div class="form-actions">
             <button type="submit" class="save-btn" id="saveBtn-3">Gravar registro</button>
             <button type="button" class="cancel-edit-btn" id="cancelEdit-3" data-cancel-area="3">Cancelar</button>
@@ -483,8 +536,11 @@
   const STORAGE_KEYS = { '1':'tramoninstu:area1', '2':'tramoninstu:area2', '3':'tramoninstu:area3' };
   const BACKUP_TXT_NAME = 'tramoninstu-backup.txt';
   const BACKUP_PDF_NAME = 'tramoninstu-backup.pdf';
+  const LAST_BACKUP_KEY = 'tramoninstu:lastBackup';
+  const BACKUP_INTERVAL_DAYS = 7;
   let data = { '1':[], '2':[], '3':[] };
   let editing = { '1':null, '2':null, '3':null };
+  let removeAttachFlag = { '1':false, '2':false, '3':false };
   let currentArea = '1';
   let confirmResolver = null;
 
@@ -511,6 +567,13 @@
     }
     try{ window.localStorage.setItem(key, value); ok = true; }catch(e){ /* ignore */ }
     return ok;
+  }
+
+  async function deleteItem(key){
+    if(hasCloudStorage()){
+      try{ await window.storage.delete(key, false); }catch(e){ /* ignore */ }
+    }
+    try{ window.localStorage.removeItem(key); }catch(e){ /* ignore */ }
   }
 
   async function loadAll(){
@@ -545,6 +608,34 @@
     return d.innerHTML;
   }
 
+  function attachKey(id){ return 'tramoninstu:attach:' + id; }
+
+  function formatBytes(bytes){
+    if(bytes < 1024) return bytes + ' B';
+    if(bytes < 1024*1024) return (bytes/1024).toFixed(0) + ' KB';
+    return (bytes/(1024*1024)).toFixed(2) + ' MB';
+  }
+
+  async function getLastBackupISO(){ return await getItem(LAST_BACKUP_KEY); }
+  async function setLastBackupNow(){ await setItem(LAST_BACKUP_KEY, new Date().toISOString()); }
+
+  function daysSinceISO(iso){
+    if(!iso) return null;
+    const then = new Date(iso).getTime();
+    if(isNaN(then)) return null;
+    return (Date.now() - then) / 86400000;
+  }
+
+  function relativeBackupLabel(iso){
+    const days = daysSinceISO(iso);
+    if(days === null) return 'nunca realizado';
+    if(days < 1/24) return 'agora mesmo';
+    if(days < 1) return 'hoje';
+    const d = Math.floor(days);
+    if(d === 1) return 'há 1 dia';
+    return 'há ' + d + ' dias';
+  }
+
   function todayISO(){ return new Date().toISOString().split('T')[0]; }
 
   function showToast(msg){
@@ -559,6 +650,13 @@
   function entryHTML(entry, area){
     const parte = entry.parte ? '<div class="entry-part">"' + escapeHTML(entry.parte) + '"</div>' : '';
     const estudo = entry.estudo ? '<div class="entry-study"><span class="entry-study-label">Estudo:</span> ' + escapeHTML(entry.estudo) + '</div>' : '';
+    const attach = entry.attachment ? (
+      '<div class="entry-attach">' +
+        '<span class="att-icon">&#128206;</span>' +
+        '<span class="att-info">' + escapeHTML(entry.attachment.name) + ' &middot; ' + formatBytes(entry.attachment.size||0) + '</span>' +
+        '<button class="att-dl" data-att-id="' + entry.id + '" data-area="' + area + '">Baixar</button>' +
+      '</div>'
+    ) : '';
     return '' +
       '<div class="entry" data-id="' + entry.id + '" data-area="' + area + '">' +
         '<div class="entry-top">' +
@@ -574,6 +672,7 @@
         '<div class="entry-ref">Cap. ' + escapeHTML(entry.capitulo) + ' : Vs. ' + escapeHTML(entry.verso) + '</div>' +
         parte +
         estudo +
+        attach +
       '</div>';
   }
 
@@ -603,8 +702,22 @@
   });
 
   /* ---------- Form: create / edit ---------- */
+  function renderAttachCurrent(area, attachment){
+    const box = document.getElementById('attachCurrent-'+area);
+    if(!attachment){
+      box.classList.remove('show');
+      box.innerHTML = '';
+      return;
+    }
+    box.classList.add('show');
+    box.innerHTML =
+      '<span class="att-name">&#128206; ' + escapeHTML(attachment.name) + ' (' + formatBytes(attachment.size||0) + ')</span>' +
+      '<button type="button" class="att-remove" data-remove-attach="' + area + '">Remover</button>';
+  }
+
   function setEditMode(area, entry){
     editing[area] = entry.id;
+    removeAttachFlag[area] = false;
     const form = document.querySelector('.entry-form[data-area="' + area + '"]');
     form.querySelector('[name="data"]').value = entry.data || todayISO();
     form.querySelector('[name="livro"]').value = entry.livro || '';
@@ -612,6 +725,8 @@
     form.querySelector('[name="verso"]').value = entry.verso || '';
     form.querySelector('[name="parte"]').value = entry.parte || '';
     form.querySelector('[name="estudo"]').value = entry.estudo || '';
+    form.querySelector('[name="anexo"]').value = '';
+    renderAttachCurrent(area, entry.attachment || null);
     document.getElementById('saveBtn-'+area).textContent = 'Salvar alterações';
     document.getElementById('cancelEdit-'+area).classList.add('show');
     document.getElementById('editBanner-'+area).classList.add('show');
@@ -619,12 +734,39 @@
 
   function clearEditMode(area){
     editing[area] = null;
+    removeAttachFlag[area] = false;
     const form = document.querySelector('.entry-form[data-area="' + area + '"]');
     form.reset();
     form.querySelector('[name="data"]').value = todayISO();
+    renderAttachCurrent(area, null);
     document.getElementById('saveBtn-'+area).textContent = 'Gravar registro';
     document.getElementById('cancelEdit-'+area).classList.remove('show');
     document.getElementById('editBanner-'+area).classList.remove('show');
+  }
+
+  document.addEventListener('click', (e) => {
+    const removeBtn = e.target.closest('[data-remove-attach]');
+    if(removeBtn){
+      const area = removeBtn.getAttribute('data-remove-attach');
+      removeAttachFlag[area] = true;
+      renderAttachCurrent(area, null);
+      showToast('Anexo será removido ao salvar.');
+    }
+  });
+
+  const MAX_ATTACH_BYTES = 3 * 1024 * 1024; // 3 MB
+
+  function readFileAsBase64(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result || '';
+        const idx = result.indexOf(',');
+        resolve(idx !== -1 ? result.slice(idx+1) : result);
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
   }
 
   document.querySelectorAll('.entry-form').forEach(form => {
@@ -632,6 +774,14 @@
       e.preventDefault();
       const area = form.getAttribute('data-area');
       const fd = new FormData(form);
+      const fileInput = form.querySelector('[name="anexo"]');
+      const file = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+
+      if(file && file.size > MAX_ATTACH_BYTES){
+        showToast('Anexo muito grande. O limite é 3 MB.');
+        return;
+      }
+
       const payload = {
         data: fd.get('data'),
         livro: (fd.get('livro') || '').trim(),
@@ -644,22 +794,49 @@
         showToast('Preencha os campos obrigatórios.');
         return;
       }
-      if(editing[area]){
-        const idx = data[area].findIndex(en => en.id === editing[area]);
+
+      const isEdit = !!editing[area];
+      const entryId = isEdit ? editing[area] : Date.now();
+      let attachmentMeta = null;
+      if(isEdit){
+        const existing = data[area].find(en => en.id === entryId);
+        attachmentMeta = existing && existing.attachment ? existing.attachment : null;
+      }
+
+      if(file){
+        try{
+          const base64 = await readFileAsBase64(file);
+          const ok = await setItem(attachKey(entryId), JSON.stringify({ name:file.name, type:file.type, size:file.size, base64 }));
+          if(!ok){ showToast('Não foi possível salvar o anexo.'); return; }
+          attachmentMeta = { name:file.name, type:file.type, size:file.size };
+        }catch(err){
+          showToast('Não foi possível ler o arquivo anexado.');
+          return;
+        }
+      }else if(isEdit && removeAttachFlag[area]){
+        await deleteItem(attachKey(entryId));
+        attachmentMeta = null;
+      }
+
+      payload.attachment = attachmentMeta;
+
+      if(isEdit){
+        const idx = data[area].findIndex(en => en.id === entryId);
         if(idx !== -1){
-          data[area][idx] = { id: editing[area], ...payload };
+          data[area][idx] = { id: entryId, ...payload };
         }
         await saveArea(area);
         renderArea(area);
         clearEditMode(area);
         showToast('Registro atualizado com sucesso.');
       }else{
-        const entry = { id: Date.now(), ...payload };
+        const entry = { id: entryId, ...payload };
         data[area].push(entry);
         await saveArea(area);
         renderArea(area);
         form.reset();
         form.querySelector('[name="data"]').value = todayISO();
+        renderAttachCurrent(area, null);
         form.querySelector('[name="livro"]').focus();
         showToast('Registro salvo com sucesso.');
       }
@@ -695,6 +872,12 @@
   function handleListClick(e){
     const editBtn = e.target.closest('.entry-edit');
     const delBtn = e.target.closest('.entry-del');
+    const dlBtn = e.target.closest('.att-dl');
+    if(dlBtn){
+      const id = dlBtn.getAttribute('data-att-id');
+      downloadAttachment(id);
+      return;
+    }
     if(editBtn){
       const area = editBtn.getAttribute('data-area');
       const id = Number(editBtn.getAttribute('data-id'));
@@ -714,11 +897,29 @@
         if(!ok) return;
         data[area] = data[area].filter(en => en.id !== id);
         await saveArea(area);
+        await deleteItem(attachKey(id));
         renderArea(area);
         if(editing[area] === id) clearEditMode(area);
         if(searchInput.value.trim()) runSearch();
         showToast('Registro removido.');
       });
+    }
+  }
+
+  async function downloadAttachment(id){
+    try{
+      const raw = await getItem(attachKey(id));
+      if(!raw){ showToast('Anexo não encontrado.'); return; }
+      const meta = JSON.parse(raw);
+      const byteChars = atob(meta.base64);
+      const byteNumbers = new Array(byteChars.length);
+      for(let i=0;i<byteChars.length;i++){ byteNumbers[i] = byteChars.charCodeAt(i); }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {type: meta.type || 'application/octet-stream'});
+      triggerDownload(blob, meta.name || 'anexo');
+      showToast('Anexo baixado com sucesso.');
+    }catch(e){
+      showToast('Não foi possível baixar o anexo.');
     }
   }
   document.getElementById('normalView').addEventListener('click', handleListClick);
@@ -809,12 +1010,20 @@
     return (bytes/1024).toFixed(1) + ' KB';
   }
 
-  function renderBackupModal(){
+  let lastAutoBackupNotice = null;
+
+  async function renderBackupModal(){
     const total = totalCount();
+    const lastIso = await getLastBackupISO();
+    const banner = lastAutoBackupNotice
+      ? '<div class="modal-banner">&#128260; ' + escapeHTML(lastAutoBackupNotice) + '</div>'
+      : '';
     backupBox.innerHTML =
       '<button class="modal-close-x" id="closeBackupX">&times;</button>' +
       '<div class="modal-title"><span class="ico">&#9679;</span> Backup dos registros</div>' +
-      '<div class="modal-text">Você tem ' + total + (total === 1 ? ' registro salvo' : ' registros salvos') + ' até o momento (aprox. ' + approxSizeLabel() + '). Recomendamos exportar um backup regularmente.</div>' +
+      banner +
+      '<div class="modal-text">Você tem ' + total + (total === 1 ? ' registro salvo' : ' registros salvos') + ' até o momento (aprox. ' + approxSizeLabel() + '). O backup automático acontece a cada ' + BACKUP_INTERVAL_DAYS + ' dias, caso você não faça um manualmente.</div>' +
+      '<div class="modal-lastbackup">Último backup: ' + relativeBackupLabel(lastIso) + '</div>' +
       '<div class="modal-stats">' +
         '<div class="modal-stat"><b>' + data['1'].length + '</b><span>Área 1</span></div>' +
         '<div class="modal-stat"><b>' + data['2'].length + '</b><span>Área 2</span></div>' +
@@ -830,15 +1039,16 @@
 
     document.getElementById('closeBackupX').addEventListener('click', closeBackupModal);
     document.getElementById('btnCloseBackup').addEventListener('click', closeBackupModal);
-    document.getElementById('btnExportTxt').addEventListener('click', downloadTxt);
-    document.getElementById('btnExportPdf').addEventListener('click', downloadPdf);
+    document.getElementById('btnExportTxt').addEventListener('click', () => downloadTxt());
+    document.getElementById('btnExportPdf').addEventListener('click', () => downloadPdf());
     document.getElementById('btnShareBackup').addEventListener('click', shareBackup);
     document.getElementById('btnImportBackup').addEventListener('click', () => importFileInput.click());
   }
 
-  function openBackupModal(){
-    renderBackupModal();
+  async function openBackupModal(){
+    await renderBackupModal();
     backupOverlay.classList.add('show');
+    lastAutoBackupNotice = null;
   }
   function closeBackupModal(){ backupOverlay.classList.remove('show'); }
 
@@ -867,6 +1077,7 @@
           let line = 'DATA: ' + en.data + ' | LIVRO: ' + en.livro + ' | CAPÍTULO: ' + en.capitulo + ' | VERSO: ' + en.verso;
           if(parte) line += ' | PARTE: ' + parte;
           if(estudo) line += ' | ESTUDO: ' + estudo;
+          if(en.attachment) line += ' | ANEXO_REF: ' + en.attachment.name + ' (' + formatBytes(en.attachment.size||0) + ', não incluído no backup)';
           lines.push(line);
         });
       }
@@ -885,12 +1096,13 @@
     setTimeout(()=> URL.revokeObjectURL(url), 4000);
   }
 
-  function downloadTxt(){
+  function downloadTxt(auto){
     try{
       const content = buildTxtContent();
       const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
       triggerDownload(blob, BACKUP_TXT_NAME);
-      showToast('Backup em TXT baixado com sucesso.');
+      setLastBackupNow();
+      showToast(auto ? 'Backup automático (TXT) realizado: mais de ' + BACKUP_INTERVAL_DAYS + ' dias sem backup.' : 'Backup em TXT baixado com sucesso.');
     }catch(e){
       showToast('Não foi possível gerar o TXT.');
     }
@@ -946,6 +1158,7 @@
       });
 
       doc.save(BACKUP_PDF_NAME);
+      setLastBackupNow();
       showToast('Backup em PDF baixado com sucesso.');
     }catch(e){
       showToast('Não foi possível gerar o PDF.');
@@ -963,6 +1176,7 @@
           text:'Backup dos registros de estudo literário'
         });
         showToast('Backup compartilhado com sucesso.');
+        setLastBackupNow();
       }else{
         downloadTxt();
         showToast('Compartilhamento não suportado neste navegador. Arquivo TXT baixado.');
@@ -1045,7 +1259,21 @@
   /* ---------- Init ---------- */
   document.querySelectorAll('input[name="data"]').forEach(inp => inp.value = todayISO());
 
-  loadAll().then(() => {
+  loadAll().then(async () => {
+    const total = totalCount();
+    if(total > 0){
+      const lastIso = await getLastBackupISO();
+      if(!lastIso){
+        // Primeira vez que rastreamos backups: inicia a contagem sem forçar download.
+        await setLastBackupNow();
+      }else{
+        const days = daysSinceISO(lastIso);
+        if(days !== null && days >= BACKUP_INTERVAL_DAYS){
+          downloadTxt(true);
+          lastAutoBackupNotice = 'Backup automático realizado agora: haviam se passado mais de ' + BACKUP_INTERVAL_DAYS + ' dias sem um backup manual.';
+        }
+      }
+    }
     openBackupModal();
   });
 })();
