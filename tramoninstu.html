@@ -154,6 +154,15 @@
   }
   .field input::placeholder{ color: var(--text-dim); opacity:1; }
   .field input:focus{ border-color: var(--accent); }
+  .field textarea{
+    width:100%; background: var(--surface-2); border: 1px solid var(--line);
+    color: var(--text); padding: 10px 12px; border-radius: 9px; font-size: 14.5px;
+    font-family: 'Inter', sans-serif; outline:none; transition: border-color .15s;
+    color-scheme: dark; font-weight: 500; resize: vertical; min-height: 64px;
+    line-height: 1.4;
+  }
+  .field textarea::placeholder{ color: var(--text-dim); opacity:1; }
+  .field textarea:focus{ border-color: var(--accent); }
   .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   .form-actions{ display:flex; gap:8px; margin-top:6px; }
@@ -193,6 +202,12 @@
   .entry-date{ font-family:'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text-faint); white-space:nowrap; margin-top:2px; }
   .entry-ref{ font-family:'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); margin-top: 6px; font-weight:600; }
   .entry-part{ font-size: 13px; color: var(--text); opacity:0.85; margin-top: 6px; line-height:1.4; font-style:italic; }
+  .entry-study{
+    font-size: 12.5px; color: var(--text-dim); margin-top: 8px; line-height:1.5;
+    background: rgba(255,255,255,0.03); border-left: 2px solid var(--accent);
+    padding: 6px 9px; border-radius: 6px;
+  }
+  .entry-study-label{ color: var(--accent); font-weight:700; font-family:'JetBrains Mono', monospace; font-size: 10.5px; text-transform:uppercase; letter-spacing:0.5px; }
   .entry-actions{ display:flex; gap:4px; flex-shrink:0; }
   .entry-edit, .entry-del{
     background:none; border:none; color: var(--text-faint); cursor:pointer; font-size:14px;
@@ -339,6 +354,10 @@
             <label>Parte do verso</label>
             <input type="text" name="parte" placeholder="Opcional">
           </div>
+          <div class="field">
+            <label>Estudo</label>
+            <textarea name="estudo" placeholder="Breve interpretação do texto (opcional)"></textarea>
+          </div>
           <div class="form-actions">
             <button type="submit" class="save-btn" id="saveBtn-1">Gravar registro</button>
             <button type="button" class="cancel-edit-btn" id="cancelEdit-1" data-cancel-area="1">Cancelar</button>
@@ -379,6 +398,10 @@
             <label>Parte do verso</label>
             <input type="text" name="parte" placeholder="Opcional">
           </div>
+          <div class="field">
+            <label>Estudo</label>
+            <textarea name="estudo" placeholder="Breve interpretação do texto (opcional)"></textarea>
+          </div>
           <div class="form-actions">
             <button type="submit" class="save-btn" id="saveBtn-2">Gravar registro</button>
             <button type="button" class="cancel-edit-btn" id="cancelEdit-2" data-cancel-area="2">Cancelar</button>
@@ -418,6 +441,10 @@
           <div class="field">
             <label>Parte do verso</label>
             <input type="text" name="parte" placeholder="Opcional">
+          </div>
+          <div class="field">
+            <label>Estudo</label>
+            <textarea name="estudo" placeholder="Breve interpretação do texto (opcional)"></textarea>
           </div>
           <div class="form-actions">
             <button type="submit" class="save-btn" id="saveBtn-3">Gravar registro</button>
@@ -531,6 +558,7 @@
   /* ---------- Rendering entries ---------- */
   function entryHTML(entry, area){
     const parte = entry.parte ? '<div class="entry-part">"' + escapeHTML(entry.parte) + '"</div>' : '';
+    const estudo = entry.estudo ? '<div class="entry-study"><span class="entry-study-label">Estudo:</span> ' + escapeHTML(entry.estudo) + '</div>' : '';
     return '' +
       '<div class="entry" data-id="' + entry.id + '" data-area="' + area + '">' +
         '<div class="entry-top">' +
@@ -545,6 +573,7 @@
         '</div>' +
         '<div class="entry-ref">Cap. ' + escapeHTML(entry.capitulo) + ' : Vs. ' + escapeHTML(entry.verso) + '</div>' +
         parte +
+        estudo +
       '</div>';
   }
 
@@ -582,6 +611,7 @@
     form.querySelector('[name="capitulo"]').value = entry.capitulo || '';
     form.querySelector('[name="verso"]').value = entry.verso || '';
     form.querySelector('[name="parte"]').value = entry.parte || '';
+    form.querySelector('[name="estudo"]').value = entry.estudo || '';
     document.getElementById('saveBtn-'+area).textContent = 'Salvar alterações';
     document.getElementById('cancelEdit-'+area).classList.add('show');
     document.getElementById('editBanner-'+area).classList.add('show');
@@ -607,7 +637,8 @@
         livro: (fd.get('livro') || '').trim(),
         capitulo: fd.get('capitulo'),
         verso: fd.get('verso'),
-        parte: (fd.get('parte') || '').trim()
+        parte: (fd.get('parte') || '').trim(),
+        estudo: (fd.get('estudo') || '').trim()
       };
       if(!payload.data || !payload.livro || payload.capitulo === '' || payload.verso === ''){
         showToast('Preencha os campos obrigatórios.');
@@ -832,7 +863,11 @@
       }else{
         sorted.forEach(en => {
           const parte = (en.parte || '').replace(/\|/g, '/');
-          lines.push('DATA: ' + en.data + ' | LIVRO: ' + en.livro + ' | CAPÍTULO: ' + en.capitulo + ' | VERSO: ' + en.verso + (parte ? ' | PARTE: ' + parte : ''));
+          const estudo = (en.estudo || '').replace(/\|/g, '/').replace(/\r?\n/g, ' ~ ');
+          let line = 'DATA: ' + en.data + ' | LIVRO: ' + en.livro + ' | CAPÍTULO: ' + en.capitulo + ' | VERSO: ' + en.verso;
+          if(parte) line += ' | PARTE: ' + parte;
+          if(estudo) line += ' | ESTUDO: ' + estudo;
+          lines.push(line);
         });
       }
       lines.push('');
@@ -903,6 +938,7 @@
           sorted.forEach(en => {
             addLine(formatDate(en.data) + '  -  ' + en.livro + '  -  Cap. ' + en.capitulo + ' : Vs. ' + en.verso, {bold:true});
             if(en.parte){ addLine('"' + en.parte + '"'); }
+            if(en.estudo){ addLine('Estudo: ' + en.estudo); }
             y += 4;
           });
         }
@@ -942,23 +978,35 @@
     const result = { '1':[], '2':[], '3':[] };
     let current = null;
     const areaHeaderRe = /^===\s*ÁREA\s*(\d)\s*===$/i;
-    const lineRe = /^DATA:\s*(.*?)\s*\|\s*LIVRO:\s*(.*?)\s*\|\s*CAP[IÍ]TULO:\s*(.*?)\s*\|\s*VERSO:\s*(.*?)(?:\s*\|\s*PARTE:\s*(.*))?$/i;
     text.split(/\r?\n/).forEach(rawLine => {
       const line = rawLine.trim();
       const headerMatch = line.match(areaHeaderRe);
       if(headerMatch){ current = headerMatch[1]; return; }
       if(!current) return;
-      const m = line.match(lineRe);
-      if(m){
-        result[current].push({
-          id: Date.now() + Math.floor(Math.random()*100000),
-          data: m[1].trim(),
-          livro: m[2].trim(),
-          capitulo: m[3].trim(),
-          verso: m[4].trim(),
-          parte: (m[5] || '').trim()
-        });
-      }
+      if(!/^DATA:/i.test(line)) return;
+      const segments = line.split('|').map(s => s.trim());
+      const fields = {};
+      segments.forEach(seg => {
+        const idx = seg.indexOf(':');
+        if(idx === -1) return;
+        const key = seg.slice(0, idx).trim().toUpperCase();
+        const val = seg.slice(idx + 1).trim();
+        fields[key] = val;
+      });
+      const dataVal = fields['DATA'];
+      const livroVal = fields['LIVRO'];
+      const capVal = fields['CAPÍTULO'] || fields['CAPITULO'];
+      const versoVal = fields['VERSO'];
+      if(!dataVal || !livroVal || capVal === undefined || versoVal === undefined) return;
+      result[current].push({
+        id: Date.now() + Math.floor(Math.random()*100000),
+        data: dataVal,
+        livro: livroVal,
+        capitulo: capVal,
+        verso: versoVal,
+        parte: fields['PARTE'] || '',
+        estudo: (fields['ESTUDO'] || '').replace(/ ~ /g, '\n')
+      });
     });
     return result;
   }
