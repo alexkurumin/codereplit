@@ -1380,7 +1380,6 @@
         }
       }
     }
-    openBackupModal();
   }
 
   /* ---------- Welcome modal ---------- */
@@ -1439,6 +1438,7 @@
     closeWelcomeModal();
     showToast('Tudo bem! Você pode continuar usando o app.');
     await proceedWithDataLoad();
+    openBackupModal();
   });
 
   welcomeNameInput.addEventListener('keydown', (e) => {
@@ -1454,6 +1454,7 @@
   document.getElementById('tourAskNoBtn').addEventListener('click', () => {
     tourAskOverlay.classList.remove('show');
     showToast('Sem problemas! Você pode explorar o app livremente.');
+    openBackupModal();
   });
   function askAboutTour(){
     tourAskOverlay.classList.add('show');
@@ -1546,6 +1547,7 @@
     tourOverlay.classList.remove('show');
     tourBox.classList.remove('show');
     document.body.style.overflow = '';
+    openBackupModal();
   }
 
   tourNextBtn.addEventListener('click', () => {
@@ -1569,7 +1571,7 @@
   const savedName = getSavedUserName();
   if(savedName){
     applyUserName(savedName);
-    proceedWithDataLoad();
+    proceedWithDataLoad().then(() => openBackupModal());
   }else{
     showWelcomeModal();
   }
