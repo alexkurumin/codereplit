@@ -64,6 +64,15 @@
   .backup-btn:hover{ color: var(--text); border-color: var(--area1); }
   .backup-btn svg{ width:14px; height:14px; }
 
+  .user-greeting{ margin-top: 10px; display:flex; flex-direction:column; gap:3px; }
+  .user-greeting .ug-text{
+    font-family:'JetBrains Mono', monospace; font-weight:800; font-size: 16px;
+    background: linear-gradient(120deg, var(--area1), var(--area3));
+    -webkit-background-clip:text; background-clip:text; color: transparent;
+    letter-spacing: -0.2px;
+  }
+  .user-greeting .ug-note{ font-size: 10px; color: var(--text-faint); line-height:1.4; }
+
   .searchwrap{ margin-top: 12px; display:flex; gap:8px; }
   .searchwrap .inputbox{ position: relative; flex:1; }
   .searchwrap input{
@@ -315,6 +324,64 @@
     float:right; background:none; border:none; color: var(--text-faint); font-size:18px; cursor:pointer; line-height:1;
   }
 
+  /* ---------- Welcome modal ---------- */
+  .welcome-box{ text-align:center; max-width: 340px; }
+  .welcome-greet{
+    font-family:'JetBrains Mono', monospace; font-weight:800; font-size: 19px; color: var(--text);
+    margin-bottom: 6px;
+  }
+  .welcome-question{ font-size: 13.5px; color: var(--text-dim); margin-bottom: 14px; }
+  .welcome-input{
+    width:100%; background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+    padding: 11px 14px; border-radius: 10px; font-size: 15px; text-align:center;
+    font-family: 'Inter', sans-serif; outline:none; color-scheme: dark; font-weight:600;
+    margin-bottom: 14px;
+  }
+  .welcome-input:focus{ border-color: var(--area1); }
+  .welcome-input::placeholder{ color: var(--text-faint); font-weight:400; }
+  .welcome-actions{ display:flex; gap:10px; }
+  .welcome-actions .modal-btn{ flex:1; padding: 11px 12px; }
+  .welcome-footer{ font-size: 11px; color: var(--text-faint); margin-top: 14px; font-family:'JetBrains Mono', monospace; }
+
+  /* ---------- Guided tour ---------- */
+  .tour-overlay{
+    display:none; position: fixed; inset:0; z-index: 150; background: rgba(4,6,9,0.62);
+  }
+  .tour-overlay.show{ display:block; }
+  .tour-spotlight{
+    position: relative; z-index: 151; box-shadow: 0 0 0 4px var(--area1), 0 0 26px 4px rgba(69,214,196,0.5);
+    border-radius: 12px; background: var(--surface);
+  }
+  .tour-box{
+    display:none; position: fixed; z-index: 152; background: var(--surface); border: 1px solid var(--area1);
+    border-radius: 14px; padding: 16px; width: min(320px, calc(100vw - 32px));
+    box-shadow: 0 16px 50px rgba(0,0,0,0.55);
+  }
+  .tour-box.show{ display:block; }
+  .tour-box::before{
+    content:''; position:absolute; width:0; height:0;
+    left: var(--arrow-left, 24px); transform: translateX(-50%);
+  }
+  .tour-box.arrow-top::before{
+    top:-9px; border-left:9px solid transparent; border-right:9px solid transparent; border-bottom:9px solid var(--area1);
+  }
+  .tour-box.arrow-bottom::before{
+    bottom:-9px; border-left:9px solid transparent; border-right:9px solid transparent; border-top:9px solid var(--area1);
+  }
+  .tour-step-count{
+    font-family:'JetBrains Mono', monospace; font-size: 10.5px; color: var(--area1); font-weight:700;
+    letter-spacing: 0.6px; text-transform:uppercase; margin-bottom: 8px;
+  }
+  .tour-text{ font-size: 13.5px; color: var(--text); line-height:1.5; margin-bottom: 14px; }
+  .tour-actions{ display:flex; gap:8px; }
+  .tour-btn{
+    flex:1; padding: 9px 10px; border-radius: 9px; border: 1px solid var(--line);
+    background: var(--surface-2); color: var(--text); font-weight:700; font-size: 12.5px; cursor:pointer;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .tour-btn.primary{ background: var(--area1); color:#05100d; border-color: var(--area1); }
+  .tour-btn.ghost{ background: transparent; color: var(--text-faint); }
+
   @media (min-width: 680px){
     body{ padding-bottom: 30px; }
     nav.bottom-nav{ display:none; }
@@ -338,6 +405,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Backup
     </button>
+  </div>
+  <div class="user-greeting" id="userGreeting" style="display:none">
+    <span class="ug-text">Olá, <span id="userNameDisplay"></span>!</span>
+    <span class="ug-note">&#128274; Seu nome fica salvo apenas neste navegador e não é acessível a outras pessoas.</span>
   </div>
   <div class="searchwrap">
     <div class="inputbox">
@@ -528,6 +599,40 @@
 
 <div class="modal-overlay" id="confirmOverlay">
   <div class="modal-box" id="confirmBox"></div>
+</div>
+
+<div class="modal-overlay" id="welcomeOverlay">
+  <div class="modal-box welcome-box">
+    <div class="welcome-greet" id="welcomeGreet">Olá!</div>
+    <div class="welcome-question">Qual seu nome?</div>
+    <input type="text" id="welcomeNameInput" class="welcome-input" placeholder="Digite seu nome" maxlength="40" autocomplete="off">
+    <div class="welcome-actions">
+      <button type="button" class="modal-btn ghost" id="welcomeSairBtn">SAIR</button>
+      <button type="button" class="modal-btn primary" id="welcomeEntrarBtn">ENTRAR</button>
+    </div>
+    <div class="welcome-footer">Pressione SAIR, ou ENTRAR para continuar.</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="tourAskOverlay">
+  <div class="modal-box">
+    <div class="modal-title"><span class="ico">&#10024;</span> Tour rápido?</div>
+    <div class="modal-text" id="tourAskText">Deseja fazer um tour guiado pelas principais funcionalidades do app?</div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn ghost" id="tourAskNoBtn">Agora não</button>
+      <button type="button" class="modal-btn primary" id="tourAskYesBtn">Sim, mostrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="tour-overlay" id="tourOverlay"></div>
+<div class="tour-box" id="tourBox">
+  <div class="tour-step-count" id="tourStepCount">Passo 1 de 8</div>
+  <div class="tour-text" id="tourText"></div>
+  <div class="tour-actions">
+    <button type="button" class="tour-btn ghost" id="tourCloseBtn">Fechar</button>
+    <button type="button" class="tour-btn primary" id="tourNextBtn">Continuar</button>
+  </div>
 </div>
 
 <script>
@@ -1259,7 +1364,8 @@
   /* ---------- Init ---------- */
   document.querySelectorAll('input[name="data"]').forEach(inp => inp.value = todayISO());
 
-  loadAll().then(async () => {
+  async function proceedWithDataLoad(){
+    await loadAll();
     const total = totalCount();
     if(total > 0){
       const lastIso = await getLastBackupISO();
@@ -1275,7 +1381,198 @@
       }
     }
     openBackupModal();
+  }
+
+  /* ---------- Welcome modal ---------- */
+  const USER_NAME_KEY = 'tramoninstu_userName';
+  const welcomeOverlay = document.getElementById('welcomeOverlay');
+  const welcomeGreet = document.getElementById('welcomeGreet');
+  const welcomeNameInput = document.getElementById('welcomeNameInput');
+  const welcomeEntrarBtn = document.getElementById('welcomeEntrarBtn');
+  const welcomeSairBtn = document.getElementById('welcomeSairBtn');
+  const userGreeting = document.getElementById('userGreeting');
+  const userNameDisplay = document.getElementById('userNameDisplay');
+
+  function getGreetingWord(){
+    const h = new Date().getHours();
+    if(h >= 5 && h < 12) return 'bom dia';
+    if(h >= 12 && h < 18) return 'boa tarde';
+    return 'boa noite';
+  }
+
+  function applyUserName(name){
+    userNameDisplay.textContent = name;
+    userGreeting.style.display = '';
+  }
+
+  function getSavedUserName(){
+    try{ return window.localStorage.getItem(USER_NAME_KEY); }catch(e){ return null; }
+  }
+  function saveUserName(name){
+    try{ window.localStorage.setItem(USER_NAME_KEY, name); }catch(e){ /* ignore */ }
+  }
+
+  function showWelcomeModal(){
+    welcomeGreet.textContent = 'Olá, ' + getGreetingWord() + '!';
+    welcomeNameInput.value = '';
+    welcomeOverlay.classList.add('show');
+    setTimeout(() => welcomeNameInput.focus(), 200);
+  }
+  function closeWelcomeModal(){ welcomeOverlay.classList.remove('show'); }
+
+  welcomeEntrarBtn.addEventListener('click', async () => {
+    const name = welcomeNameInput.value.trim();
+    if(!name){
+      welcomeNameInput.focus();
+      showToast('Por favor, digite seu nome.');
+      return;
+    }
+    saveUserName(name);
+    applyUserName(name);
+    closeWelcomeModal();
+    showToast('Bem-vindo(a), ' + name + '!');
+    await proceedWithDataLoad();
+    askAboutTour();
   });
+
+  welcomeSairBtn.addEventListener('click', async () => {
+    closeWelcomeModal();
+    showToast('Tudo bem! Você pode continuar usando o app.');
+    await proceedWithDataLoad();
+  });
+
+  welcomeNameInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){ e.preventDefault(); welcomeEntrarBtn.click(); }
+  });
+
+  /* ---------- Ask about tour ---------- */
+  const tourAskOverlay = document.getElementById('tourAskOverlay');
+  document.getElementById('tourAskYesBtn').addEventListener('click', () => {
+    tourAskOverlay.classList.remove('show');
+    startTour();
+  });
+  document.getElementById('tourAskNoBtn').addEventListener('click', () => {
+    tourAskOverlay.classList.remove('show');
+    showToast('Sem problemas! Você pode explorar o app livremente.');
+  });
+  function askAboutTour(){
+    tourAskOverlay.classList.add('show');
+  }
+
+  /* ---------- Guided tour ---------- */
+  const tourOverlay = document.getElementById('tourOverlay');
+  const tourBox = document.getElementById('tourBox');
+  const tourStepCount = document.getElementById('tourStepCount');
+  const tourText = document.getElementById('tourText');
+  const tourNextBtn = document.getElementById('tourNextBtn');
+  const tourCloseBtn = document.getElementById('tourCloseBtn');
+  let tourStepIndex = 0;
+  let tourCurrentTarget = null;
+
+  const tourSteps = [
+    { selector: '.user-greeting', text: 'Esse é o seu espaço pessoal: seu nome fica em destaque aqui no topo sempre que você abrir o app.' },
+    { selector: '.tabs', text: 'Aqui você alterna entre as 3 Áreas de estudo. Cada área é independente, ideal para acompanhar mais de uma obra ao mesmo tempo.' },
+    { selector: '.searchwrap', text: 'Use este campo para buscar registros já salvos por data ou pelo nome do livro, a qualquer momento.' },
+    { selector: '.area.active .panel', text: 'Aqui você registra seu estudo: Data, Livro, Capítulo e Verso são obrigatórios. Parte do verso e Estudo são opcionais.' },
+    { selector: '.area.active [name="anexo"]', text: 'Se o seu "Estudo" for muito extenso, anexe um arquivo PDF ou TXT aqui (até 3 MB).' },
+    { selector: '.area.active .save-btn', text: 'Clique aqui para gravar o registro na área ativa.' },
+    { selector: '.area.active .clear-area-btn', text: 'Precisa recomeçar? Esse link apaga todos os registros dessa área (com confirmação antes).' },
+    { selector: '#openBackupBtn', text: 'Aqui você exporta seus dados em TXT ou PDF, compartilha, ou importa um backup. Um backup automático também acontece a cada 7 dias, de forma transparente.' }
+  ];
+
+  function startTour(){
+    setArea('1');
+    tourStepIndex = 0;
+    document.body.style.overflow = 'hidden';
+    tourOverlay.classList.add('show');
+    tourBox.classList.add('show');
+    showTourStep(0);
+  }
+
+  function clearTourHighlight(){
+    if(tourCurrentTarget){ tourCurrentTarget.classList.remove('tour-spotlight'); tourCurrentTarget = null; }
+  }
+
+  function showTourStep(i){
+    clearTourHighlight();
+    const step = tourSteps[i];
+    const target = document.querySelector(step.selector);
+    tourStepCount.textContent = 'Passo ' + (i+1) + ' de ' + tourSteps.length;
+    tourText.textContent = step.text;
+    tourNextBtn.textContent = (i === tourSteps.length - 1) ? 'Concluir' : 'Continuar';
+    if(!target){
+      // Elemento não encontrado nesta tela: avança automaticamente para o próximo passo.
+      if(i < tourSteps.length - 1){ tourStepIndex = i+1; showTourStep(tourStepIndex); }
+      else { endTour(); }
+      return;
+    }
+    target.scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(() => {
+      target.classList.add('tour-spotlight');
+      tourCurrentTarget = target;
+      positionTourBox(target);
+    }, 320);
+  }
+
+  function positionTourBox(target){
+    const rect = target.getBoundingClientRect();
+    const margin = 14;
+    tourBox.style.visibility = 'hidden';
+    tourBox.style.top = '-9999px';
+    const boxRect = tourBox.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    let top, arrowClass;
+    if(spaceBelow >= boxRect.height + margin || spaceBelow >= spaceAbove){
+      top = Math.min(rect.bottom + margin, window.innerHeight - boxRect.height - 12);
+      arrowClass = 'arrow-top';
+    }else{
+      top = Math.max(12, rect.top - boxRect.height - margin);
+      arrowClass = 'arrow-bottom';
+    }
+    let left = rect.left + rect.width/2 - boxRect.width/2;
+    left = Math.max(12, Math.min(left, window.innerWidth - boxRect.width - 12));
+    const arrowLeft = Math.max(20, Math.min(rect.left + rect.width/2 - left, boxRect.width - 20));
+    tourBox.classList.remove('arrow-top','arrow-bottom');
+    tourBox.classList.add(arrowClass);
+    tourBox.style.setProperty('--arrow-left', arrowLeft + 'px');
+    tourBox.style.left = left + 'px';
+    tourBox.style.top = top + 'px';
+    tourBox.style.visibility = 'visible';
+  }
+
+  function endTour(){
+    clearTourHighlight();
+    tourOverlay.classList.remove('show');
+    tourBox.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  tourNextBtn.addEventListener('click', () => {
+    if(tourStepIndex >= tourSteps.length - 1){
+      endTour();
+      showToast('Tour concluído. Bons estudos!');
+    }else{
+      tourStepIndex += 1;
+      showTourStep(tourStepIndex);
+    }
+  });
+  tourCloseBtn.addEventListener('click', () => {
+    endTour();
+    showToast('Tour encerrado. Você pode explorar o app livremente.');
+  });
+  window.addEventListener('resize', () => {
+    if(tourCurrentTarget) positionTourBox(tourCurrentTarget);
+  });
+
+  /* ---------- Boot ---------- */
+  const savedName = getSavedUserName();
+  if(savedName){
+    applyUserName(savedName);
+    proceedWithDataLoad();
+  }else{
+    showWelcomeModal();
+  }
 })();
 
 </script>
