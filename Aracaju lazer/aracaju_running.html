@@ -7,14 +7,14 @@
 <meta name="description" content="Guia de treino de corrida em Aracaju: parques, orla, ruas interditadas, provas de rua e trail run, organizadores e inscrições.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-deep:#0e1912; --bg-surface:#152419; --bg-elevated:#1c3120; --bg-elevated-2:#213a26;
-    --line: rgba(216,230,214,0.09);
-    --caju-orange:#e8672b; --caju-yellow:#f2ab3c;
-    --leaf:#6fb85c; --leaf-deep:#3f7a3e; --leaf-bright:#8fd47a;
-    --text-1:#f3f1e6; --text-2:#c4d0c2; --text-3:#8ea38d;
+    --bg-deep:#0a0c10; --bg-surface:#13161c; --bg-elevated:#1a1e26; --bg-elevated-2:#20252f;
+    --line: rgba(255,255,255,0.08);
+    --caju-orange:#ff6a45; --caju-yellow:#ffcc3d;
+    --leaf:#c6ff4d; --leaf-deep:#8fd400; --leaf-bright:#d7ff5c;
+    --text-1:#f4f5f2; --text-2:#c1c5bd; --text-3:#7d8279;
     --shadow-lg: 0 24px 60px -20px rgba(0,0,0,0.6);
     --radius:20px;
   }
@@ -23,9 +23,10 @@
   body{
     margin:0;
     background: radial-gradient(ellipse 120% 60% at 50% -10%, rgba(111,184,92,0.10), transparent 60%), var(--bg-deep);
-    color:var(--text-1); font-family:'Manrope', sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+    color:var(--text-1); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;
   }
-  h1,h2,h3,h4{ font-family:'Baloo 2', sans-serif; margin:0; font-weight:700; letter-spacing:-0.01em; }
+  h1,h2,h3,h4{ font-family:'Oswald', sans-serif; margin:0; font-weight:700; letter-spacing:0.01em; text-transform:uppercase; }
+  h3, h4{ text-transform:none; }
   p{ margin:0; }
   a{ color:inherit; text-decoration:none; }
   img{ max-width:100%; display:block; }
@@ -33,7 +34,7 @@
   ::selection{ background:var(--caju-orange); color:#1a0f08; }
   .wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
   .eyebrow{
-    font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase;
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase;
     color:var(--leaf-bright); display:flex; align-items:center; gap:8px;
   }
   .eyebrow::before{ content:""; width:18px; height:2px; background:var(--caju-orange); display:inline-block; border-radius:2px; }
@@ -45,12 +46,12 @@
   .logo-caju{ transform-origin:50% 85%; animation: sway 5s ease-in-out infinite; }
   @keyframes sway{ 0%,100%{ transform:rotate(-3deg);} 50%{ transform:rotate(3deg);} }
   .logo-text{ line-height:1; }
-  .logo-text .ara{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:1.5rem; }
-  .logo-text .sub{ font-family:'JetBrains Mono', monospace; font-size:0.6rem; letter-spacing:0.16em; color:var(--text-3); text-transform:uppercase; margin-top:2px; }
+  .logo-text .ara{ font-family:'Oswald', sans-serif; font-weight:800; font-size:1.5rem; }
+  .logo-text .sub{ font-family:'IBM Plex Mono', monospace; font-size:0.6rem; letter-spacing:0.16em; color:var(--text-3); text-transform:uppercase; margin-top:2px; }
   nav.desktop-nav{ display:flex; align-items:center; gap:2px; }
   nav.desktop-nav a{ padding:9px 16px; border-radius:999px; font-size:0.9rem; font-weight:600; color:var(--text-2); transition:all .25s ease; }
   nav.desktop-nav a:hover, nav.desktop-nav a.active{ color:var(--text-1); background:var(--bg-elevated); }
-  .new-badge{ font-family:'JetBrains Mono', monospace; font-size:0.58rem; background:var(--caju-orange); color:#1a0f08; padding:2px 6px; border-radius:6px; margin-left:6px; font-weight:700; vertical-align:2px; }
+  .new-badge{ font-family:'IBM Plex Mono', monospace; font-size:0.58rem; background:var(--caju-orange); color:#1a0f08; padding:2px 6px; border-radius:6px; margin-left:6px; font-weight:700; vertical-align:2px; }
   .hamburger{ display:none; width:44px; height:44px; border-radius:12px; background:var(--bg-elevated); border:1px solid var(--line); align-items:center; justify-content:center; flex-direction:column; gap:5px; }
   .hamburger span{ width:20px; height:2px; background:var(--text-1); border-radius:2px; transition:all .3s cubic-bezier(.6,0,.3,1); }
   .hamburger.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
@@ -58,8 +59,8 @@
   .hamburger.open span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
   .mobile-nav{ position:fixed; inset:0; z-index:190; background:linear-gradient(180deg,#10201580,#0e1912 40%), var(--bg-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; opacity:0; visibility:hidden; transform:translateY(-12px); transition:all .35s cubic-bezier(.4,0,.2,1); }
   .mobile-nav.open{ opacity:1; visibility:visible; transform:translateY(0); }
-  .mobile-nav a{ font-family:'Baloo 2', sans-serif; font-size:1.5rem; font-weight:700; color:var(--text-1); padding:12px 10px; }
-  .mobile-nav a span{ color:var(--caju-orange); font-family:'JetBrains Mono',monospace; font-size:0.85rem; margin-right:10px; }
+  .mobile-nav a{ font-family:'Oswald', sans-serif; font-size:1.5rem; font-weight:700; color:var(--text-1); padding:12px 10px; }
+  .mobile-nav a span{ color:var(--caju-orange); font-family:'IBM Plex Mono',monospace; font-size:0.85rem; margin-right:10px; }
 
   /* HERO */
   .rhero{ position:relative; min-height:56vh; display:flex; align-items:flex-end; padding-top:110px; overflow:hidden; }
@@ -88,7 +89,7 @@
   section.alt .card{ background:var(--bg-elevated); }
   .card h3{ font-size:1.2rem; }
   .card .tag{
-    display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:0.68rem;
+    display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
     letter-spacing:0.05em; text-transform:uppercase; color:var(--leaf-bright); background:rgba(111,184,92,0.12);
     border:1px solid rgba(111,184,92,0.3); padding:4px 10px; border-radius:999px; margin-bottom:12px;
   }
@@ -103,7 +104,7 @@
   }
   section.alt .sched-row{ background:var(--bg-surface); }
   .sched-row .d{ color:var(--text-1); font-weight:700; }
-  .sched-row .t{ color:var(--text-3); font-family:'JetBrains Mono',monospace; font-size:0.76rem; }
+  .sched-row .t{ color:var(--text-3); font-family:'IBM Plex Mono',monospace; font-size:0.76rem; }
 
   .card-photo{ border-radius:14px; overflow:hidden; margin-bottom:16px; height:170px; }
   .card-photo img{ width:100%; height:100%; object-fit:cover; }
@@ -116,7 +117,7 @@
   section.alt .race-card{ background:var(--bg-elevated); }
   .race-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
   .race-date{
-    font-family:'JetBrains Mono',monospace; background:linear-gradient(120deg, var(--caju-yellow), var(--caju-orange));
+    font-family:'IBM Plex Mono',monospace; background:linear-gradient(120deg, var(--caju-yellow), var(--caju-orange));
     color:#1a0f08; font-weight:700; font-size:0.78rem; padding:6px 12px; border-radius:999px; white-space:nowrap;
   }
   .race-card h3{ font-size:1.25rem; }
@@ -180,26 +181,68 @@
     section{ padding:56px 0; }
     .rhero{ min-height:50vh; }
   }
+
+  /* ---------- ACESSIBILIDADE ---------- */
+  .skip-link{
+    position:fixed; top:-60px; left:14px; z-index:999;
+    background:var(--caju-yellow); color:#1a0f08; font-weight:800;
+    padding:12px 18px; border-radius:10px; transition: top .25s ease;
+  }
+  .skip-link:focus{ top:14px; }
+  a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline:3px solid var(--caju-yellow); outline-offset:3px; border-radius:4px;
+  }
+
+  #a11yWidget{ position:fixed; right:18px; bottom:18px; z-index:600; display:flex; flex-direction:column; align-items:flex-end; gap:10px; }
+  #a11yToggleBtn{
+    width:52px; height:52px; border-radius:50%; border:1px solid var(--line);
+    background:var(--bg-elevated); color:var(--text-1); box-shadow:var(--shadow-lg);
+    display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+  }
+  #a11yToggleBtn:hover{ background:var(--bg-elevated-2); }
+  #a11yPanel{
+    background:var(--bg-surface); border:1px solid var(--line); border-radius:16px;
+    padding:16px; width:230px; box-shadow:var(--shadow-lg);
+    display:none; flex-direction:column; gap:10px;
+  }
+  #a11yPanel.open{ display:flex; }
+  #a11yPanel .a11y-label{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); font-weight:700; }
+  .a11y-row{ display:flex; gap:8px; align-items:center; }
+  .a11y-btn{
+    flex:1; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-1);
+    padding:9px 8px; border-radius:10px; font-weight:700; font-size:0.85rem; display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .a11y-btn:hover{ border-color:var(--leaf); }
+  .a11y-btn.full{ width:100%; }
+
+  /* mantém o hero sempre legível (foto de fundo escura) independente do tema */
+  .rhero{ --text-1:#f4f5f2; --text-2:#d4d6cf; --text-3:#a7aaa1; }
+
+  /* ---------- TEMA CLARO ---------- */
+  html[data-theme="light"]{
+    --bg-deep:#f1f2ee; --bg-surface:#ffffff; --bg-elevated:#eceee8; --bg-elevated-2:#e2e5dc;
+    --line: rgba(10,15,10,0.12);
+    --caju-orange:#e0521c; --caju-yellow:#b8830a;
+    --leaf:#5f8f00; --leaf-deep:#466b00; --leaf-bright:#4a7300;
+    --text-1:#12140f; --text-2:#3a3f36; --text-3:#666b60;
+    --shadow-lg: 0 20px 50px -20px rgba(10,15,10,0.18);
+  }
+  html[data-theme="light"] header.site-header{ background:rgba(255,255,255,0.9); }
+  html[data-theme="light"] .mobile-nav{ background:linear-gradient(180deg,#ffffffdd,#f1f2ee 40%), var(--bg-deep); }
+  html[data-theme="light"] .race-date{ color:#1a0f08; }
+  html[data-theme="light"] ::selection{ background:var(--caju-orange); color:#fff; }
+
 </style>
 </head>
 <body>
+<a href="#rhero" class="skip-link">Pular para o conteúdo</a>
 
 <header class="site-header">
   <div class="header-inner">
     <a href="index.html" class="logo" aria-label="ARACaju Lazer — início">
-      <svg viewBox="0 0 64 64" fill="none" width="46" height="46" xmlns="http://www.w3.org/2000/svg">
-        <g class="logo-caju">
-          <path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/>
-          <path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad2)"/>
-        </g>
-        <defs>
-          <linearGradient id="cajuGrad2" x1="16" y1="20" x2="48" y2="56" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#f2ab3c"/><stop offset="1" stop-color="#e8672b"/>
-          </linearGradient>
-        </defs>
-      </svg>
+      <svg viewBox="0 0 90 120" fill="none" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><g class="logo-caju"><path d="M52 3 C47 3 42 8 41 15 L38 30 C37.5 33 40 35 43 35 C46 35 48 33 49 30 L52 15 C53.5 9 54 5 52 3Z" fill="url(#cajuStemH2)" stroke="#241a10" stroke-width="3" stroke-linejoin="round"/><path d="M45 28 C28 28 16 46 16 68 C16 90 29 104 45 108 C61 104 74 90 74 68 C74 46 62 28 45 28Z" fill="url(#cajuBodyH2)" stroke="#1a1a1a" stroke-width="4" stroke-linejoin="round"/><ellipse cx="34" cy="50" rx="10" ry="16" fill="#fff" opacity="0.18"/><path d="M38 100 C33 100 28 105 29 112 C30 118 36 121 42 119 C47 117.5 49 113 47 108 C45.5 104.5 42 100.5 38 100Z" fill="url(#cajuNutH2)" stroke="#1a1a1a" stroke-width="3.2" stroke-linejoin="round"/><ellipse cx="41" cy="113" rx="4" ry="5" fill="#e8c9a0" opacity=".7"/></g><defs><linearGradient id="cajuStemH2" x1="40" y1="0" x2="55" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8bb54a"/><stop offset="1" stop-color="#5c7f2e"/></linearGradient><linearGradient id="cajuBodyH2" x1="20" y1="20" x2="70" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd646"/><stop offset="0.55" stop-color="#f9a825"/><stop offset="1" stop-color="#f0691f"/></linearGradient><linearGradient id="cajuNutH2" x1="30" y1="85" x2="60" y2="118" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c99764"/><stop offset="1" stop-color="#8a5f3a"/></linearGradient></defs></svg>
       <span class="logo-text">
-        <span class="ara">ARA<img src="https://cdn-icons-png.flaticon.com/512/2909/2909808.png" alt="caju" style="height:0.85em; vertical-align:-0.12em; display:inline-block; margin:0 1px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><svg style="display:none; height:0.85em; vertical-align:-0.12em;" viewBox="0 0 64 64"><path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/><path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad2)"/></svg></span>
+        <span class="ara">ARA<svg viewBox="0 0 90 120" fill="none" style="height:0.95em; width:auto; vertical-align:-0.18em; display:inline-block; margin:0 1px;" xmlns="http://www.w3.org/2000/svg"><path d="M52 3 C47 3 42 8 41 15 L38 30 C37.5 33 40 35 43 35 C46 35 48 33 49 30 L52 15 C53.5 9 54 5 52 3Z" fill="url(#cajuStemI2)" stroke="#241a10" stroke-width="3" stroke-linejoin="round"/><path d="M45 28 C28 28 16 46 16 68 C16 90 29 104 45 108 C61 104 74 90 74 68 C74 46 62 28 45 28Z" fill="url(#cajuBodyI2)" stroke="#1a1a1a" stroke-width="4" stroke-linejoin="round"/><ellipse cx="34" cy="50" rx="10" ry="16" fill="#fff" opacity="0.18"/><path d="M38 100 C33 100 28 105 29 112 C30 118 36 121 42 119 C47 117.5 49 113 47 108 C45.5 104.5 42 100.5 38 100Z" fill="url(#cajuNutI2)" stroke="#1a1a1a" stroke-width="3.2" stroke-linejoin="round"/><ellipse cx="41" cy="113" rx="4" ry="5" fill="#e8c9a0" opacity=".7"/><defs><linearGradient id="cajuStemI2" x1="40" y1="0" x2="55" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8bb54a"/><stop offset="1" stop-color="#5c7f2e"/></linearGradient><linearGradient id="cajuBodyI2" x1="20" y1="20" x2="70" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd646"/><stop offset="0.55" stop-color="#f9a825"/><stop offset="1" stop-color="#f0691f"/></linearGradient><linearGradient id="cajuNutI2" x1="30" y1="85" x2="60" y2="118" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c99764"/><stop offset="1" stop-color="#8a5f3a"/></linearGradient></defs></svg></span>
         <span class="sub">Lazer · Aracaju/SE</span>
       </span>
     </a>
@@ -225,12 +268,12 @@
 </nav>
 
 <!-- HERO -->
-<section class="rhero">
+<section class="rhero" id="rhero" tabindex="-1">
   <div class="rhero-bg"></div>
   <div class="rhero-content">
-    <div class="eyebrow">Guia do corredor</div>
+    <div class="eyebrow">Pra quem calça o tênis cedo</div>
     <h1>Aracaju <em>Running</em></h1>
-    <p class="rhero-lead">Onde treinar corrida de rua e trail, quais vias ficam reservadas para os corredores, e o calendário completo das provas que já rolam — ou estão previstas — na capital sergipana.</p>
+    <p class="rhero-lead">Onde treinar corrida de rua e trail, que rua fica reservada pro corredor e o calendário completo de prova que já rola — ou tá prevista — aqui na nossa capital. Bora que o sol tá nascendo.</p>
     <a href="index.html" class="back-link">← Voltar para Áreas de Lazer</a>
   </div>
 </section>
@@ -239,9 +282,9 @@
 <section id="treino">
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">Locais de treino</div>
-      <h2>Onde correr em Aracaju</h2>
-      <p>Os mesmos parques e praças do guia de lazer viraram point de treino — de pista plana para tiros e longões a trilha de terra para quem curte subir morro.</p>
+      <div class="eyebrow">Onde bater a perna</div>
+      <h2>Point de treino em Aracaju</h2>
+      <p>Os mesmos parques e praças do guia de lazer viraram o point de treino da cidade — de pista plana pra tiro e longão até trilha de terra pra quem curte sofrer subindo morro.</p>
     </div>
 
     <div class="grid3">
@@ -324,9 +367,9 @@
 <section class="alt" id="provas-rua">
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">Calendário oficial</div>
+      <div class="eyebrow">Bota na agenda</div>
       <h2>Provas de corrida de rua</h2>
-      <p>As principais provas de asfalto que já acontecem em Aracaju, com todos os detalhes públicos disponíveis até o momento.</p>
+      <p>As principais provas de asfalto que já rolam por aqui, com todo detalhe público que a gente conseguiu garimpar até agora.</p>
     </div>
 
     <div class="grid2">
@@ -499,9 +542,9 @@
 <section id="trail">
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">A outra modalidade</div>
+      <div class="eyebrow">Pra quem curte terra</div>
       <h2>Trail run em Aracaju</h2>
-      <p>Diferente da corrida de rua, o trail run ainda é uma modalidade emergente na capital — mas já tem seu point natural.</p>
+      <p>Diferente da corrida de asfalto, o trail ainda tá engatinhando por aqui — mas já tem o point certo pra quem quer sujar o tênis.</p>
     </div>
     <div class="grid2">
       <div class="card">
@@ -526,9 +569,9 @@
 <section class="alt" id="organizadores">
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">Quem organiza</div>
-      <h2>Organizadores, terceirizadas e onde se inscrever</h2>
-      <p>Plataformas oficiais de inscrição e agregadores que reúnem o calendário mais atualizado de corridas em Aracaju e Sergipe.</p>
+      <div class="eyebrow">Quem bota a prova de pé</div>
+      <h2>Organizadores e onde correr pra se inscrever</h2>
+      <p>Plataforma oficial de inscrição e agregador que junta o calendário mais atualizado de corrida aqui em Aracaju e no resto de Sergipe.</p>
     </div>
     <div class="org-grid">
       <div class="org-card">
@@ -594,15 +637,26 @@
 <footer>
   <div class="wrap footer-inner">
     <a href="index.html" class="logo">
-      <svg viewBox="0 0 64 64" fill="none" width="34" height="34">
-        <path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/>
-        <path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad2)"/>
-      </svg>
+      <svg viewBox="0 0 90 120" fill="none" width="32" height="32" xmlns="http://www.w3.org/2000/svg"><path d="M52 3 C47 3 42 8 41 15 L38 30 C37.5 33 40 35 43 35 C46 35 48 33 49 30 L52 15 C53.5 9 54 5 52 3Z" fill="url(#cajuStemF2)" stroke="#241a10" stroke-width="3" stroke-linejoin="round"/><path d="M45 28 C28 28 16 46 16 68 C16 90 29 104 45 108 C61 104 74 90 74 68 C74 46 62 28 45 28Z" fill="url(#cajuBodyF2)" stroke="#1a1a1a" stroke-width="4" stroke-linejoin="round"/><ellipse cx="34" cy="50" rx="10" ry="16" fill="#fff" opacity="0.18"/><path d="M38 100 C33 100 28 105 29 112 C30 118 36 121 42 119 C47 117.5 49 113 47 108 C45.5 104.5 42 100.5 38 100Z" fill="url(#cajuNutF2)" stroke="#1a1a1a" stroke-width="3.2" stroke-linejoin="round"/><ellipse cx="41" cy="113" rx="4" ry="5" fill="#e8c9a0" opacity=".7"/><defs><linearGradient id="cajuStemF2" x1="40" y1="0" x2="55" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8bb54a"/><stop offset="1" stop-color="#5c7f2e"/></linearGradient><linearGradient id="cajuBodyF2" x1="20" y1="20" x2="70" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd646"/><stop offset="0.55" stop-color="#f9a825"/><stop offset="1" stop-color="#f0691f"/></linearGradient><linearGradient id="cajuNutF2" x1="30" y1="85" x2="60" y2="118" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c99764"/><stop offset="1" stop-color="#8a5f3a"/></linearGradient></defs></svg>
       <span class="logo-text"><span class="ara" style="font-size:1.15rem;">ARAcaju</span></span>
     </a>
-    <p>Aracaju Running · parte do guia independente ARACaju Lazer. Fotos: Wikimedia Commons.</p>
+    <p>Aracaju Running · um pedacinho do guia ARACaju Lazer, feito por quem também gosta de suar a camisa por aqui. Fotos: Wikimedia Commons.</p>
   </div>
 </footer>
+
+<div id="a11yWidget">
+  <div id="a11yPanel" role="dialog" aria-label="Opções de acessibilidade">
+    <span class="a11y-label">Tamanho do texto</span>
+    <div class="a11y-row">
+      <button class="a11y-btn" id="a11yMinus" aria-label="Diminuir texto">A−</button>
+      <button class="a11y-btn" id="a11yReset" aria-label="Tamanho padrão">100%</button>
+      <button class="a11y-btn" id="a11yPlus" aria-label="Aumentar texto">A+</button>
+    </div>
+    <span class="a11y-label">Aparência</span>
+    <button class="a11y-btn full" id="a11yThemeBtn"><span id="a11yThemeIcon">🌙</span>&nbsp; <span id="a11yThemeLabel">Tema escuro</span></button>
+  </div>
+  <button id="a11yToggleBtn" aria-label="Abrir opções de acessibilidade" aria-expanded="false">♿</button>
+</div>
 
 <script>
 const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -620,6 +674,61 @@ mobileNav.querySelectorAll('a').forEach(a=>{
     document.body.style.overflow = '';
   });
 });
+
+/* ============ ACESSIBILIDADE: zoom de texto + tema claro/escuro ============ */
+(function(){
+  const FONT_KEY = 'a11y_fontStep';
+  const THEME_KEY = 'a11y_theme';
+  const steps = [85,92.5,100,110,120,130,140];
+
+  const toggleBtn = document.getElementById('a11yToggleBtn');
+  const panel = document.getElementById('a11yPanel');
+  const minusBtn = document.getElementById('a11yMinus');
+  const plusBtn = document.getElementById('a11yPlus');
+  const resetBtn = document.getElementById('a11yReset');
+  const themeBtn = document.getElementById('a11yThemeBtn');
+  const themeIcon = document.getElementById('a11yThemeIcon');
+  const themeLabel = document.getElementById('a11yThemeLabel');
+
+  function applyFontStep(i){
+    i = Math.max(0, Math.min(steps.length - 1, i));
+    document.documentElement.style.fontSize = steps[i] + '%';
+    resetBtn.textContent = steps[i] + '%';
+    localStorage.setItem(FONT_KEY, i);
+  }
+  function applyTheme(theme){
+    document.documentElement.setAttribute('data-theme', theme);
+    const isLight = theme === 'light';
+    themeIcon.textContent = isLight ? '☀️' : '🌙';
+    themeLabel.textContent = isLight ? 'Tema claro' : 'Tema escuro';
+    localStorage.setItem(THEME_KEY, theme);
+  }
+
+  let currentStep = parseInt(localStorage.getItem(FONT_KEY), 10);
+  if(isNaN(currentStep)) currentStep = 2; // 100%
+  applyFontStep(currentStep);
+
+  applyTheme(localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark');
+
+  toggleBtn.addEventListener('click', ()=>{
+    const isOpen = panel.classList.toggle('open');
+    toggleBtn.setAttribute('aria-expanded', isOpen);
+  });
+  document.addEventListener('click', (e)=>{
+    if(!panel.contains(e.target) && e.target !== toggleBtn && panel.classList.contains('open')){
+      panel.classList.remove('open');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  plusBtn.addEventListener('click', ()=>{ currentStep++; applyFontStep(currentStep); });
+  minusBtn.addEventListener('click', ()=>{ currentStep--; applyFontStep(currentStep); });
+  resetBtn.addEventListener('click', ()=>{ currentStep = 2; applyFontStep(currentStep); });
+  themeBtn.addEventListener('click', ()=>{
+    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+  });
+})();
+
 </script>
 </body>
 </html>

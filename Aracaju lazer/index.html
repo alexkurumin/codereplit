@@ -640,29 +640,68 @@
     #welcomeBar{ top:70px; }
     .wb-inner{ padding:9px 18px; }
   }
+
+  /* ---------- ACESSIBILIDADE ---------- */
+  .skip-link{
+    position:fixed; top:-60px; left:14px; z-index:999;
+    background:var(--caju-yellow); color:#1a0f08; font-weight:800;
+    padding:12px 18px; border-radius:10px; transition: top .25s ease;
+  }
+  .skip-link:focus{ top:14px; }
+  a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline:3px solid var(--caju-yellow); outline-offset:3px; border-radius:4px;
+  }
+
+  #a11yWidget{ position:fixed; right:18px; bottom:18px; z-index:600; display:flex; flex-direction:column; align-items:flex-end; gap:10px; }
+  #a11yToggleBtn{
+    width:52px; height:52px; border-radius:50%; border:1px solid var(--line);
+    background:var(--bg-elevated); color:var(--text-1); box-shadow:var(--shadow-lg);
+    display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+  }
+  #a11yToggleBtn:hover{ background:var(--bg-elevated-2); }
+  #a11yPanel{
+    background:var(--bg-surface); border:1px solid var(--line); border-radius:16px;
+    padding:16px; width:230px; box-shadow:var(--shadow-lg);
+    display:none; flex-direction:column; gap:10px;
+  }
+  #a11yPanel.open{ display:flex; }
+  #a11yPanel .a11y-label{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); font-weight:700; }
+  .a11y-row{ display:flex; gap:8px; align-items:center; }
+  .a11y-btn{
+    flex:1; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-1);
+    padding:9px 8px; border-radius:10px; font-weight:700; font-size:0.85rem; display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .a11y-btn:hover{ border-color:var(--leaf); }
+  .a11y-btn.full{ width:100%; }
+
+  /* mantém o hero sempre legível (foto de fundo escura) independente do tema */
+  .hero{ --text-1:#f3f1e6; --text-2:#d7ded2; --text-3:#a9b8a9; }
+
+  /* ---------- TEMA CLARO ---------- */
+  html[data-theme="light"]{
+    --bg-deep:#f6f3ea; --bg-surface:#ffffff; --bg-elevated:#f0ece0; --bg-elevated-2:#e7e0cd;
+    --line: rgba(30,40,25,0.14);
+    --text-1:#171f14; --text-2:#3c4636; --text-3:#606f5b;
+    --shadow-lg: 0 20px 50px -20px rgba(30,40,20,0.22);
+  }
+  html[data-theme="light"] header.site-header{ background:rgba(255,255,255,0.88); }
+  html[data-theme="light"] .mobile-nav{ background:linear-gradient(180deg,#ffffffdd,#f6f3ea 40%), var(--bg-deep); }
+  html[data-theme="light"] #welcomeBar{ background:linear-gradient(120deg, rgba(232,103,43,0.14), rgba(111,184,92,0.16)); }
+  html[data-theme="light"] .onboard-emoji{ box-shadow:0 8px 20px -6px rgba(232,103,43,.5); }
+  html[data-theme="light"] ::selection{ background:var(--caju-orange); color:#fff; }
+
 </style>
 </head>
 <body>
+<a href="#hero" class="skip-link">Pular para o conteúdo</a>
 
 <!-- ================= HEADER ================= -->
 <header class="site-header">
   <div class="header-inner">
     <a href="#hero" class="logo" aria-label="ARACaju Lazer — início">
-      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g class="logo-caju">
-          <path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/>
-          <path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad)"/>
-          <ellipse cx="26" cy="30" rx="4.5" ry="6" fill="#ffffff" opacity=".18"/>
-        </g>
-        <defs>
-          <linearGradient id="cajuGrad" x1="16" y1="20" x2="48" y2="56" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#f2ab3c"/>
-            <stop offset="1" stop-color="#e8672b"/>
-          </linearGradient>
-        </defs>
-      </svg>
+      <svg viewBox="0 0 90 120" fill="none" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><g class="logo-caju"><path d="M52 3 C47 3 42 8 41 15 L38 30 C37.5 33 40 35 43 35 C46 35 48 33 49 30 L52 15 C53.5 9 54 5 52 3Z" fill="url(#cajuStemH1)" stroke="#241a10" stroke-width="3" stroke-linejoin="round"/><path d="M45 28 C28 28 16 46 16 68 C16 90 29 104 45 108 C61 104 74 90 74 68 C74 46 62 28 45 28Z" fill="url(#cajuBodyH1)" stroke="#1a1a1a" stroke-width="4" stroke-linejoin="round"/><ellipse cx="34" cy="50" rx="10" ry="16" fill="#fff" opacity="0.18"/><path d="M38 100 C33 100 28 105 29 112 C30 118 36 121 42 119 C47 117.5 49 113 47 108 C45.5 104.5 42 100.5 38 100Z" fill="url(#cajuNutH1)" stroke="#1a1a1a" stroke-width="3.2" stroke-linejoin="round"/><ellipse cx="41" cy="113" rx="4" ry="5" fill="#e8c9a0" opacity=".7"/></g><defs><linearGradient id="cajuStemH1" x1="40" y1="0" x2="55" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8bb54a"/><stop offset="1" stop-color="#5c7f2e"/></linearGradient><linearGradient id="cajuBodyH1" x1="20" y1="20" x2="70" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd646"/><stop offset="0.55" stop-color="#f9a825"/><stop offset="1" stop-color="#f0691f"/></linearGradient><linearGradient id="cajuNutH1" x1="30" y1="85" x2="60" y2="118" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c99764"/><stop offset="1" stop-color="#8a5f3a"/></linearGradient></defs></svg>
       <span class="logo-text">
-        <span class="ara">ARA<img src="https://cdn-icons-png.flaticon.com/512/2909/2909808.png" alt="caju" style="height:0.85em; vertical-align:-0.12em; display:inline-block; margin:0 1px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><svg style="display:none; height:0.85em; vertical-align:-0.12em;" viewBox="0 0 64 64"><path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/><path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad)"/></svg></span>
+        <span class="ara">ARA<svg viewBox="0 0 90 120" fill="none" style="height:0.95em; width:auto; vertical-align:-0.18em; display:inline-block; margin:0 1px;" xmlns="http://www.w3.org/2000/svg"><path d="M52 3 C47 3 42 8 41 15 L38 30 C37.5 33 40 35 43 35 C46 35 48 33 49 30 L52 15 C53.5 9 54 5 52 3Z" fill="url(#cajuStemI1)" stroke="#241a10" stroke-width="3" stroke-linejoin="round"/><path d="M45 28 C28 28 16 46 16 68 C16 90 29 104 45 108 C61 104 74 90 74 68 C74 46 62 28 45 28Z" fill="url(#cajuBodyI1)" stroke="#1a1a1a" stroke-width="4" stroke-linejoin="round"/><ellipse cx="34" cy="50" rx="10" ry="16" fill="#fff" opacity="0.18"/><path d="M38 100 C33 100 28 105 29 112 C30 118 36 121 42 119 C47 117.5 49 113 47 108 C45.5 104.5 42 100.5 38 100Z" fill="url(#cajuNutI1)" stroke="#1a1a1a" stroke-width="3.2" stroke-linejoin="round"/><ellipse cx="41" cy="113" rx="4" ry="5" fill="#e8c9a0" opacity=".7"/><defs><linearGradient id="cajuStemI1" x1="40" y1="0" x2="55" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8bb54a"/><stop offset="1" stop-color="#5c7f2e"/></linearGradient><linearGradient id="cajuBodyI1" x1="20" y1="20" x2="70" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd646"/><stop offset="0.55" stop-color="#f9a825"/><stop offset="1" stop-color="#f0691f"/></linearGradient><linearGradient id="cajuNutI1" x1="30" y1="85" x2="60" y2="118" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c99764"/><stop offset="1" stop-color="#8a5f3a"/></linearGradient></defs></svg></span>
         <span class="sub">Lazer · Aracaju/SE</span>
       </span>
     </a>
@@ -688,7 +727,7 @@
       <span class="wb-name" id="wbName"></span>
       <span class="wb-privacy">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        Esse nome fica salvo só neste navegador — outras pessoas não têm acesso a ele.
+        Fica tranquilo: esse nome fica guardado só aqui no seu navegador — ninguém mais tem acesso a ele.
       </span>
     </div>
     <div class="wb-actions">
@@ -707,31 +746,31 @@
 </nav>
 
 <!-- ================= HERO ================= -->
-<section class="hero" id="hero">
+<section class="hero" id="hero" tabindex="-1" data-skip-target>
   <div class="hero-bg"></div>
   <div class="hero-content">
-    <div class="eyebrow">Guia de áreas verdes</div>
-    <h1>Aracaju respira <em>verde</em>, de graça, para todo mundo.</h1>
-    <p class="hero-lead">Três grandes parques urbanos, praças centenárias e um calçadão à beira-rio: nenhum deles cobra entrada. Explore cada canto pelo mapa interativo e descubra a história por trás de cada espaço.</p>
+    <div class="eyebrow">Guia de quem é daqui</div>
+    <h1>Aracaju respira <em>verde</em> — e aqui, óia, é tudo de grátis.</h1>
+    <p class="hero-lead">Oxente, três parquões, praças centenárias e um calçadão coladinho no rio — e ninguém cobra um real de entrada, viu? Bora espiar cada cantinho no mapa interativo e descobrir a história por trás de cada lugar.</p>
     <div class="hero-stats">
       <div class="stat-chip"><span class="num">0</span><span class="lbl">custo de entrada</span></div>
       <div class="stat-chip"><span class="num">3</span><span class="lbl">parques urbanos</span></div>
       <div class="stat-chip"><span class="num">1M+</span><span class="lbl">m² de área verde</span></div>
     </div>
   </div>
-  <div class="scroll-cue">Role para explorar ↓</div>
+  <div class="scroll-cue">Desce o dedo e vem ↓</div>
 </section>
 
 <!-- ================= SOBRE ================= -->
 <section id="sobre">
   <div class="wrap sobre-grid">
     <div>
-      <div class="eyebrow">Por que Aracaju</div>
-      <h2 class="section-head" style="margin-bottom:0;">Uma capital reconhecida pela qualidade de vida</h2>
+      <div class="eyebrow">Por que a gente ama Aracaju</div>
+      <h2 class="section-head" style="margin-bottom:0;">Uma capital que é a cara da qualidade de vida</h2>
       <div class="sobre-card" style="margin-top:24px;">
-        <div class="free-badge">🌴 Acesso gratuito em todos os parques</div>
-        <p>Aracaju é nacionalmente reconhecida por seu planejamento urbano e amplas áreas verdes. A cidade reúne três grandes parques urbanos, além de praças emblemáticas e calçadões estruturados — e nenhum deles cobra taxa de entrada, tornando o acesso universal tanto para moradores quanto para turistas.</p>
-        <p>Abaixo você encontra o mapa interativo e as fichas completas de cada parque, praça e orla: localização, história, reformas recentes e dicas de quem já visitou.</p>
+        <div class="free-badge">🌴 Em Aracaju, parque bom é parque de grátis</div>
+        <p>Aracaju é conhecida em todo o Brasil pelo planejamento urbano e pelas áreas verdes de dar inveja. A cidade tem três parques enormes, além de praças cheias de história e calçadão pra todo lado — e olha que coisa boa: nenhum cobra um centavo de entrada. É pra morador e pra visitante juntos mesmo.</p>
+        <p>Aqui embaixo tem o mapa interativo e a ficha completinha de cada parque, praça e orla: onde fica, a história, as reformas mais recentes e as dicas de quem já foi conferir de pertinho.</p>
       </div>
     </div>
     <div class="mini-map-teaser">
@@ -752,9 +791,9 @@
 <section id="mapa">
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">Explore no mapa</div>
-      <h2>Toque em um ponto para ver os detalhes</h2>
-      <p>Mapa ilustrativo de Aracaju — cada pino representa um parque, praça ou orla. Clique para abrir a ficha completa.</p>
+      <div class="eyebrow">Bora de mapa</div>
+      <h2>Toca no pino e descobre o rolê</h2>
+      <p>Mapa ilustrativo de Aracaju — cada pino é um parque, praça ou pedaço de orla. Clica ali e a ficha completa abre na hora.</p>
     </div>
 
     <div class="map-shell">
@@ -800,9 +839,9 @@
 <section id="parques">
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">Os três pulmões da cidade</div>
-      <h2>Parques urbanos principais</h2>
-      <p>Estruturas completas, história de décadas e revitalizações recentes — conheça cada um a fundo.</p>
+      <div class="eyebrow">Os três pulmões da nossa cidade</div>
+      <h2>Os parquões de Aracaju</h2>
+      <p>Estrutura completa, história de décadas e reforma fresquinha — dá um clique em cada um e conhece direitinho.</p>
     </div>
     <div class="card-grid" id="parquesGrid"></div>
   </div>
@@ -812,9 +851,9 @@
 <section id="outras" style="background:var(--bg-surface); border-top:1px solid var(--line);">
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">Além dos parques</div>
-      <h2>Praças e orla também contam</h2>
-      <p>Áreas verdes lineares e o coração histórico da cidade, sempre movimentados no fim da tarde.</p>
+      <div class="eyebrow">Tem mais, viu</div>
+      <h2>Praça e orla também são lazer</h2>
+      <p>Área verde de encher os olhos e o coração histórico da cidade — sempre cheio de gente no fim de tarde.</p>
     </div>
     <div class="card-grid two" id="outrasGrid"></div>
   </div>
@@ -823,13 +862,10 @@
 <footer>
   <div class="wrap footer-inner">
     <a href="#hero" class="logo">
-      <svg viewBox="0 0 64 64" fill="none" width="34" height="34">
-        <path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/>
-        <path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad)"/>
-      </svg>
+      <svg viewBox="0 0 90 120" fill="none" width="32" height="32" xmlns="http://www.w3.org/2000/svg"><path d="M52 3 C47 3 42 8 41 15 L38 30 C37.5 33 40 35 43 35 C46 35 48 33 49 30 L52 15 C53.5 9 54 5 52 3Z" fill="url(#cajuStemF1)" stroke="#241a10" stroke-width="3" stroke-linejoin="round"/><path d="M45 28 C28 28 16 46 16 68 C16 90 29 104 45 108 C61 104 74 90 74 68 C74 46 62 28 45 28Z" fill="url(#cajuBodyF1)" stroke="#1a1a1a" stroke-width="4" stroke-linejoin="round"/><ellipse cx="34" cy="50" rx="10" ry="16" fill="#fff" opacity="0.18"/><path d="M38 100 C33 100 28 105 29 112 C30 118 36 121 42 119 C47 117.5 49 113 47 108 C45.5 104.5 42 100.5 38 100Z" fill="url(#cajuNutF1)" stroke="#1a1a1a" stroke-width="3.2" stroke-linejoin="round"/><ellipse cx="41" cy="113" rx="4" ry="5" fill="#e8c9a0" opacity=".7"/><defs><linearGradient id="cajuStemF1" x1="40" y1="0" x2="55" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8bb54a"/><stop offset="1" stop-color="#5c7f2e"/></linearGradient><linearGradient id="cajuBodyF1" x1="20" y1="20" x2="70" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd646"/><stop offset="0.55" stop-color="#f9a825"/><stop offset="1" stop-color="#f0691f"/></linearGradient><linearGradient id="cajuNutF1" x1="30" y1="85" x2="60" y2="118" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c99764"/><stop offset="1" stop-color="#8a5f3a"/></linearGradient></defs></svg>
       <span class="logo-text"><span class="ara" style="font-size:1.15rem;">ARAcaju</span></span>
     </a>
-    <p>Guia independente de áreas de lazer públicas de Aracaju/SE. Fotos: Wikimedia Commons.</p>
+    <p>Guia feito com carinho por quem acha Aracaju massa demais. Fotos: Wikimedia Commons.</p>
   </div>
 </footer>
 
@@ -865,6 +901,20 @@
   </div>
 </div>
 
+<div id="a11yWidget">
+  <div id="a11yPanel" role="dialog" aria-label="Opções de acessibilidade">
+    <span class="a11y-label">Tamanho do texto</span>
+    <div class="a11y-row">
+      <button class="a11y-btn" id="a11yMinus" aria-label="Diminuir texto">A−</button>
+      <button class="a11y-btn" id="a11yReset" aria-label="Tamanho padrão">100%</button>
+      <button class="a11y-btn" id="a11yPlus" aria-label="Aumentar texto">A+</button>
+    </div>
+    <span class="a11y-label">Aparência</span>
+    <button class="a11y-btn full" id="a11yThemeBtn"><span id="a11yThemeIcon">🌙</span>&nbsp; <span id="a11yThemeLabel">Tema escuro</span></button>
+  </div>
+  <button id="a11yToggleBtn" aria-label="Abrir opções de acessibilidade" aria-expanded="false">♿</button>
+</div>
+
 <script>
 /* ============ DADOS ============ */
 const LOCATIONS = [
@@ -876,7 +926,7 @@ const LOCATIONS = [
     zoneColor:"#f2ab3c",
     area:"≈ 400.000 m²",
     founded:"Origem em 1933",
-    teaser:"O principal pulmão verde da cidade, revitalizado com investimento de R$ 30 milhões.",
+    teaser:"O pulmão verde número um da cidade, com reforma nova em folha de R$ 30 milhões. Chega lá e vê.",
     img:"https://commons.wikimedia.org/wiki/Special:FilePath/%C3%81rvore_de_Natal_de_Aracaju.jpg?width=1200",
     pin:{x:150, y:330},
     sections:{
@@ -896,7 +946,7 @@ const LOCATIONS = [
     zoneColor:"#8fd47a",
     area:"600.000+ m²",
     founded:"Inaugurado em 1979",
-    teaser:"O único parque da capital com remanescente de Mata Atlântica nativa e um teleférico com vista panorâmica.",
+    teaser:"O único parque com mata de verdade e um teleférico que dá aquela vista panorâmica pra impressionar visita.",
     img:"https://commons.wikimedia.org/wiki/Special:FilePath/Telef%C3%A9rico_de_Aracaju.jpg?width=1200",
     pin:{x:640, y:90},
     sections:{
@@ -916,7 +966,7 @@ const LOCATIONS = [
     zoneColor:"#e8672b",
     area:"≈ 65.000 m²",
     founded:"Reaberto em 2012",
-    teaser:"Focado em esportes, lazer familiar e atividades náuticas, margeado pelo Rio Poxim.",
+    teaser:"Esporte, lazer em família e canoagem no Poxim — um point danado de bom pra passar a tarde.",
     img:"https://commons.wikimedia.org/wiki/Special:FilePath/Rio_Sergipe_entre_Aracaju_e_Barra_dos_Coqueiros_01.jpg?width=1200",
     pin:{x:560, y:400},
     sections:{
@@ -936,7 +986,7 @@ const LOCATIONS = [
     zoneColor:"#8fd47a",
     area:"Área verde linear",
     founded:"Revitalizado recentemente",
-    teaser:"Enorme calçadão à beira do Rio Sergipe, com mirante para o manguezal e academias ao ar livre.",
+    teaser:"Calçadão enorme na beira do rio, com mirante pro manguezal e academia ao ar livre. Fim de tarde é show ali.",
     img:"https://commons.wikimedia.org/wiki/Special:FilePath/Rio_Sergipe_entre_Aracaju_e_Barra_dos_Coqueiros_05.jpg?width=1200",
     pin:{x:430, y:290},
     sections:{
@@ -956,7 +1006,7 @@ const LOCATIONS = [
     zoneColor:"#f2ab3c",
     area:"Praças integradas",
     founded:"Coração histórico da cidade",
-    teaser:"Praças imensas e arborizadas que abrigam palácios antigos e a Catedral Metropolitana.",
+    teaser:"O coração do Centro: praças arborizadas, palácio antigo e a Catedral — pura história de Aracaju.",
     img:"https://commons.wikimedia.org/wiki/Special:FilePath/Palmeiras_Imperiais_da_Pra%C3%A7a_Fausto_Cardoso_Aracaju_Sergipe_2022-5978.jpg?width=1200",
     gallery:[
       "https://commons.wikimedia.org/wiki/Special:FilePath/Coreto_Norte_Pra%C3%A7a_Fausto_Cardoso_Aracaju_Sergipe_20220411-9101.jpg?width=500",
@@ -1086,7 +1136,7 @@ function openModal(id){
       ${infoRow('layers','Infraestrutura atual', loc.sections.infraestrutura)}
       <div class="tip-box">
         ${ICONS.leaf}
-        <p><strong>Dica de quem visita:</strong> ${loc.sections.dica}</p>
+        <p><strong>Dica de quem já foi lá:</strong> ${loc.sections.dica}</p>
       </div>
     </div>
   `;
@@ -1214,11 +1264,11 @@ const tourCloseBtn = document.getElementById('tourCloseBtn');
 const tourNextBtn = document.getElementById('tourNextBtn');
 
 const TOUR_STEPS = [
-  { selector:'#welcomeBar .wb-name', title:'Esse é você! 👋', text:'Seu nome fica em destaque no topo sempre que visitar o site — ele é salvo só neste navegador.' },
-  { selector:'#mapa', title:'Mapa interativo', text:'Toque em qualquer pino do mapa para abrir a ficha completa daquele parque, praça ou orla.' },
-  { selector:'#parquesGrid', title:'Cards com fotos reais', text:'Clique em qualquer card para ver o modal animado com história, reformas, infraestrutura e dicas.' },
-  { selector:'a[href="running.html"]', title:'Novidade: Aracaju Running 🏃', text:'Local de treino, ruas interditadas, todas as provas de rua e trail, e onde se inscrever — tudo em uma página nova.' },
-  { selector:'.wb-privacy', title:'Sua privacidade', text:'Essa mensagem explica que seu nome não é enviado a nenhum servidor — fica salvo apenas no armazenamento local do seu navegador.' }
+  { selector:'#welcomeBar .wb-name', title:'Oxente, é você! 👋', text:'Seu nome fica em destaque aqui no topo sempre que voltar — guardadinho só neste navegador, viu.' },
+  { selector:'#mapa', title:'Mapa interativo', text:'Toca em qualquer pino do mapa que a ficha completa daquele parque, praça ou orla abre na hora.' },
+  { selector:'#parquesGrid', title:'Cards com foto de verdade', text:'Clica em qualquer card e olha o modal animado abrir com história, reforma, infraestrutura e a dica de quem já foi.' },
+  { selector:'a[href="running.html"]', title:'Novidade: Aracaju Running 🏃', text:'Achou o point pra treinar, rua interditada, prova de rua, trail e onde se inscrever — tudo numa página nova, só clicar.' },
+  { selector:'.wb-privacy', title:'Sobre sua privacidade', text:'Esse avisinho é só pra deixar claro: seu nome não vai pra nenhum servidor — fica guardado aqui, no seu navegador mesmo.' }
 ];
 let tourIndex = 0;
 
@@ -1272,6 +1322,61 @@ window.addEventListener('resize', ()=>{
     positionSpotlight(document.querySelector(step.selector));
   }
 });
+
+/* ============ ACESSIBILIDADE: zoom de texto + tema claro/escuro ============ */
+(function(){
+  const FONT_KEY = 'a11y_fontStep';
+  const THEME_KEY = 'a11y_theme';
+  const steps = [85,92.5,100,110,120,130,140];
+
+  const toggleBtn = document.getElementById('a11yToggleBtn');
+  const panel = document.getElementById('a11yPanel');
+  const minusBtn = document.getElementById('a11yMinus');
+  const plusBtn = document.getElementById('a11yPlus');
+  const resetBtn = document.getElementById('a11yReset');
+  const themeBtn = document.getElementById('a11yThemeBtn');
+  const themeIcon = document.getElementById('a11yThemeIcon');
+  const themeLabel = document.getElementById('a11yThemeLabel');
+
+  function applyFontStep(i){
+    i = Math.max(0, Math.min(steps.length - 1, i));
+    document.documentElement.style.fontSize = steps[i] + '%';
+    resetBtn.textContent = steps[i] + '%';
+    localStorage.setItem(FONT_KEY, i);
+  }
+  function applyTheme(theme){
+    document.documentElement.setAttribute('data-theme', theme);
+    const isLight = theme === 'light';
+    themeIcon.textContent = isLight ? '☀️' : '🌙';
+    themeLabel.textContent = isLight ? 'Tema claro' : 'Tema escuro';
+    localStorage.setItem(THEME_KEY, theme);
+  }
+
+  let currentStep = parseInt(localStorage.getItem(FONT_KEY), 10);
+  if(isNaN(currentStep)) currentStep = 2; // 100%
+  applyFontStep(currentStep);
+
+  applyTheme(localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark');
+
+  toggleBtn.addEventListener('click', ()=>{
+    const isOpen = panel.classList.toggle('open');
+    toggleBtn.setAttribute('aria-expanded', isOpen);
+  });
+  document.addEventListener('click', (e)=>{
+    if(!panel.contains(e.target) && e.target !== toggleBtn && panel.classList.contains('open')){
+      panel.classList.remove('open');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  plusBtn.addEventListener('click', ()=>{ currentStep++; applyFontStep(currentStep); });
+  minusBtn.addEventListener('click', ()=>{ currentStep--; applyFontStep(currentStep); });
+  resetBtn.addEventListener('click', ()=>{ currentStep = 2; applyFontStep(currentStep); });
+  themeBtn.addEventListener('click', ()=>{
+    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+  });
+})();
+
 </script>
 </body>
 </html>
