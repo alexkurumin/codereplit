@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aracaju Running — Onde treinar e todas as provas de Aracaju/SE</title>
+<meta name="description" content="Guia de treino de corrida em Aracaju: parques, orla, ruas interditadas, provas de rua e trail run, organizadores e inscrições.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0e1912; --bg-surface:#152419; --bg-elevated:#1c3120; --bg-elevated-2:#213a26;
+    --line: rgba(216,230,214,0.09);
+    --caju-orange:#e8672b; --caju-yellow:#f2ab3c;
+    --leaf:#6fb85c; --leaf-deep:#3f7a3e; --leaf-bright:#8fd47a;
+    --text-1:#f3f1e6; --text-2:#c4d0c2; --text-3:#8ea38d;
+    --shadow-lg: 0 24px 60px -20px rgba(0,0,0,0.6);
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background: radial-gradient(ellipse 120% 60% at 50% -10%, rgba(111,184,92,0.10), transparent 60%), var(--bg-deep);
+    color:var(--text-1); font-family:'Manrope', sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  h1,h2,h3,h4{ font-family:'Baloo 2', sans-serif; margin:0; font-weight:700; letter-spacing:-0.01em; }
+  p{ margin:0; }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  button{ font-family:inherit; cursor:pointer; }
+  ::selection{ background:var(--caju-orange); color:#1a0f08; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--leaf-bright); display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{ content:""; width:18px; height:2px; background:var(--caju-orange); display:inline-block; border-radius:2px; }
+
+  /* HEADER (igual ao index) */
+  header.site-header{ position:fixed; top:0; left:0; right:0; z-index:200; backdrop-filter:blur(14px) saturate(140%); background:rgba(14,25,18,0.82); border-bottom:1px solid var(--line); }
+  .header-inner{ max-width:1180px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-caju{ transform-origin:50% 85%; animation: sway 5s ease-in-out infinite; }
+  @keyframes sway{ 0%,100%{ transform:rotate(-3deg);} 50%{ transform:rotate(3deg);} }
+  .logo-text{ line-height:1; }
+  .logo-text .ara{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:1.5rem; }
+  .logo-text .sub{ font-family:'JetBrains Mono', monospace; font-size:0.6rem; letter-spacing:0.16em; color:var(--text-3); text-transform:uppercase; margin-top:2px; }
+  nav.desktop-nav{ display:flex; align-items:center; gap:2px; }
+  nav.desktop-nav a{ padding:9px 16px; border-radius:999px; font-size:0.9rem; font-weight:600; color:var(--text-2); transition:all .25s ease; }
+  nav.desktop-nav a:hover, nav.desktop-nav a.active{ color:var(--text-1); background:var(--bg-elevated); }
+  .new-badge{ font-family:'JetBrains Mono', monospace; font-size:0.58rem; background:var(--caju-orange); color:#1a0f08; padding:2px 6px; border-radius:6px; margin-left:6px; font-weight:700; vertical-align:2px; }
+  .hamburger{ display:none; width:44px; height:44px; border-radius:12px; background:var(--bg-elevated); border:1px solid var(--line); align-items:center; justify-content:center; flex-direction:column; gap:5px; }
+  .hamburger span{ width:20px; height:2px; background:var(--text-1); border-radius:2px; transition:all .3s cubic-bezier(.6,0,.3,1); }
+  .hamburger.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2){ opacity:0; }
+  .hamburger.open span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+  .mobile-nav{ position:fixed; inset:0; z-index:190; background:linear-gradient(180deg,#10201580,#0e1912 40%), var(--bg-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; opacity:0; visibility:hidden; transform:translateY(-12px); transition:all .35s cubic-bezier(.4,0,.2,1); }
+  .mobile-nav.open{ opacity:1; visibility:visible; transform:translateY(0); }
+  .mobile-nav a{ font-family:'Baloo 2', sans-serif; font-size:1.5rem; font-weight:700; color:var(--text-1); padding:12px 10px; }
+  .mobile-nav a span{ color:var(--caju-orange); font-family:'JetBrains Mono',monospace; font-size:0.85rem; margin-right:10px; }
+
+  /* HERO */
+  .rhero{ position:relative; min-height:56vh; display:flex; align-items:flex-end; padding-top:110px; overflow:hidden; }
+  .rhero-bg{
+    position:absolute; inset:0;
+    background-image:linear-gradient(180deg, rgba(14,25,18,0.35) 0%, rgba(14,25,18,0.6) 60%, var(--bg-deep) 97%),
+      url('https://commons.wikimedia.org/wiki/Special:FilePath/Orla_Atalaia_-_Aracaju,_Sergipe_-_panoramio.jpg?width=1600');
+    background-size:cover; background-position:center 70%;
+  }
+  .rhero-content{ position:relative; z-index:2; padding:50px 24px 60px; max-width:1180px; margin:0 auto; width:100%; }
+  .rhero h1{ font-size:clamp(2.4rem, 6vw, 4rem); line-height:0.98; margin-top:16px; }
+  .rhero h1 em{ font-style:normal; background:linear-gradient(120deg, var(--leaf-bright), var(--leaf)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .rhero-lead{ margin-top:18px; max-width:600px; font-size:1.05rem; color:var(--text-2); line-height:1.6; }
+  .back-link{ display:inline-flex; align-items:center; gap:6px; margin-top:22px; font-size:0.85rem; font-weight:700; color:var(--leaf-bright); }
+
+  section{ position:relative; padding:80px 0; }
+  section.alt{ background:var(--bg-surface); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .section-head{ max-width:680px; margin-bottom:44px; }
+  .section-head h2{ font-size:clamp(1.7rem, 3.2vw, 2.4rem); margin-top:12px; }
+  .section-head p{ margin-top:14px; color:var(--text-2); font-size:1rem; line-height:1.65; }
+
+  /* CARDS */
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .grid2{ display:grid; grid-template-columns:repeat(2,1fr); gap:22px; }
+  .card{ background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; }
+  section.alt .card{ background:var(--bg-elevated); }
+  .card h3{ font-size:1.2rem; }
+  .card .tag{
+    display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:0.68rem;
+    letter-spacing:0.05em; text-transform:uppercase; color:var(--leaf-bright); background:rgba(111,184,92,0.12);
+    border:1px solid rgba(111,184,92,0.3); padding:4px 10px; border-radius:999px; margin-bottom:12px;
+  }
+  .card .tag.orange{ color:var(--caju-yellow); background:rgba(232,103,43,0.12); border-color:rgba(232,103,43,0.3); }
+  .card p.desc{ margin-top:10px; color:var(--text-2); font-size:0.9rem; line-height:1.6; }
+  .sched{
+    margin-top:14px; display:flex; flex-direction:column; gap:6px;
+  }
+  .sched-row{
+    display:flex; justify-content:space-between; gap:10px; font-size:0.82rem;
+    padding:8px 12px; background:var(--bg-elevated-2); border-radius:10px;
+  }
+  section.alt .sched-row{ background:var(--bg-surface); }
+  .sched-row .d{ color:var(--text-1); font-weight:700; }
+  .sched-row .t{ color:var(--text-3); font-family:'JetBrains Mono',monospace; font-size:0.76rem; }
+
+  .card-photo{ border-radius:14px; overflow:hidden; margin-bottom:16px; height:170px; }
+  .card-photo img{ width:100%; height:100%; object-fit:cover; }
+
+  /* RACE CARD */
+  .race-card{
+    background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px; display:flex; flex-direction:column; gap:12px;
+  }
+  section.alt .race-card{ background:var(--bg-elevated); }
+  .race-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  .race-date{
+    font-family:'JetBrains Mono',monospace; background:linear-gradient(120deg, var(--caju-yellow), var(--caju-orange));
+    color:#1a0f08; font-weight:700; font-size:0.78rem; padding:6px 12px; border-radius:999px; white-space:nowrap;
+  }
+  .race-card h3{ font-size:1.25rem; }
+  .race-modality{ font-size:0.76rem; color:var(--leaf-bright); font-weight:700; text-transform:uppercase; letter-spacing:0.04em; }
+  .race-meta{ display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+  .meta-pill{
+    font-size:0.76rem; color:var(--text-2); background:var(--bg-elevated-2); border:1px solid var(--line);
+    padding:5px 11px; border-radius:999px;
+  }
+  section.alt .meta-pill{ background:var(--bg-surface); }
+  .race-card p.desc{ color:var(--text-2); font-size:0.88rem; line-height:1.6; }
+  .race-org{
+    margin-top:auto; padding-top:12px; border-top:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+  .org-name{ font-size:0.82rem; color:var(--text-3); }
+  .org-link{
+    font-size:0.82rem; font-weight:700; color:var(--caju-yellow); display:inline-flex; align-items:center; gap:5px;
+  }
+  .org-link:hover{ color:var(--caju-orange-soft, #f0895a); }
+  .status-pill{
+    font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+    padding:4px 10px; border-radius:999px;
+  }
+  .status-confirmed{ background:rgba(111,184,92,0.16); color:var(--leaf-bright); border:1px solid rgba(111,184,92,0.35); }
+  .status-planned{ background:rgba(242,171,60,0.14); color:var(--caju-yellow); border:1px solid rgba(242,171,60,0.35); }
+
+  /* ORGANIZERS */
+  .org-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .org-card{
+    background:var(--bg-surface); border:1px solid var(--line); border-radius:16px; padding:20px;
+    display:flex; flex-direction:column; gap:8px; transition:transform .25s, border-color .25s;
+  }
+  .org-card:hover{ transform:translateY(-4px); border-color:rgba(111,184,92,0.4); }
+  .org-card .oc-icon{ font-size:1.5rem; }
+  .org-card h4{ font-size:1rem; font-family:'Baloo 2',sans-serif; }
+  .org-card p{ font-size:0.82rem; color:var(--text-2); line-height:1.5; }
+  .org-card a{ margin-top:auto; font-size:0.8rem; font-weight:700; color:var(--leaf-bright); display:inline-flex; align-items:center; gap:5px; }
+
+  .info-strip{
+    background:linear-gradient(120deg, rgba(232,103,43,0.12), rgba(242,171,60,0.08));
+    border:1px solid rgba(232,103,43,0.3); border-radius:18px; padding:22px 24px;
+    display:flex; gap:16px; align-items:flex-start; margin-top:28px;
+  }
+  .info-strip svg{ width:24px; height:24px; flex-shrink:0; color:var(--caju-orange); margin-top:2px; }
+  .info-strip p{ color:var(--text-1); font-size:0.92rem; line-height:1.65; }
+  .info-strip p + p{ margin-top:8px; color:var(--text-2); }
+
+  footer{ padding:50px 0 36px; border-top:1px solid var(--line); background:var(--bg-surface); }
+  .footer-inner{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+  footer p{ color:var(--text-3); font-size:0.85rem; }
+
+  @media (max-width:980px){
+    .grid3{ grid-template-columns:repeat(2,1fr); }
+    .org-grid{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width:700px){
+    nav.desktop-nav{ display:none; }
+    .hamburger{ display:flex; }
+    .grid3, .grid2, .org-grid{ grid-template-columns:1fr; }
+    section{ padding:56px 0; }
+    .rhero{ min-height:50vh; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo" aria-label="ARACaju Lazer — início">
+      <svg viewBox="0 0 64 64" fill="none" width="46" height="46" xmlns="http://www.w3.org/2000/svg">
+        <g class="logo-caju">
+          <path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/>
+          <path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad2)"/>
+        </g>
+        <defs>
+          <linearGradient id="cajuGrad2" x1="16" y1="20" x2="48" y2="56" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#f2ab3c"/><stop offset="1" stop-color="#e8672b"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="logo-text">
+        <span class="ara">ARA<img src="https://cdn-icons-png.flaticon.com/512/2909/2909808.png" alt="caju" style="height:0.85em; vertical-align:-0.12em; display:inline-block; margin:0 1px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><svg style="display:none; height:0.85em; vertical-align:-0.12em;" viewBox="0 0 64 64"><path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/><path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad2)"/></svg></span>
+        <span class="sub">Lazer · Aracaju/SE</span>
+      </span>
+    </a>
+    <nav class="desktop-nav">
+      <a href="index.html#sobre">A cidade</a>
+      <a href="index.html#mapa">Mapa</a>
+      <a href="index.html#parques">Parques</a>
+      <a href="index.html#outras">Praças &amp; orla</a>
+      <a href="running.html" class="active">Aracaju Running<span class="new-badge">novo</span></a>
+    </nav>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <a href="index.html#sobre"><span>01</span>A cidade</a>
+  <a href="index.html#mapa"><span>02</span>Mapa</a>
+  <a href="index.html#parques"><span>03</span>Parques</a>
+  <a href="index.html#outras"><span>04</span>Praças &amp; orla</a>
+  <a href="running.html"><span>05</span>Aracaju Running</a>
+</nav>
+
+<!-- HERO -->
+<section class="rhero">
+  <div class="rhero-bg"></div>
+  <div class="rhero-content">
+    <div class="eyebrow">Guia do corredor</div>
+    <h1>Aracaju <em>Running</em></h1>
+    <p class="rhero-lead">Onde treinar corrida de rua e trail, quais vias ficam reservadas para os corredores, e o calendário completo das provas que já rolam — ou estão previstas — na capital sergipana.</p>
+    <a href="index.html" class="back-link">← Voltar para Áreas de Lazer</a>
+  </div>
+</section>
+
+<!-- ONDE TREINAR -->
+<section id="treino">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Locais de treino</div>
+      <h2>Onde correr em Aracaju</h2>
+      <p>Os mesmos parques e praças do guia de lazer viraram point de treino — de pista plana para tiros e longões a trilha de terra para quem curte subir morro.</p>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Orla_Atalaia_-_Aracaju,_Sergipe_-_panoramio.jpg?width=500" alt="Orla de Atalaia, Aracaju"></div>
+        <span class="tag orange">Corrida de rua · Zona Sul</span>
+        <h3>Orla da Atalaia — Av. Santos Dumont</h3>
+        <p class="desc">A Área de Proteção para Prática do Ciclismo e Corrida (APPC) reserva um trecho de <strong>7 km (ida e volta)</strong>, do estacionamento da Cinelândia até o Farol da Coroa do Meio, com bloqueio total de veículos no sentido praias–Centro.</p>
+        <div class="sched">
+          <div class="sched-row"><span class="d">Terças e quintas</span><span class="t">4h – 6h</span></div>
+          <div class="sched-row"><span class="d">Sábados e feriados</span><span class="t">5h – 10h</span></div>
+        </div>
+        <p class="desc" style="margin-top:10px; font-size:0.78rem; color:var(--text-3);">⚠️ A área pode ser suspensa em datas de eventos especiais (Réveillon, São João, Projeto Verão) — vale checar o Instagram da Prefeitura antes de sair de casa.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/%C3%81rvore_de_Natal_de_Aracaju.jpg?width=500" alt="Parque da Sementeira, Aracaju"></div>
+        <span class="tag">Circuito de parque · Zona Sul</span>
+        <h3>Parque da Sementeira</h3>
+        <p class="desc">Depois da revitalização de 2025, o parque ganhou pistas próprias de corrida e ciclismo, separadas da caminhada, além de pontos de água e boa arborização para treinos longos com sombra durante quase todo o percurso.</p>
+        <div class="sched">
+          <div class="sched-row"><span class="d">Abertura do parque</span><span class="t">Diariamente</span></div>
+          <div class="sched-row"><span class="d">Melhor horário</span><span class="t">5h30 – 8h / 16h – 18h</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Telef%C3%A9rico_de_Aracaju.jpg?width=500" alt="Parque da Cidade, Morro do Urubu, Aracaju"></div>
+        <span class="tag">Trail run · Zona Norte</span>
+        <h3>Parque da Cidade — Morro do Urubu</h3>
+        <p class="desc">Único ponto da capital com relevo de verdade: trilhas de terra sobem o Morro do Urubu em meio a Mata Atlântica remanescente, com boa exigência de subida e descida. Ideal para treino de força e trail curto — leve tênis com aderência.</p>
+        <div class="sched">
+          <div class="sched-row"><span class="d">Acesso ao parque</span><span class="t">Diariamente, horário diurno</span></div>
+          <div class="sched-row"><span class="d">Trilha</span><span class="t">Informal, sem organização fixa</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rio_Sergipe_entre_Aracaju_e_Barra_dos_Coqueiros_01.jpg?width=500" alt="Parque dos Cajueiros, Aracaju"></div>
+        <span class="tag">Circuito de parque · Zona Sul</span>
+        <h3>Parque dos Cajueiros</h3>
+        <p class="desc">Ciclovias e pistas próprias margeando o Rio Poxim, num circuito mais curto e plano — bom para treinos regenerativos, séries curtas ou para quem está começando a correr.</p>
+        <div class="sched">
+          <div class="sched-row"><span class="d">Abertura do parque</span><span class="t">Diariamente</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Rio_Sergipe_entre_Aracaju_e_Barra_dos_Coqueiros_05.jpg?width=500" alt="Calçadão da Praia Formosa, Aracaju"></div>
+        <span class="tag">Corrida de rua · Zona Sul</span>
+        <h3>Calçadão da Praia Formosa</h3>
+        <p class="desc">Calçadão extenso e linear à beira do Rio Sergipe, com academias ao ar livre ao longo do trajeto — boa opção de treino no fim de tarde, quando o calor cai e o movimento aumenta (mais segurança).</p>
+        <div class="sched">
+          <div class="sched-row"><span class="d">Melhor horário</span><span class="t">16h – 18h30</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Palmeiras_Imperiais_da_Pra%C3%A7a_Fausto_Cardoso_Aracaju_Sergipe_2022-5978.jpg?width=500" alt="Praça Fausto Cardoso, Centro de Aracaju"></div>
+        <span class="tag">Largada de prova · Centro</span>
+        <h3>Complexo de Praças do Centro</h3>
+        <p class="desc">Coração das grandes provas da cidade: é ali, na Praça Fausto Cardoso, que termina a tradicional Corrida Cidade de Aracaju, e a região costuma ter ruas interditadas em dias de evento.</p>
+        <div class="sched">
+          <div class="sched-row"><span class="d">Interdições</span><span class="t">Variam por evento — ver SMTT</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-strip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      <div>
+        <p><strong>Ruas interditadas para treino:</strong> além da Orla, é comum a Superintendência Municipal de Transportes e Trânsito (SMTT) bloquear temporariamente vias como a Av. Delmiro Gouveia, a Av. Inácio Barbosa e trechos do Centro em dias de prova oficial — os horários exatos são divulgados semana a semana pela SMTT.</p>
+        <p>Sempre confira os canais oficiais da Prefeitura de Aracaju antes de treinar na Orla em fins de semana ou feriados, pois a APPC pode ser suspensa por eventos especiais.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROVAS DE RUA -->
+<section class="alt" id="provas-rua">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Calendário oficial</div>
+      <h2>Provas de corrida de rua</h2>
+      <p>As principais provas de asfalto que já acontecem em Aracaju, com todos os detalhes públicos disponíveis até o momento.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="race-card">
+        <div class="race-top">
+          <div>
+            <div class="race-modality">Corrida de rua · Pública / gratuita</div>
+            <h3>Corrida Cidade de Aracaju</h3>
+          </div>
+          <span class="race-date">28 mar 2026</span>
+        </div>
+        <div class="race-meta">
+          <span class="meta-pill">5 km · 10 km · 24 km</span>
+          <span class="meta-pill">12.000 vagas</span>
+          <span class="meta-pill">41ª edição</span>
+        </div>
+        <p class="desc">Considerada a maior corrida pública do Brasil, faz parte das comemorações de aniversário da capital. Largadas: 5 km na Av. Marechal Cândido Rondon; 10 km na rótula de entrada do bairro Eduardo Gomes (São Cristóvão); 24 km na Praça do Carmo (São Cristóvão). Chegada na Praça Fausto Cardoso, no Centro. Transporte gratuito é oferecido até os pontos de largada.</p>
+        <div class="race-org">
+          <span class="status-pill status-confirmed">Confirmada</span>
+          <span class="org-name">Prefeitura de Aracaju · Sejesp</span>
+          <a class="org-link" href="https://www.aracaju.se.gov.br" target="_blank" rel="noopener">Site oficial ↗</a>
+        </div>
+      </div>
+
+      <div class="race-card">
+        <div class="race-top">
+          <div>
+            <div class="race-modality">Corrida de rua · Paga</div>
+            <h3>Maratona de Aracaju</h3>
+          </div>
+          <span class="race-date">31 out – 1 nov 2026</span>
+        </div>
+        <div class="race-meta">
+          <span class="meta-pill">5 km · 10 km · 21 km · 42 km</span>
+          <span class="meta-pill">Desafio</span>
+          <span class="meta-pill">Maratoninha (kids)</span>
+        </div>
+        <p class="desc">Prova de dois dias com largada na Praça de Eventos da Orla (Av. Santos Dumont). Em 2025 reuniu mais de 10 mil pessoas entre atletas e público, consolidando-se como uma das maiores provas do Nordeste.</p>
+        <div class="race-org">
+          <span class="status-pill status-confirmed">Confirmada</span>
+          <span class="org-name">Speed Produções e Eventos</span>
+          <a class="org-link" href="https://www.ticketsports.com.br/e/maratona-de-aracaju-2026-74615" target="_blank" rel="noopener">Inscrições · Ticket Sports ↗</a>
+        </div>
+      </div>
+
+      <div class="race-card">
+        <div class="race-top">
+          <div>
+            <div class="race-modality">Corrida de rua · Circuito nacional</div>
+            <h3>Corrida Nacional do SESI — Aracaju</h3>
+          </div>
+          <span class="race-date">30 abr 2026</span>
+        </div>
+        <div class="race-meta">
+          <span class="meta-pill">5 km · 10 km</span>
+          <span class="meta-pill">Caminhada</span>
+        </div>
+        <p class="desc">Etapa sergipana do maior circuito de corridas do país, com retirada de kit no Shopping RioMar. Desconto de 50% para atletas 60+; idade mínima de 14 anos (5 km) e 16 anos (10 km).</p>
+        <div class="race-org">
+          <span class="status-pill status-confirmed">Confirmada</span>
+          <span class="org-name">SESI Nacional</span>
+          <a class="org-link" href="https://www.onsportsoficial.com.br/evento/2183/corrida-nacional-do-sesi-2026-aracaju-se" target="_blank" rel="noopener">Inscrições · ON Sports ↗</a>
+        </div>
+      </div>
+
+      <div class="race-card">
+        <div class="race-top">
+          <div>
+            <div class="race-modality">Corrida de rua</div>
+            <h3>Corrida do Fogo</h3>
+          </div>
+          <span class="race-date">4 jul 2026</span>
+        </div>
+        <div class="race-meta">
+          <span class="meta-pill">9ª edição</span>
+        </div>
+        <p class="desc">Prova tradicional promovida pelo Corpo de Bombeiros Militar de Sergipe, com foco em confraternização entre a corporação e a comunidade corredora local.</p>
+        <div class="race-org">
+          <span class="status-pill status-confirmed">Confirmada</span>
+          <span class="org-name">Corpo de Bombeiros Militar de SE</span>
+          <a class="org-link" href="https://www.corridasemsergipe.com.br/calendario/2026.html" target="_blank" rel="noopener">Ver no calendário ↗</a>
+        </div>
+      </div>
+
+      <div class="race-card">
+        <div class="race-top">
+          <div>
+            <div class="race-modality">Corrida de rua · Circuito nacional</div>
+            <h3>Circuito das Estações — Aracaju</h3>
+          </div>
+          <span class="race-date">Sazonal</span>
+        </div>
+        <div class="race-meta">
+          <span class="meta-pill">5 km · 10 km</span>
+        </div>
+        <p class="desc">Edição sergipana do tradicional circuito que percorre o Brasil marcando as estações do ano, com prova de 10K e kit temático.</p>
+        <div class="race-org">
+          <span class="status-pill status-confirmed">Confirmada</span>
+          <span class="org-name">Ativo Assessoria Esportiva</span>
+          <a class="org-link" href="https://www.ativo.com/calendario/eventos/america-do-sul/br/se/aracaju/corrida-de-rua/40021/circuito-das-estacoes-2026-inverno-aracaju/" target="_blank" rel="noopener">Ver na Ativo.com ↗</a>
+        </div>
+      </div>
+
+      <div class="race-card">
+        <div class="race-top">
+          <div>
+            <div class="race-modality">Corrida de rua · Diversas provas</div>
+            <h3>Calendário Speed Produções</h3>
+          </div>
+          <span class="race-date">Ao longo de 2026</span>
+        </div>
+        <div class="race-meta">
+          <span class="meta-pill">Aracaju Tropical Run</span>
+          <span class="meta-pill">Sunset Run</span>
+          <span class="meta-pill">Night Race</span>
+          <span class="meta-pill">Electric Run</span>
+          <span class="meta-pill">Maratoninha Kids</span>
+          <span class="meta-pill">Zé do Bairro</span>
+        </div>
+        <p class="desc">A Speed Produções, mesma organizadora da Maratona de Aracaju, lançou um calendário anual com provas noturnas, temáticas e infantis espalhadas pelo ano — datas específicas divulgadas gradualmente nas redes da organizadora.</p>
+        <div class="race-org">
+          <span class="status-pill status-planned">Datas a confirmar</span>
+          <span class="org-name">Speed Produções e Eventos</span>
+          <a class="org-link" href="https://www.corridasemsergipe.com.br/" target="_blank" rel="noopener">Acompanhar ↗</a>
+        </div>
+      </div>
+
+      <div class="race-card">
+        <div class="race-top">
+          <div>
+            <div class="race-modality">Corrida de rua</div>
+            <h3>Corrida dos Bancários</h3>
+          </div>
+          <span class="race-date">5 set 2026</span>
+        </div>
+        <div class="race-meta">
+          <span class="meta-pill">13ª edição</span>
+        </div>
+        <p class="desc">Prova tradicional da categoria bancária de Sergipe, aberta ao público em geral.</p>
+        <div class="race-org">
+          <span class="status-pill status-confirmed">Confirmada</span>
+          <span class="org-name">Conceito Soluções Esportivas</span>
+          <a class="org-link" href="https://conceito-se.com/categoria-produto/corrida/" target="_blank" rel="noopener">Inscrições ↗</a>
+        </div>
+      </div>
+
+      <div class="race-card">
+        <div class="race-top">
+          <div>
+            <div class="race-modality">Corrida de rua · Prevista para 2027</div>
+            <h3>Corrida ABAVSE</h3>
+          </div>
+          <span class="race-date">2 mai 2027</span>
+        </div>
+        <div class="race-meta">
+          <span class="meta-pill">2,5 km · 5 km · 10 km</span>
+        </div>
+        <p class="desc">Uma das primeiras provas de 2027 já sinalizadas nos agregadores de corrida para Aracaju, promovida pela Associação Brasileira de Agências de Viagens de Sergipe (ABAVSE) em parceria com a organizadora.</p>
+        <div class="race-org">
+          <span class="status-pill status-planned">Prevista</span>
+          <span class="org-name">ABAVSE + Conceito Soluções Esportivas</span>
+          <a class="org-link" href="https://brasilquecorre.com/sergipe" target="_blank" rel="noopener">Ver detalhes ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAIL RUN -->
+<section id="trail">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">A outra modalidade</div>
+      <h2>Trail run em Aracaju</h2>
+      <p>Diferente da corrida de rua, o trail run ainda é uma modalidade emergente na capital — mas já tem seu point natural.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <span class="tag">Terreno natural</span>
+        <h3>Morro do Urubu (Parque da Cidade)</h3>
+        <p class="desc">É o principal terreno de trilha dentro da cidade: subidas e descidas em meio à Mata Atlântica remanescente, no único parque da capital com esse tipo de relevo. Hoje o uso é predominantemente informal — corredores organizam treinos em grupo por conta própria, sem prova oficial fixa realizada dentro do parque até o momento.</p>
+      </div>
+      <div class="card">
+        <span class="tag orange">Fique de olho</span>
+        <h3>Provas regionais de trail</h3>
+        <p class="desc">Sergipe já aparece em calendários nacionais de trail run com provas no interior do estado, fora da capital. Para quem é de Aracaju e quer migrar para o trail, os agregadores abaixo costumam anunciar primeiro qualquer nova edição realizada na Grande Aracaju.</p>
+      </div>
+    </div>
+    <div class="info-strip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      <p>Não encontramos, até a data desta publicação, uma prova oficial de trail run organizada dentro dos limites de Aracaju. Assim que uma edição for anunciada, ela será adicionada aqui — os agregadores da seção de organizadores abaixo são a fonte mais rápida de atualização.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ORGANIZADORES -->
+<section class="alt" id="organizadores">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Quem organiza</div>
+      <h2>Organizadores, terceirizadas e onde se inscrever</h2>
+      <p>Plataformas oficiais de inscrição e agregadores que reúnem o calendário mais atualizado de corridas em Aracaju e Sergipe.</p>
+    </div>
+    <div class="org-grid">
+      <div class="org-card">
+        <div class="oc-icon">🏛️</div>
+        <h4>Prefeitura de Aracaju (Sejesp)</h4>
+        <p>Organiza a Corrida Cidade de Aracaju e divulga interdições de trânsito da SMTT.</p>
+        <a href="https://www.aracaju.se.gov.br" target="_blank" rel="noopener">aracaju.se.gov.br ↗</a>
+      </div>
+      <div class="org-card">
+        <div class="oc-icon">🎟️</div>
+        <h4>Ticket Sports</h4>
+        <p>Plataforma oficial de inscrição da Maratona de Aracaju.</p>
+        <a href="https://www.ticketsports.com.br" target="_blank" rel="noopener">ticketsports.com.br ↗</a>
+      </div>
+      <div class="org-card">
+        <div class="oc-icon">🏃</div>
+        <h4>Speed Produções e Eventos</h4>
+        <p>Organizadora da Maratona de Aracaju e do calendário anual de provas temáticas.</p>
+        <a href="https://www.corridasemsergipe.com.br/" target="_blank" rel="noopener">Acompanhar ↗</a>
+      </div>
+      <div class="org-card">
+        <div class="oc-icon">📋</div>
+        <h4>ON Sports</h4>
+        <p>Inscrições da Corrida Nacional do SESI, etapa Aracaju/SE.</p>
+        <a href="https://www.onsportsoficial.com.br" target="_blank" rel="noopener">onsportsoficial.com.br ↗</a>
+      </div>
+      <div class="org-card">
+        <div class="oc-icon">🗓️</div>
+        <h4>Ativo Assessoria Esportiva</h4>
+        <p>Organiza o Circuito das Estações e outras provas do calendário nacional em Aracaju.</p>
+        <a href="https://www.ativo.com" target="_blank" rel="noopener">ativo.com ↗</a>
+      </div>
+      <div class="org-card">
+        <div class="oc-icon">🏅</div>
+        <h4>Conceito Soluções Esportivas</h4>
+        <p>Organizadora local de provas como a Corrida dos Bancários e a etapa ABAVSE 2027.</p>
+        <a href="https://conceito-se.com" target="_blank" rel="noopener">conceito-se.com ↗</a>
+      </div>
+      <div class="org-card">
+        <div class="oc-icon">📍</div>
+        <h4>Corridas em Sergipe</h4>
+        <p>Maior calendário independente e atualizado de corridas do estado, mantido pela comunidade local de corredores.</p>
+        <a href="https://www.corridasemsergipe.com.br" target="_blank" rel="noopener">corridasemsergipe.com.br ↗</a>
+      </div>
+      <div class="org-card">
+        <div class="oc-icon">🌐</div>
+        <h4>Agregadores nacionais</h4>
+        <p>Corrida360, Corridinhas e Brasil Que Corre também listam provas de Aracaju, incluindo edições já previstas para 2027.</p>
+        <a href="https://corrida360.com.br/corridas/se/aracaju" target="_blank" rel="noopener">corrida360.com.br ↗</a>
+      </div>
+    </div>
+
+    <div class="info-strip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.58 7-13A7 7 0 0 0 5 9c0 5.42 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <div>
+        <p><strong>Datas e regulamentos mudam com frequência.</strong> As informações desta página foram reunidas a partir de fontes públicas e podem já ter sido atualizadas pelos próprios organizadores — confirme sempre no site oficial da prova antes de se inscrever ou de planejar sua viagem.</p>
+        <p>Provas anteriores (histórico de edições passadas) e anúncios futuros para 2027 costumam ser publicados primeiro nas redes sociais das organizadoras e no calendário do Corridas em Sergipe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <a href="index.html" class="logo">
+      <svg viewBox="0 0 64 64" fill="none" width="34" height="34">
+        <path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/>
+        <path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad2)"/>
+      </svg>
+      <span class="logo-text"><span class="ara" style="font-size:1.15rem;">ARAcaju</span></span>
+    </a>
+    <p>Aracaju Running · parte do guia independente ARACaju Lazer. Fotos: Wikimedia Commons.</p>
+  </div>
+</footer>
+
+<script>
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileNav = document.getElementById('mobileNav');
+hamburgerBtn.addEventListener('click', ()=>{
+  const isOpen = mobileNav.classList.toggle('open');
+  hamburgerBtn.classList.toggle('open', isOpen);
+  hamburgerBtn.setAttribute('aria-expanded', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+});
+mobileNav.querySelectorAll('a').forEach(a=>{
+  a.addEventListener('click', ()=>{
+    mobileNav.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+</script>
+</body>
+</html>
