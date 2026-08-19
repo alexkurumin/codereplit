@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARACaju Lazer — Áreas de Lazer em Aracaju/SE</title>
+<meta name="description" content="Guia completo dos parques, praças e calçadões de Aracaju/SE — todos de acesso gratuito.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0e1912;
+    --bg-surface:#152419;
+    --bg-elevated:#1c3120;
+    --bg-elevated-2:#213a26;
+    --line: rgba(216,230,214,0.09);
+    --caju-orange:#e8672b;
+    --caju-orange-soft: #f0895a;
+    --caju-yellow:#f2ab3c;
+    --leaf:#6fb85c;
+    --leaf-deep:#3f7a3e;
+    --leaf-bright:#8fd47a;
+    --text-1:#f3f1e6;
+    --text-2:#c4d0c2;
+    --text-3:#8ea38d;
+    --shadow-lg: 0 24px 60px -20px rgba(0,0,0,0.6);
+    --radius: 20px;
+    --radius-sm: 12px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 120% 60% at 50% -10%, rgba(111,184,92,0.10), transparent 60%),
+      var(--bg-deep);
+    color:var(--text-1);
+    font-family:'Manrope', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{
+    font-family:'Baloo 2', sans-serif;
+    margin:0;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  p{ margin:0; }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  button{ font-family:inherit; cursor:pointer; }
+  ::selection{ background:var(--caju-orange); color:#1a0f08; }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--leaf-bright);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:18px; height:2px;
+    background:var(--caju-orange);
+    display:inline-block;
+    border-radius:2px;
+  }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* ---------- HEADER ---------- */
+  header.site-header{
+    position:fixed; top:0; left:0; right:0;
+    z-index:200;
+    backdrop-filter: blur(14px) saturate(140%);
+    background:rgba(14,25,18,0.72);
+    border-bottom:1px solid var(--line);
+  }
+  .header-inner{
+    max-width:1180px; margin:0 auto;
+    padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo svg{ width:46px; height:46px; flex-shrink:0; }
+  .logo-caju{ transform-origin: 50% 85%; animation: sway 5s ease-in-out infinite; }
+  @keyframes sway{
+    0%,100%{ transform:rotate(-3deg); }
+    50%{ transform:rotate(3deg); }
+  }
+  .logo-text{ line-height:1; }
+  .logo-text .ara{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:1.5rem;
+    letter-spacing:0.01em;
+    background:linear-gradient(120deg, var(--caju-yellow), var(--caju-orange) 70%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .logo-text .sub{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.6rem;
+    letter-spacing:0.16em;
+    color:var(--text-3);
+    text-transform:uppercase;
+    margin-top:2px;
+  }
+
+  nav.desktop-nav{ display:flex; align-items:center; gap:2px; }
+  nav.desktop-nav a{
+    padding:9px 16px;
+    border-radius:999px;
+    font-size:0.9rem;
+    font-weight:600;
+    color:var(--text-2);
+    transition: all .25s ease;
+    position:relative;
+  }
+  nav.desktop-nav a:hover{ color:var(--text-1); background:var(--bg-elevated); }
+
+  .hamburger{
+    display:none;
+    width:44px; height:44px;
+    border-radius:12px;
+    background:var(--bg-elevated);
+    border:1px solid var(--line);
+    align-items:center; justify-content:center;
+    flex-direction:column; gap:5px;
+  }
+  .hamburger span{
+    width:20px; height:2px; background:var(--text-1); border-radius:2px;
+    transition: all .3s cubic-bezier(.6,0,.3,1);
+  }
+  .hamburger.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2){ opacity:0; }
+  .hamburger.open span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-nav{
+    position:fixed; inset:0; z-index:190;
+    background: linear-gradient(180deg, #10201580, #0e1912 40%), var(--bg-deep);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px;
+    opacity:0; visibility:hidden; transform:translateY(-12px);
+    transition: all .35s cubic-bezier(.4,0,.2,1);
+  }
+  .mobile-nav.open{ opacity:1; visibility:visible; transform:translateY(0); }
+  .mobile-nav a{
+    font-family:'Baloo 2', sans-serif;
+    font-size:1.6rem;
+    font-weight:700;
+    color:var(--text-1);
+    padding:14px 10px;
+  }
+  .mobile-nav a span{ color:var(--caju-orange); font-family:'JetBrains Mono',monospace; font-size:0.9rem; margin-right:10px; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; align-items:flex-end;
+    padding-top:110px;
+    overflow:hidden;
+  }
+  .hero-bg{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(180deg, rgba(14,25,18,0.35) 0%, rgba(14,25,18,0.55) 55%, var(--bg-deep) 96%),
+      url('https://commons.wikimedia.org/wiki/Special:FilePath/Orla_Atalaia_-_Aracaju,_Sergipe_-_panoramio.jpg?width=1600');
+    background-size:cover;
+    background-position:center 65%;
+    filter:saturate(1.05);
+  }
+  .hero-content{
+    position:relative; z-index:2;
+    padding:60px 24px 72px;
+    max-width:1180px; margin:0 auto; width:100%;
+  }
+  .hero h1{
+    font-size:clamp(2.4rem, 6vw, 4.6rem);
+    line-height:0.98;
+    max-width:780px;
+    color:var(--text-1);
+    margin-top:18px;
+  }
+  .hero h1 em{
+    font-style:normal;
+    background:linear-gradient(120deg, var(--leaf-bright), var(--leaf));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero-lead{
+    margin-top:22px;
+    max-width:560px;
+    font-size:1.08rem;
+    color:var(--text-2);
+    line-height:1.6;
+  }
+  .hero-stats{
+    display:flex; flex-wrap:wrap; gap:12px;
+    margin-top:34px;
+  }
+  .stat-chip{
+    display:flex; align-items:center; gap:10px;
+    background:rgba(21,36,25,0.75);
+    border:1px solid var(--line);
+    padding:10px 16px;
+    border-radius:999px;
+    backdrop-filter:blur(6px);
+  }
+  .stat-chip .num{
+    font-family:'Baloo 2',sans-serif; font-weight:800; font-size:1.1rem;
+    color:var(--caju-yellow);
+  }
+  .stat-chip .lbl{ font-size:0.78rem; color:var(--text-2); }
+  .scroll-cue{
+    position:absolute; bottom:26px; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    color:var(--text-3); font-size:0.7rem; font-family:'JetBrains Mono',monospace;
+    letter-spacing:0.1em; text-transform:uppercase;
+    animation: bob 2.2s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translate(-50%,0);} 50%{transform:translate(-50%,8px);} }
+
+  /* ---------- SECTIONS ---------- */
+  section{ position:relative; padding:96px 0; }
+  .section-head{ max-width:640px; margin-bottom:52px; }
+  .section-head h2{ font-size:clamp(1.9rem, 3.6vw, 2.7rem); margin-top:14px; }
+  .section-head p{ margin-top:16px; color:var(--text-2); font-size:1.02rem; line-height:1.65; }
+
+  #sobre{ padding-top:60px; }
+  .sobre-grid{
+    display:grid; grid-template-columns: 1.2fr 0.8fr; gap:40px; align-items:center;
+  }
+  .sobre-card{
+    background:var(--bg-surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:32px;
+  }
+  .free-badge{
+    display:inline-flex; align-items:center; gap:10px;
+    background: linear-gradient(120deg, rgba(111,184,92,0.16), rgba(242,171,60,0.12));
+    border:1px solid rgba(111,184,92,0.35);
+    padding:10px 18px; border-radius:999px;
+    font-weight:700; color:var(--leaf-bright); font-size:0.92rem;
+    margin-bottom:18px;
+  }
+  .sobre-card p{ color:var(--text-2); line-height:1.7; font-size:0.98rem; }
+  .sobre-card p + p{ margin-top:14px; }
+
+  .mini-map-teaser{
+    aspect-ratio: 4/5;
+    border-radius:var(--radius);
+    background: linear-gradient(160deg, var(--bg-elevated), var(--bg-surface));
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .mini-map-teaser svg{ width:80%; opacity:0.9; }
+
+  /* ---------- MAP SECTION ---------- */
+  #mapa{ background:var(--bg-surface); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .map-shell{
+    position:relative;
+    border-radius:var(--radius);
+    overflow:hidden;
+    background: linear-gradient(160deg,#1a3322, #0f1e15 70%);
+    border:1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+  }
+  .map-shell svg{ width:100%; height:auto; display:block; }
+  .map-legend{
+    display:flex; flex-wrap:wrap; gap:10px 22px;
+    margin-top:20px; font-size:0.82rem; color:var(--text-3);
+  }
+  .map-legend span{ display:inline-flex; align-items:center; gap:8px; }
+  .legend-dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+
+  .map-pin{ cursor:pointer; }
+  .map-pin circle.pulse{
+    animation: pinpulse 2.4s ease-out infinite;
+    transform-origin:center;
+  }
+  @keyframes pinpulse{
+    0%{ opacity:0.55; transform:scale(1); }
+    70%{ opacity:0; transform:scale(2.6); }
+    100%{ opacity:0; transform:scale(2.6); }
+  }
+  .map-pin .pin-core{ transition: transform .25s ease; }
+  .map-pin:hover .pin-core{ transform:scale(1.25); }
+  .map-pin text{
+    font-family:'Manrope', sans-serif; font-weight:700; font-size:10px;
+    fill:var(--text-1); pointer-events:none;
+  }
+
+  /* ---------- CARDS GRID ---------- */
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  .card-grid.two{ grid-template-columns:repeat(2, 1fr); }
+
+  .park-card{
+    background:var(--bg-surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    cursor:pointer;
+    position:relative;
+    transition: transform .35s cubic-bezier(.2,.7,.3,1), border-color .35s;
+    opacity:0; transform:translateY(28px);
+  }
+  .park-card.in-view{ opacity:1; transform:translateY(0); }
+  .park-card:hover{ transform:translateY(-6px); border-color:rgba(111,184,92,0.4); }
+  .park-card .thumb{
+    height:210px; overflow:hidden; position:relative;
+    background:var(--bg-elevated);
+  }
+  .park-card .thumb img{
+    width:100%; height:100%; object-fit:cover;
+    transition: transform .6s cubic-bezier(.2,.7,.3,1);
+  }
+  .park-card:hover .thumb img{ transform:scale(1.08); }
+  .park-card .thumb::after{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 40%, rgba(14,25,18,0.9));
+  }
+  .zone-tag{
+    position:absolute; top:14px; left:14px; z-index:2;
+    background:rgba(14,25,18,0.75);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--leaf-bright);
+    padding:6px 12px; border-radius:999px;
+    font-size:0.7rem; font-weight:700; letter-spacing:0.04em;
+    font-family:'JetBrains Mono',monospace;
+    backdrop-filter:blur(4px);
+  }
+  .park-card .body{ padding:22px; }
+  .park-card h3{ font-size:1.28rem; line-height:1.15; }
+  .park-card .official{ font-size:0.78rem; color:var(--text-3); margin-top:4px; }
+  .park-card .teaser{ margin-top:12px; color:var(--text-2); font-size:0.9rem; line-height:1.55; }
+  .park-card .tap-row{
+    margin-top:18px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .area-pill{
+    font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--caju-yellow);
+  }
+  .tap-hint{
+    display:flex; align-items:center; gap:6px;
+    font-size:0.8rem; font-weight:700; color:var(--leaf-bright);
+  }
+  .tap-hint svg{ width:14px; height:14px; transition:transform .3s; }
+  .park-card:hover .tap-hint svg{ transform:translateX(4px); }
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; z-index:300;
+    background:rgba(8,14,10,0.72);
+    backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+    opacity:0; visibility:hidden;
+    transition: opacity .3s ease, visibility .3s;
+  }
+  .modal-overlay.open{ opacity:1; visibility:visible; }
+  .modal-card{
+    background:var(--bg-surface);
+    border:1px solid var(--line);
+    border-radius:24px;
+    max-width:820px; width:100%;
+    max-height:88vh;
+    overflow-y:auto;
+    box-shadow:var(--shadow-lg);
+    transform: translateY(24px) scale(0.97);
+    opacity:0;
+    transition: transform .38s cubic-bezier(.2,.8,.2,1), opacity .32s ease;
+  }
+  .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); opacity:1; }
+  .modal-hero{
+    position:relative; height:280px;
+    background:var(--bg-elevated);
+  }
+  .modal-hero img{ width:100%; height:100%; object-fit:cover; }
+  .modal-hero::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(14,25,18,0) 40%, var(--bg-surface) 100%);
+  }
+  .modal-close{
+    position:absolute; top:16px; right:16px; z-index:5;
+    width:40px; height:40px; border-radius:50%;
+    background:rgba(14,25,18,0.7); border:1px solid rgba(255,255,255,0.16);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--text-1);
+  }
+  .modal-close svg{ width:18px; height:18px; }
+  .modal-title-block{
+    position:absolute; bottom:18px; left:28px; right:28px; z-index:2;
+  }
+  .modal-title-block .zone-tag{ position:static; display:inline-flex; margin-bottom:10px; }
+  .modal-title-block h3{ font-size:1.9rem; color:var(--text-1); }
+  .modal-title-block .official{ color:var(--text-2); font-size:0.85rem; margin-top:4px; }
+
+  .modal-body{ padding:8px 28px 32px; }
+  .modal-stats{
+    display:flex; flex-wrap:wrap; gap:10px;
+    margin:18px 0 26px;
+  }
+  .modal-stats .stat-chip{ background:var(--bg-elevated); }
+
+  .info-block{ padding:18px 0; border-top:1px solid var(--line); }
+  .info-block:first-of-type{ border-top:none; padding-top:0; }
+  .info-block .ib-label{
+    display:flex; align-items:center; gap:9px;
+    font-family:'JetBrains Mono',monospace; font-size:0.72rem;
+    letter-spacing:0.08em; text-transform:uppercase; color:var(--leaf-bright);
+    margin-bottom:8px;
+  }
+  .info-block .ib-label svg{ width:15px; height:15px; }
+  .info-block p{ color:var(--text-2); line-height:1.7; font-size:0.95rem; }
+
+  .tip-box{
+    margin-top:8px;
+    background: linear-gradient(120deg, rgba(232,103,43,0.12), rgba(242,171,60,0.08));
+    border:1px solid rgba(232,103,43,0.3);
+    border-radius:16px;
+    padding:18px 20px;
+    display:flex; gap:14px;
+  }
+  .tip-box svg{ width:22px; height:22px; flex-shrink:0; color:var(--caju-orange); }
+  .tip-box p{ color:var(--text-1); font-size:0.92rem; line-height:1.6; }
+
+  .modal-gallery{ display:flex; gap:10px; margin-top:6px; overflow-x:auto; padding-bottom:4px; }
+  .modal-gallery img{
+    height:100px; width:150px; object-fit:cover; border-radius:10px; flex-shrink:0;
+    border:1px solid var(--line);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding:56px 0 40px;
+    border-top:1px solid var(--line);
+    background:var(--bg-surface);
+  }
+  .footer-inner{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;
+  }
+  footer p{ color:var(--text-3); font-size:0.85rem; }
+  footer .logo{ opacity:0.9; }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 980px){
+    .card-grid, .card-grid.two{ grid-template-columns:repeat(2,1fr); }
+    .sobre-grid{ grid-template-columns:1fr; }
+    .mini-map-teaser{ aspect-ratio: 16/9; }
+  }
+  @media (max-width: 700px){
+    nav.desktop-nav{ display:none; }
+    .hamburger{ display:flex; }
+    .card-grid, .card-grid.two{ grid-template-columns:1fr; }
+    section{ padding:64px 0; }
+    .hero{ min-height:92vh; }
+    .modal-hero{ height:200px; }
+    .modal-title-block h3{ font-size:1.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+
+  /* ---------- NAV: link novo (Running) ---------- */
+  .new-badge{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.58rem;
+    background:var(--caju-orange);
+    color:#1a0f08;
+    padding:2px 6px;
+    border-radius:6px;
+    margin-left:6px;
+    font-weight:700;
+    vertical-align:2px;
+  }
+  .run-link{ display:inline-flex; align-items:center; }
+
+  /* ---------- WELCOME BAR ---------- */
+  #welcomeBar{
+    display:none;
+    position:fixed; top:74px; left:0; right:0; z-index:150;
+    background:linear-gradient(120deg, rgba(232,103,43,0.16), rgba(111,184,92,0.1));
+    border-bottom:1px solid var(--line);
+    backdrop-filter:blur(10px);
+  }
+  #welcomeBar.show{ display:block; animation: barIn .5s ease; }
+  @keyframes barIn{ from{ opacity:0; transform:translateY(-10px); } to{ opacity:1; transform:translateY(0); } }
+  .wb-inner{
+    max-width:1180px; margin:0 auto; padding:10px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+  }
+  .wb-left{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .wb-name{
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:1.15rem;
+    color:var(--caju-yellow);
+  }
+  .wb-greet{ font-size:0.9rem; color:var(--text-2); }
+  .wb-privacy{
+    font-size:0.74rem; color:var(--text-3);
+    display:flex; align-items:center; gap:6px;
+  }
+  .wb-privacy svg{ width:13px; height:13px; flex-shrink:0; color:var(--leaf-bright); }
+  .wb-actions{ display:flex; gap:8px; align-items:center; }
+  .wb-btn{
+    font-size:0.76rem; font-weight:700; color:var(--text-2);
+    background:var(--bg-elevated); border:1px solid var(--line);
+    padding:6px 12px; border-radius:999px;
+  }
+  .wb-btn:hover{ color:var(--text-1); border-color:var(--leaf); }
+
+  /* ---------- ONBOARDING MODAL ---------- */
+  #onboardOverlay{
+    position:fixed; inset:0; z-index:400;
+    background:rgba(8,14,10,0.8);
+    backdrop-filter:blur(8px);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    opacity:0; visibility:hidden;
+    transition:opacity .35s ease, visibility .35s;
+  }
+  #onboardOverlay.open{ opacity:1; visibility:visible; }
+  .onboard-card{
+    background:var(--bg-surface);
+    border:1px solid var(--line);
+    border-radius:24px;
+    max-width:420px; width:100%;
+    padding:32px 30px 26px;
+    text-align:center;
+    box-shadow:var(--shadow-lg);
+    transform:translateY(20px) scale(.96); opacity:0;
+    transition:transform .4s cubic-bezier(.2,.8,.2,1), opacity .3s ease;
+  }
+  #onboardOverlay.open .onboard-card{ transform:translateY(0) scale(1); opacity:1; }
+  .onboard-emoji{
+    width:56px; height:56px; margin:0 auto 14px;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg, var(--caju-yellow), var(--caju-orange));
+    border-radius:50%;
+    font-size:1.6rem;
+  }
+  .onboard-card h3{ font-size:1.4rem; color:var(--text-1); }
+  .onboard-sub{ margin-top:6px; color:var(--text-2); font-size:0.95rem; }
+  .onboard-input{
+    width:100%; margin-top:20px;
+    background:var(--bg-elevated);
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:13px 16px;
+    color:var(--text-1);
+    font-family:'Manrope', sans-serif;
+    font-size:1rem;
+    outline:none;
+    transition:border-color .25s;
+  }
+  .onboard-input:focus{ border-color:var(--leaf); }
+  .onboard-input.shake{ animation: shake .4s ease; border-color:var(--caju-orange); }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-6px); }
+    75%{ transform:translateX(6px); }
+  }
+  .onboard-buttons{ display:flex; gap:10px; margin-top:20px; }
+  .btn-primary, .btn-ghost{
+    flex:1; padding:13px 18px; border-radius:999px;
+    font-weight:700; font-size:0.95rem;
+    font-family:'Manrope', sans-serif;
+    border:none; transition: transform .2s ease, opacity .2s;
+  }
+  .btn-primary{
+    background:linear-gradient(120deg, var(--caju-yellow), var(--caju-orange));
+    color:#1a0f08;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); }
+  .btn-ghost{
+    background:transparent; border:1.5px solid var(--line); color:var(--text-2);
+  }
+  .btn-ghost:hover{ border-color:rgba(255,255,255,0.3); color:var(--text-1); }
+  .onboard-foot{
+    margin-top:16px; font-size:0.78rem; color:var(--text-3);
+  }
+
+  /* ---------- TOUR ---------- */
+  #tourSpotlight{
+    position:absolute; z-index:500;
+    border-radius:16px;
+    box-shadow: 0 0 0 9999px rgba(8,14,10,0.78);
+    border:2px solid var(--caju-orange);
+    transition: top .45s cubic-bezier(.4,0,.2,1), left .45s cubic-bezier(.4,0,.2,1), width .45s, height .45s, opacity .3s;
+    pointer-events:none;
+    opacity:0;
+  }
+  #tourSpotlight.active{ opacity:1; }
+  #tourTooltip{
+    position:fixed; z-index:510;
+    bottom:26px; left:50%; transform:translateX(-50%);
+    width:min(92vw, 380px);
+    background:var(--bg-surface);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:20px 22px;
+    box-shadow:var(--shadow-lg);
+    opacity:0; visibility:hidden;
+    transition:opacity .3s ease, visibility .3s, transform .3s ease;
+  }
+  #tourTooltip.show{ opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
+  .tour-step{
+    font-family:'JetBrains Mono', monospace; font-size:0.68rem;
+    color:var(--leaf-bright); letter-spacing:0.08em; text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  #tourTooltip h4{ font-size:1.1rem; color:var(--text-1); }
+  #tourTooltip p{ margin-top:8px; color:var(--text-2); font-size:0.88rem; line-height:1.55; }
+  .tour-actions{ display:flex; gap:8px; margin-top:18px; }
+  .tour-actions button{
+    flex:1; padding:10px 14px; border-radius:999px; font-weight:700; font-size:0.84rem; border:none;
+    font-family:'Manrope', sans-serif;
+  }
+  #tourCloseBtn{ background:transparent; border:1.5px solid var(--line); color:var(--text-2); }
+  #tourCloseBtn:hover{ color:var(--text-1); border-color:rgba(255,255,255,.3); }
+  #tourNextBtn{ background:linear-gradient(120deg, var(--caju-yellow), var(--caju-orange)); color:#1a0f08; }
+
+  @media (max-width:700px){
+    #welcomeBar{ top:70px; }
+    .wb-inner{ padding:9px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#hero" class="logo" aria-label="ARACaju Lazer — início">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g class="logo-caju">
+          <path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/>
+          <path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad)"/>
+          <ellipse cx="26" cy="30" rx="4.5" ry="6" fill="#ffffff" opacity=".18"/>
+        </g>
+        <defs>
+          <linearGradient id="cajuGrad" x1="16" y1="20" x2="48" y2="56" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#f2ab3c"/>
+            <stop offset="1" stop-color="#e8672b"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="logo-text">
+        <span class="ara">ARA<img src="https://cdn-icons-png.flaticon.com/512/2909/2909808.png" alt="caju" style="height:0.85em; vertical-align:-0.12em; display:inline-block; margin:0 1px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><svg style="display:none; height:0.85em; vertical-align:-0.12em;" viewBox="0 0 64 64"><path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/><path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad)"/></svg></span>
+        <span class="sub">Lazer · Aracaju/SE</span>
+      </span>
+    </a>
+
+    <nav class="desktop-nav">
+      <a href="#sobre">A cidade</a>
+      <a href="#mapa">Mapa</a>
+      <a href="#parques">Parques</a>
+      <a href="#outras">Praças &amp; orla</a>
+      <a href="running.html" class="run-link">Aracaju Running<span class="new-badge">novo</span></a>
+    </nav>
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div id="welcomeBar">
+  <div class="wb-inner">
+    <div class="wb-left">
+      <span class="wb-greet" id="wbGreet">Olá,</span>
+      <span class="wb-name" id="wbName"></span>
+      <span class="wb-privacy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        Esse nome fica salvo só neste navegador — outras pessoas não têm acesso a ele.
+      </span>
+    </div>
+    <div class="wb-actions">
+      <button class="wb-btn" id="replayTourBtn">Repetir tour</button>
+      <button class="wb-btn" id="wbDismissBtn">Ocultar</button>
+    </div>
+  </div>
+</div>
+
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#sobre"><span>01</span>A cidade</a>
+  <a href="#mapa"><span>02</span>Mapa</a>
+  <a href="#parques"><span>03</span>Parques</a>
+  <a href="#outras"><span>04</span>Praças &amp; orla</a>
+  <a href="running.html"><span>05</span>Aracaju Running</a>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="eyebrow">Guia de áreas verdes</div>
+    <h1>Aracaju respira <em>verde</em>, de graça, para todo mundo.</h1>
+    <p class="hero-lead">Três grandes parques urbanos, praças centenárias e um calçadão à beira-rio: nenhum deles cobra entrada. Explore cada canto pelo mapa interativo e descubra a história por trás de cada espaço.</p>
+    <div class="hero-stats">
+      <div class="stat-chip"><span class="num">0</span><span class="lbl">custo de entrada</span></div>
+      <div class="stat-chip"><span class="num">3</span><span class="lbl">parques urbanos</span></div>
+      <div class="stat-chip"><span class="num">1M+</span><span class="lbl">m² de área verde</span></div>
+    </div>
+  </div>
+  <div class="scroll-cue">Role para explorar ↓</div>
+</section>
+
+<!-- ================= SOBRE ================= -->
+<section id="sobre">
+  <div class="wrap sobre-grid">
+    <div>
+      <div class="eyebrow">Por que Aracaju</div>
+      <h2 class="section-head" style="margin-bottom:0;">Uma capital reconhecida pela qualidade de vida</h2>
+      <div class="sobre-card" style="margin-top:24px;">
+        <div class="free-badge">🌴 Acesso gratuito em todos os parques</div>
+        <p>Aracaju é nacionalmente reconhecida por seu planejamento urbano e amplas áreas verdes. A cidade reúne três grandes parques urbanos, além de praças emblemáticas e calçadões estruturados — e nenhum deles cobra taxa de entrada, tornando o acesso universal tanto para moradores quanto para turistas.</p>
+        <p>Abaixo você encontra o mapa interativo e as fichas completas de cada parque, praça e orla: localização, história, reformas recentes e dicas de quem já visitou.</p>
+      </div>
+    </div>
+    <div class="mini-map-teaser">
+      <svg viewBox="0 0 200 240" fill="none">
+        <path d="M10 210 C 40 160, 30 120, 60 90 C 90 60, 90 30, 130 10" stroke="#3f7a3e" stroke-width="10" stroke-linecap="round" opacity=".5"/>
+        <path d="M150 230 C 130 190, 150 150, 120 110 C 95 78, 110 40, 90 6" stroke="#6fb85c" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" opacity=".7"/>
+        <circle cx="60" cy="90" r="7" fill="#f2ab3c"/>
+        <circle cx="120" cy="110" r="7" fill="#e8672b"/>
+        <circle cx="90" cy="160" r="7" fill="#8fd47a"/>
+        <circle cx="40" cy="170" r="5" fill="#f2ab3c" opacity=".8"/>
+        <circle cx="150" cy="60" r="5" fill="#8fd47a" opacity=".8"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MAPA INTERATIVO ================= -->
+<section id="mapa">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Explore no mapa</div>
+      <h2>Toque em um ponto para ver os detalhes</h2>
+      <p>Mapa ilustrativo de Aracaju — cada pino representa um parque, praça ou orla. Clique para abrir a ficha completa.</p>
+    </div>
+
+    <div class="map-shell">
+      <svg viewBox="0 0 900 520" id="citySvg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="waterGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#1c4a52"/>
+            <stop offset="1" stop-color="#123234"/>
+          </linearGradient>
+          <linearGradient id="landGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#213a26"/>
+            <stop offset="1" stop-color="#152419"/>
+          </linearGradient>
+        </defs>
+        <!-- terra -->
+        <rect x="0" y="0" width="900" height="520" fill="url(#landGrad)"/>
+        <!-- oceano / rio -->
+        <path d="M900 40 C 760 20, 700 120, 690 220 C 680 330, 620 380, 560 460 C 520 510, 500 520, 460 520 L 900 520 Z" fill="url(#waterGrad)"/>
+        <path d="M0 480 C 90 460, 130 420, 160 380 C 210 320, 260 330, 300 300 C 350 260, 330 200, 380 170" stroke="#1c4a52" stroke-width="26" fill="none" stroke-linecap="round" opacity=".85"/>
+        <path d="M0 480 C 90 460, 130 420, 160 380 C 210 320, 260 330, 300 300 C 350 260, 330 200, 380 170" stroke="#2b6a72" stroke-width="4" fill="none" stroke-linecap="round" opacity=".5"/>
+        <!-- vegetação decorativa -->
+        <g opacity="0.5">
+          <circle cx="120" cy="120" r="3" fill="#6fb85c"/>
+          <circle cx="150" cy="100" r="2" fill="#6fb85c"/>
+          <circle cx="700" cy="440" r="3" fill="#6fb85c"/>
+          <circle cx="250" cy="470" r="2.4" fill="#6fb85c"/>
+          <circle cx="600" cy="120" r="2.4" fill="#6fb85c"/>
+        </g>
+        <text x="30" y="40" fill="#8ea38d" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">ZONA NORTE</text>
+        <text x="30" y="490" fill="#8ea38d" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">ZONA SUL</text>
+        <text x="740" y="290" fill="#8ea38d" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">ATLÂNTICO</text>
+
+        <!-- PINS: inseridos via JS a partir de LOCATIONS -->
+        <g id="pinsLayer"></g>
+      </svg>
+    </div>
+
+    <div class="map-legend" id="mapLegend"></div>
+  </div>
+</section>
+
+<!-- ================= PARQUES ================= -->
+<section id="parques">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Os três pulmões da cidade</div>
+      <h2>Parques urbanos principais</h2>
+      <p>Estruturas completas, história de décadas e revitalizações recentes — conheça cada um a fundo.</p>
+    </div>
+    <div class="card-grid" id="parquesGrid"></div>
+  </div>
+</section>
+
+<!-- ================= OUTRAS ÁREAS ================= -->
+<section id="outras" style="background:var(--bg-surface); border-top:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Além dos parques</div>
+      <h2>Praças e orla também contam</h2>
+      <p>Áreas verdes lineares e o coração histórico da cidade, sempre movimentados no fim da tarde.</p>
+    </div>
+    <div class="card-grid two" id="outrasGrid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <a href="#hero" class="logo">
+      <svg viewBox="0 0 64 64" fill="none" width="34" height="34">
+        <path d="M33 8c4 3 5 8 3 12-1 2-3 3-5 3s-4-1-5-3c-2-4-1-9 3-12 1.5 3 2.5 3 4 0z" fill="#5f9e4f"/>
+        <path d="M32 22c-9 0-16 8-16 18 0 8 6 15 14 16.5 1.4.3 2.8.3 4.2 0 8-1.5 14-8.5 14-16.5 0-10-7-18-16.2-18z" fill="url(#cajuGrad)"/>
+      </svg>
+      <span class="logo-text"><span class="ara" style="font-size:1.15rem;">ARAcaju</span></span>
+    </a>
+    <p>Guia independente de áreas de lazer públicas de Aracaju/SE. Fotos: Wikimedia Commons.</p>
+  </div>
+</footer>
+
+<!-- ================= MODAL ================= -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-card" id="modalCard" role="dialog" aria-modal="true"></div>
+</div>
+
+<!-- ================= ONBOARDING (nome do usuário) ================= -->
+<div id="onboardOverlay" role="dialog" aria-modal="true">
+  <div class="onboard-card">
+    <div class="onboard-emoji">🌴</div>
+    <h3 id="onboardGreeting">Olá!</h3>
+    <p class="onboard-sub">Qual seu nome?</p>
+    <input type="text" id="onboardInput" class="onboard-input" placeholder="Digite seu nome" maxlength="30" autocomplete="off">
+    <div class="onboard-buttons">
+      <button class="btn-ghost" id="onboardExitBtn">SAIR</button>
+      <button class="btn-primary" id="onboardEnterBtn">ENTRAR</button>
+    </div>
+    <p class="onboard-foot">Pressione SAIR, ou ENTRAR para continuar.</p>
+  </div>
+</div>
+
+<!-- ================= TOUR ================= -->
+<div id="tourSpotlight"></div>
+<div id="tourTooltip">
+  <div class="tour-step" id="tourStepLabel">Passo 1/5</div>
+  <h4 id="tourTitle"></h4>
+  <p id="tourText"></p>
+  <div class="tour-actions">
+    <button id="tourCloseBtn">Fechar</button>
+    <button id="tourNextBtn">Continuar</button>
+  </div>
+</div>
+
+<script>
+/* ============ DADOS ============ */
+const LOCATIONS = [
+  {
+    id:"sementeira",
+    name:"Parque da Sementeira",
+    official:"Parque Governador Augusto Franco",
+    zone:"Zona Sul · Jardins",
+    zoneColor:"#f2ab3c",
+    area:"≈ 400.000 m²",
+    founded:"Origem em 1933",
+    teaser:"O principal pulmão verde da cidade, revitalizado com investimento de R$ 30 milhões.",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/%C3%81rvore_de_Natal_de_Aracaju.jpg?width=1200",
+    pin:{x:150, y:330},
+    sections:{
+      localizacao:"Fica no bairro Jardins, Zona Sul, com fácil acesso por transporte público, táxi, aplicativos de carro e ciclovias. Conta com estacionamento interno gratuito.",
+      dimensoes:"Aproximadamente 400 mil m² de área verde protegida.",
+      historico:"Criado originalmente em 1933 como campo experimental para o cultivo de coqueiros pelo Ministério da Agricultura. Foi oficialmente transformado em parque público e inaugurado no início da década de 1980.",
+      reformas:"Passou por uma das maiores transformações de sua história recentemente, sendo entregue totalmente revitalizado em outubro de 2025, com investimentos de mais de R$ 30 milhões financiados pelo BID.",
+      infraestrutura:"A nova estrutura inclui a Passarela dos Arcos, dois jardins sensoriais, lagos, orquidário, novas pistas de corrida e ciclismo, espaço pet estruturado, parquinhos infantis, quadras esportivas e a Casa de Ciência e Tecnologia (CCTECA).",
+      dica:"É o local ideal para observar espécies exóticas de plantas da Mata Atlântica e dezenas de aves livres, como araras e gaviões."
+    }
+  },
+  {
+    id:"cidade",
+    name:"Parque da Cidade",
+    official:"Parque Governador José Rollemberg Leite",
+    zone:"Zona Norte · Morro do Urubu",
+    zoneColor:"#8fd47a",
+    area:"600.000+ m²",
+    founded:"Inaugurado em 1979",
+    teaser:"O único parque da capital com remanescente de Mata Atlântica nativa e um teleférico com vista panorâmica.",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Telef%C3%A9rico_de_Aracaju.jpg?width=1200",
+    pin:{x:640, y:90},
+    sections:{
+      localizacao:"Localizado no bairro Industrial, Zona Norte, no topo do Morro do Urubu. O acesso de carro é feito pela base do morro, onde há estacionamento.",
+      dimensoes:"Mais de 600 mil m², abrigando um remanescente expressivo de Mata Atlântica nativa.",
+      historico:"Inaugurado no final da década de 1970 para preservar a vegetação de topo de morro da expansão urbana do norte da capital.",
+      reformas:"Passou por intervenções recentes de manutenção de trilhas e estruturas de lazer. O zoológico interno, historicamente famoso, foi desativado em grande parte para priorizar a reabilitação ambiental dos animais livres.",
+      infraestrutura:"Sua principal atração paga é o Teleférico de Aracaju, que conecta a parte baixa à mais alta do parque. O passeio de cerca de 25 minutos sobrevoa a copa das árvores e custa em média R$ 50,00 (com descontos para estudantes, idosos e moradores).",
+      dica:"Ao desembarcar no topo, visite o Mirante da Santa e caminhe até a rampa de voo livre. De lá, você tem a vista panorâmica mais bonita de Aracaju: o encontro do Rio Sergipe com o Oceano Atlântico."
+    }
+  },
+  {
+    id:"cajueiros",
+    name:"Parque dos Cajueiros",
+    official:"Parque Governador Antônio Carlos Valadares",
+    zone:"Zona Sul · Farolândia",
+    zoneColor:"#e8672b",
+    area:"≈ 65.000 m²",
+    founded:"Reaberto em 2012",
+    teaser:"Focado em esportes, lazer familiar e atividades náuticas, margeado pelo Rio Poxim.",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Rio_Sergipe_entre_Aracaju_e_Barra_dos_Coqueiros_01.jpg?width=1200",
+    pin:{x:560, y:400},
+    sections:{
+      localizacao:"Fica na Avenida Beira Mar, no bairro Farolândia, Zona Sul. Possui excelente conexão por ciclovias e transporte urbano.",
+      dimensoes:"Cerca de 65 mil m² construídos e urbanizados, inseridos em uma área total contígua ainda maior.",
+      historico:"O espaço foi inaugurado originalmente em 1990, tornando-se um marco de lazer da época, mas enfrentou períodos de abandono nos anos seguintes.",
+      reformas:"Foi completamente reconstruído e modernizado em 2012, através de uma nova reurbanização estrutural finalizada pelo governo estadual, devolvendo a segurança ao local.",
+      infraestrutura:"Conta com quadras poliesportivas, ciclovias, pista de skate, parquinhos rústicos e modernos, além de uma base de esportes náuticos como remo e canoagem no Rio Poxim. Possui também restaurantes e lanchonetes com boa gastronomia local.",
+      dica:"O parque possui painéis artísticos históricos e é um dos melhores pontos para contemplar o pôr do sol de Aracaju."
+    }
+  },
+  {
+    id:"praiaformosa",
+    name:"Calçadão da Praia Formosa",
+    official:"Bairro Treze de Julho",
+    zone:"Zona Sul · Rio Sergipe",
+    zoneColor:"#8fd47a",
+    area:"Área verde linear",
+    founded:"Revitalizado recentemente",
+    teaser:"Enorme calçadão à beira do Rio Sergipe, com mirante para o manguezal e academias ao ar livre.",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Rio_Sergipe_entre_Aracaju_e_Barra_dos_Coqueiros_05.jpg?width=1200",
+    pin:{x:430, y:290},
+    sections:{
+      localizacao:"Localizado no bairro Treze de Julho, voltado para o Rio Sergipe — uma enorme área verde linear que acompanha a orla fluvial da cidade.",
+      dimensoes:"Extenso calçadão linear, com mirante de observação do manguezal ao longo de todo o percurso.",
+      historico:"Passou por revitalização completa de paisagismo, consolidando-se como um dos pontos turísticos mais seguros e frequentados da cidade.",
+      reformas:"A reforma incluiu novo paisagismo, mirantes, academias ao ar livre e quiosques ao longo de todo o trajeto.",
+      infraestrutura:"Calçadão extenso para caminhadas, mirante de observação do manguezal, academias ao ar livre e quiosques.",
+      dica:"É especialmente movimentado e agradável no fim da tarde, quando o calor diminui e a vista do manguezal fica ainda mais bonita."
+    }
+  },
+  {
+    id:"pracas",
+    name:"Complexo de Praças do Centro",
+    official:"Fausto Cardoso · Olímpio Campos · Almirante Barroso",
+    zone:"Centro Histórico",
+    zoneColor:"#f2ab3c",
+    area:"Praças integradas",
+    founded:"Coração histórico da cidade",
+    teaser:"Praças imensas e arborizadas que abrigam palácios antigos e a Catedral Metropolitana.",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Palmeiras_Imperiais_da_Pra%C3%A7a_Fausto_Cardoso_Aracaju_Sergipe_2022-5978.jpg?width=1200",
+    gallery:[
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Coreto_Norte_Pra%C3%A7a_Fausto_Cardoso_Aracaju_Sergipe_20220411-9101.jpg?width=500",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Pal%C3%A1cio_Fausto_Cardoso_frente.jpg?width=500"
+    ],
+    pin:{x:490, y:230},
+    sections:{
+      localizacao:"O coração histórico de Aracaju, formado pelo conjunto das praças Fausto Cardoso, Olímpio Campos e Almirante Barroso, no Centro.",
+      dimensoes:"Praças imensas e super arborizadas, interligadas, que juntas formam o principal complexo cívico da cidade.",
+      historico:"Abrigam palácios antigos, como o Palácio Olímpio Campos, e a Catedral Metropolitana, sendo o marco fundador da capital sergipana.",
+      reformas:"Passam por constantes renovações de jardinagem e manutenção paisagística, mantendo o conjunto sempre bem cuidado.",
+      infraestrutura:"Palácios históricos, coretos, palmeiras imperiais centenárias e ampla arborização.",
+      dica:"São o centro das decorações e dos eventos culturais da cidade — vale visitar durante festividades, quando a iluminação e a ornamentação tomam conta das praças."
+    }
+  }
+];
+
+/* ============ ÍCONES SVG ============ */
+const ICONS = {
+  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.58 7-13A7 7 0 0 0 5 9c0 5.42 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+  ruler:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="9" width="18" height="6" rx="1"/><path d="M7 9v3M11 9v3M15 9v3"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
+  hammer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3l3 3L9 18l-4 1 1-4z"/><path d="M17.5 3.5l3 3L17 10l-3-3z"/></svg>',
+  layers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+  leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 4 13c0-6 5-11 16-11 0 11-5 16-11 16z"/></svg>',
+  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
+};
+
+/* ============ RENDER CARDS ============ */
+function cardHTML(loc){
+  return `
+    <article class="park-card" data-id="${loc.id}" tabindex="0">
+      <div class="thumb">
+        <span class="zone-tag">${loc.zone}</span>
+        <img src="${loc.img}" alt="Foto real de ${loc.name}, Aracaju" loading="lazy">
+      </div>
+      <div class="body">
+        <h3>${loc.name}</h3>
+        <div class="official">${loc.official}</div>
+        <p class="teaser">${loc.teaser}</p>
+        <div class="tap-row">
+          <span class="area-pill">${loc.area}</span>
+          <span class="tap-hint">Ver detalhes ${ICONS.arrow}</span>
+        </div>
+      </div>
+    </article>`;
+}
+
+const parquesGrid = document.getElementById('parquesGrid');
+const outrasGrid = document.getElementById('outrasGrid');
+const mainParks = LOCATIONS.filter(l => ['sementeira','cidade','cajueiros'].includes(l.id));
+const otherAreas = LOCATIONS.filter(l => ['praiaformosa','pracas'].includes(l.id));
+parquesGrid.innerHTML = mainParks.map(cardHTML).join('');
+outrasGrid.innerHTML = otherAreas.map(cardHTML).join('');
+
+/* reveal on scroll */
+const revealObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in-view'); revealObserver.unobserve(e.target); } });
+},{threshold:0.15});
+document.querySelectorAll('.park-card').forEach(c=>revealObserver.observe(c));
+
+/* ============ MAPA: PINS ============ */
+const pinsLayer = document.getElementById('pinsLayer');
+const legend = document.getElementById('mapLegend');
+LOCATIONS.forEach(loc=>{
+  const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('class','map-pin');
+  g.setAttribute('data-id', loc.id);
+  g.innerHTML = `
+    <circle class="pulse" cx="${loc.pin.x}" cy="${loc.pin.y}" r="10" fill="${loc.zoneColor}"/>
+    <g class="pin-core">
+      <circle cx="${loc.pin.x}" cy="${loc.pin.y}" r="8" fill="${loc.zoneColor}" stroke="#0e1912" stroke-width="2.5"/>
+    </g>
+    <text x="${loc.pin.x}" y="${loc.pin.y - 16}" text-anchor="middle">${loc.name.replace('Parque da ','').replace('Parque dos ','').replace('Complexo de ','').replace('Calçadão da ','')}</text>
+  `;
+  pinsLayer.appendChild(g);
+
+  const li = document.createElement('span');
+  li.innerHTML = `<span class="legend-dot" style="background:${loc.zoneColor}"></span>${loc.name}`;
+  legend.appendChild(li);
+});
+
+/* ============ MODAL ============ */
+const overlay = document.getElementById('modalOverlay');
+const modalCard = document.getElementById('modalCard');
+let lastFocused = null;
+
+function infoRow(iconKey, label, text){
+  if(!text) return '';
+  return `<div class="info-block">
+    <div class="ib-label">${ICONS[iconKey]}${label}</div>
+    <p>${text}</p>
+  </div>`;
+}
+
+function openModal(id){
+  const loc = LOCATIONS.find(l=>l.id===id);
+  if(!loc) return;
+  lastFocused = document.activeElement;
+
+  const galleryHTML = loc.gallery ? `
+    <div class="modal-gallery">
+      ${loc.gallery.map(src=>`<img src="${src}" alt="Foto adicional de ${loc.name}" loading="lazy">`).join('')}
+    </div>` : '';
+
+  modalCard.innerHTML = `
+    <div class="modal-hero">
+      <img src="${loc.img}" alt="Foto real de ${loc.name}, Aracaju">
+      <button class="modal-close" id="modalCloseBtn" aria-label="Fechar">${ICONS.close}</button>
+      <div class="modal-title-block">
+        <span class="zone-tag">${loc.zone}</span>
+        <h3>${loc.name}</h3>
+        <div class="official">${loc.official}</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-stats">
+        <div class="stat-chip">${ICONS.ruler}&nbsp;<span class="lbl">${loc.area}</span></div>
+        <div class="stat-chip">${ICONS.clock}&nbsp;<span class="lbl">${loc.founded}</span></div>
+      </div>
+      ${galleryHTML}
+      ${infoRow('pin','Localização e acesso', loc.sections.localizacao)}
+      ${infoRow('ruler','Dimensões', loc.sections.dimensoes)}
+      ${infoRow('clock','Histórico', loc.sections.historico)}
+      ${infoRow('hammer','Reformas e revitalizações', loc.sections.reformas)}
+      ${infoRow('layers','Infraestrutura atual', loc.sections.infraestrutura)}
+      <div class="tip-box">
+        ${ICONS.leaf}
+        <p><strong>Dica de quem visita:</strong> ${loc.sections.dica}</p>
+      </div>
+    </div>
+  `;
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+  document.getElementById('modalCloseBtn').focus();
+}
+
+function closeModal(){
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  if(lastFocused) lastFocused.focus();
+}
+
+overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
+document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
+
+document.addEventListener('click', (e)=>{
+  const card = e.target.closest('.park-card');
+  if(card){ openModal(card.dataset.id); return; }
+  const pin = e.target.closest('.map-pin');
+  if(pin){ openModal(pin.dataset.id); }
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){
+    const card = e.target.closest('.park-card');
+    if(card){ openModal(card.dataset.id); }
+  }
+});
+
+/* ============ MENU HAMBÚRGUER ============ */
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileNav = document.getElementById('mobileNav');
+hamburgerBtn.addEventListener('click', ()=>{
+  const isOpen = mobileNav.classList.toggle('open');
+  hamburgerBtn.classList.toggle('open', isOpen);
+  hamburgerBtn.setAttribute('aria-expanded', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+});
+mobileNav.querySelectorAll('a').forEach(a=>{
+  a.addEventListener('click', ()=>{
+    mobileNav.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+/* ============ ONBOARDING: nome + saudação por horário ============ */
+const STORAGE_KEY = 'aracajuLazer_userName';
+const onboardOverlay = document.getElementById('onboardOverlay');
+const onboardInput = document.getElementById('onboardInput');
+const onboardGreeting = document.getElementById('onboardGreeting');
+const onboardEnterBtn = document.getElementById('onboardEnterBtn');
+const onboardExitBtn = document.getElementById('onboardExitBtn');
+const welcomeBar = document.getElementById('welcomeBar');
+const wbGreet = document.getElementById('wbGreet');
+const wbName = document.getElementById('wbName');
+const replayTourBtn = document.getElementById('replayTourBtn');
+const wbDismissBtn = document.getElementById('wbDismissBtn');
+
+function saudacaoPorHorario(){
+  const h = new Date().getHours();
+  if(h >= 5 && h < 12) return 'Bom dia';
+  if(h >= 12 && h < 18) return 'Boa tarde';
+  return 'Boa noite';
+}
+
+function showWelcomeBar(name){
+  const saud = saudacaoPorHorario();
+  wbGreet.textContent = `${saud},`;
+  wbName.textContent = `${name}!`;
+  welcomeBar.classList.add('show');
+}
+
+function openOnboard(){
+  onboardGreeting.textContent = `${saudacaoPorHorario()}!`;
+  onboardOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(()=> onboardInput.focus(), 350);
+}
+function closeOnboard(){
+  onboardOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+onboardEnterBtn.addEventListener('click', ()=>{
+  const name = onboardInput.value.trim();
+  if(!name){
+    onboardInput.classList.remove('shake');
+    void onboardInput.offsetWidth;
+    onboardInput.classList.add('shake');
+    onboardInput.focus();
+    return;
+  }
+  localStorage.setItem(STORAGE_KEY, name);
+  closeOnboard();
+  showWelcomeBar(name);
+  setTimeout(startTour, 500);
+});
+onboardInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') onboardEnterBtn.click(); });
+onboardExitBtn.addEventListener('click', closeOnboard);
+
+wbDismissBtn.addEventListener('click', ()=> welcomeBar.classList.remove('show'));
+replayTourBtn.addEventListener('click', startTour);
+
+/* checa localStorage ao carregar */
+window.addEventListener('DOMContentLoaded', ()=>{
+  const savedName = localStorage.getItem(STORAGE_KEY);
+  if(savedName){
+    showWelcomeBar(savedName);
+  } else {
+    setTimeout(openOnboard, 600);
+  }
+});
+
+/* ============ TOUR GUIADO ============ */
+const tourSpotlight = document.getElementById('tourSpotlight');
+const tourTooltip = document.getElementById('tourTooltip');
+const tourStepLabel = document.getElementById('tourStepLabel');
+const tourTitle = document.getElementById('tourTitle');
+const tourText = document.getElementById('tourText');
+const tourCloseBtn = document.getElementById('tourCloseBtn');
+const tourNextBtn = document.getElementById('tourNextBtn');
+
+const TOUR_STEPS = [
+  { selector:'#welcomeBar .wb-name', title:'Esse é você! 👋', text:'Seu nome fica em destaque no topo sempre que visitar o site — ele é salvo só neste navegador.' },
+  { selector:'#mapa', title:'Mapa interativo', text:'Toque em qualquer pino do mapa para abrir a ficha completa daquele parque, praça ou orla.' },
+  { selector:'#parquesGrid', title:'Cards com fotos reais', text:'Clique em qualquer card para ver o modal animado com história, reformas, infraestrutura e dicas.' },
+  { selector:'a[href="running.html"]', title:'Novidade: Aracaju Running 🏃', text:'Local de treino, ruas interditadas, todas as provas de rua e trail, e onde se inscrever — tudo em uma página nova.' },
+  { selector:'.wb-privacy', title:'Sua privacidade', text:'Essa mensagem explica que seu nome não é enviado a nenhum servidor — fica salvo apenas no armazenamento local do seu navegador.' }
+];
+let tourIndex = 0;
+
+function positionSpotlight(el){
+  if(!el || el.offsetParent === null){
+    tourSpotlight.classList.remove('active');
+    return;
+  }
+  const r = el.getBoundingClientRect();
+  tourSpotlight.style.top = (r.top + window.scrollY - 8) + 'px';
+  tourSpotlight.style.left = (r.left + window.scrollX - 8) + 'px';
+  tourSpotlight.style.width = (r.width + 16) + 'px';
+  tourSpotlight.style.height = (r.height + 16) + 'px';
+  tourSpotlight.classList.add('active');
+}
+
+function showTourStep(i){
+  const step = TOUR_STEPS[i];
+  const el = document.querySelector(step.selector);
+  if(el && el.scrollIntoView){
+    el.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
+  setTimeout(()=>{
+    positionSpotlight(el);
+    tourStepLabel.textContent = `Passo ${i+1}/${TOUR_STEPS.length}`;
+    tourTitle.textContent = step.title;
+    tourText.textContent = step.text;
+    tourNextBtn.textContent = (i === TOUR_STEPS.length - 1) ? 'Concluir' : 'Continuar';
+    tourTooltip.classList.add('show');
+  }, 350);
+}
+
+function startTour(){
+  tourIndex = 0;
+  document.body.style.overflow = '';
+  showTourStep(tourIndex);
+}
+function endTour(){
+  tourTooltip.classList.remove('show');
+  tourSpotlight.classList.remove('active');
+}
+tourNextBtn.addEventListener('click', ()=>{
+  tourIndex++;
+  if(tourIndex >= TOUR_STEPS.length){ endTour(); return; }
+  showTourStep(tourIndex);
+});
+tourCloseBtn.addEventListener('click', endTour);
+window.addEventListener('resize', ()=>{
+  if(tourTooltip.classList.contains('show')){
+    const step = TOUR_STEPS[tourIndex];
+    positionSpotlight(document.querySelector(step.selector));
+  }
+});
+</script>
+</body>
+</html>
