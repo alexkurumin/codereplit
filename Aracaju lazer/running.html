@@ -233,7 +233,7 @@
   html[data-theme="light"]{
     --bg-deep:#f1f2ee; --bg-surface:#ffffff; --bg-elevated:#eceee8; --bg-elevated-2:#e2e5dc;
     --line: rgba(10,15,10,0.12);
-    --caju-orange:#e0521c; --caju-yellow:#b8830a;
+    --caju-orange:#b8430f; --caju-yellow:#8a5c00;
     --leaf:#5f8f00; --leaf-deep:#466b00; --leaf-bright:#4a7300;
     --text-1:#12140f; --text-2:#3a3f36; --text-3:#666b60;
     --shadow-lg: 0 20px 50px -20px rgba(10,15,10,0.18);
@@ -247,6 +247,7 @@
 </head>
 <body>
 <a href="#rhero" class="skip-link">Pular para o conteúdo</a>
+<div id="a11yAnnouncer" aria-live="polite" aria-atomic="true" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;"></div>
 
 <header class="site-header">
   <div class="header-inner">
@@ -269,7 +270,7 @@
   </div>
 </header>
 
-<nav class="mobile-nav" id="mobileNav">
+<nav class="mobile-nav" id="mobileNav" aria-hidden="true">
   <a href="index.html#sobre"><span>01</span>A cidade</a>
   <a href="index.html#mapa"><span>02</span>Mapa</a>
   <a href="index.html#parques"><span>03</span>Parques</a>
@@ -277,6 +278,7 @@
   <a href="running.html"><span>05</span>Aracaju Running</a>
 </nav>
 
+<main id="conteudo-principal">
 <!-- HERO -->
 <section class="rhero" id="rhero" tabindex="-1">
   <div class="rhero-bg"></div>
@@ -644,6 +646,8 @@
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="wrap footer-inner">
     <a href="index.html" class="logo">
@@ -668,13 +672,32 @@
 </div>
 
 <script>
+/* ============ ACESSIBILIDADE: anúncios para leitor de tela ============ */
+const a11yAnnouncer = document.getElementById('a11yAnnouncer');
+function announce(msg){
+  if(!a11yAnnouncer) return;
+  a11yAnnouncer.textContent = '';
+  setTimeout(()=>{ a11yAnnouncer.textContent = msg; }, 50);
+}
 const hamburgerBtn = document.getElementById('hamburgerBtn');
 const mobileNav = document.getElementById('mobileNav');
 hamburgerBtn.addEventListener('click', ()=>{
   const isOpen = mobileNav.classList.toggle('open');
   hamburgerBtn.classList.toggle('open', isOpen);
   hamburgerBtn.setAttribute('aria-expanded', isOpen);
+  mobileNav.setAttribute('aria-hidden', String(!isOpen));
   document.body.style.overflow = isOpen ? 'hidden' : '';
+  if(isOpen) mobileNav.querySelector('a')?.focus();
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape' && mobileNav.classList.contains('open')){
+    mobileNav.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded', 'false');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    hamburgerBtn.focus();
+  }
 });
 mobileNav.querySelectorAll('a').forEach(a=>{
   a.addEventListener('click', ()=>{
@@ -688,7 +711,7 @@ mobileNav.querySelectorAll('a').forEach(a=>{
 (function(){
   const FONT_KEY = 'a11y_fontStep';
   const THEME_KEY = 'a11y_theme';
-  const steps = [85,92.5,100,110,120,130,140];
+  const steps = [85,92.5,100,110,120,130,140,160,180,200];
 
   const toggleBtn = document.getElementById('a11yToggleBtn');
   const panel = document.getElementById('a11yPanel');
@@ -699,25 +722,27 @@ mobileNav.querySelectorAll('a').forEach(a=>{
   const themeIcon = document.getElementById('a11yThemeIcon');
   const themeLabel = document.getElementById('a11yThemeLabel');
 
-  function applyFontStep(i){
+  function applyFontStep(i, silent){
     i = Math.max(0, Math.min(steps.length - 1, i));
     document.documentElement.style.fontSize = steps[i] + '%';
     resetBtn.textContent = steps[i] + '%';
     localStorage.setItem(FONT_KEY, i);
+    if(!silent && typeof announce === 'function') announce(`Tamanho do texto: ${steps[i]}%`);
   }
-  function applyTheme(theme){
+  function applyTheme(theme, silent){
     document.documentElement.setAttribute('data-theme', theme);
     const isLight = theme === 'light';
     themeIcon.textContent = isLight ? '☀️' : '🌙';
     themeLabel.textContent = isLight ? 'Tema claro' : 'Tema escuro';
     localStorage.setItem(THEME_KEY, theme);
+    if(!silent && typeof announce === 'function') announce(isLight ? 'Tema claro ativado' : 'Tema escuro ativado');
   }
 
   let currentStep = parseInt(localStorage.getItem(FONT_KEY), 10);
   if(isNaN(currentStep)) currentStep = 2; // 100%
-  applyFontStep(currentStep);
+  applyFontStep(currentStep, true);
 
-  applyTheme(localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark');
+  applyTheme(localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark', true);
 
   toggleBtn.addEventListener('click', ()=>{
     const isOpen = panel.classList.toggle('open');

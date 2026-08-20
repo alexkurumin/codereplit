@@ -692,6 +692,8 @@
   html[data-theme="light"]{
     --bg-deep:#f6f3ea; --bg-surface:#ffffff; --bg-elevated:#f0ece0; --bg-elevated-2:#e7e0cd;
     --line: rgba(30,40,25,0.14);
+    --caju-orange:#c14a17; --caju-yellow:#8a5c00;
+    --leaf:#3f7a3e; --leaf-deep:#2f6a2b; --leaf-bright:#357030;
     --text-1:#171f14; --text-2:#3c4636; --text-3:#606f5b;
     --shadow-lg: 0 20px 50px -20px rgba(30,40,20,0.22);
   }
@@ -705,6 +707,7 @@
 </head>
 <body>
 <a href="#hero" class="skip-link">Pular para o conteúdo</a>
+<div id="a11yAnnouncer" aria-live="polite" aria-atomic="true" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;"></div>
 
 <!-- ================= HEADER ================= -->
 <header class="site-header">
@@ -747,7 +750,7 @@
   </div>
 </div>
 
-<nav class="mobile-nav" id="mobileNav">
+<nav class="mobile-nav" id="mobileNav" aria-hidden="true">
   <a href="#sobre"><span>01</span>A cidade</a>
   <a href="#mapa"><span>02</span>Mapa</a>
   <a href="#parques"><span>03</span>Parques</a>
@@ -755,6 +758,7 @@
   <a href="running.html"><span>05</span>Aracaju Running</a>
 </nav>
 
+<main id="conteudo-principal">
 <!-- ================= HERO ================= -->
 <section class="hero" id="hero" tabindex="-1" data-skip-target>
   <div class="hero-bg"></div>
@@ -869,6 +873,8 @@
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="wrap footer-inner">
     <a href="#hero" class="logo">
@@ -879,17 +885,18 @@
 </footer>
 
 <!-- ================= MODAL ================= -->
-<div class="modal-overlay" id="modalOverlay">
+<div class="modal-overlay" id="modalOverlay" aria-hidden="true">
   <div class="modal-card" id="modalCard" role="dialog" aria-modal="true"></div>
 </div>
 
 <!-- ================= ONBOARDING (nome do usuário) ================= -->
-<div id="onboardOverlay" role="dialog" aria-modal="true">
+<div id="onboardOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="onboardGreeting">
   <div class="onboard-card">
     <div class="onboard-emoji">🌴</div>
     <h3 id="onboardGreeting">Olá!</h3>
     <p class="onboard-sub">Qual seu nome?</p>
-    <input type="text" id="onboardInput" class="onboard-input" placeholder="Digite seu nome" maxlength="30" autocomplete="off">
+    <input type="text" id="onboardInput" class="onboard-input" placeholder="Digite seu nome" maxlength="30" autocomplete="off" aria-describedby="onboardError">
+    <p id="onboardError" role="alert" style="min-height:18px; margin-top:8px; font-size:0.8rem; color:var(--caju-orange); font-weight:700;"></p>
     <div class="onboard-buttons">
       <button class="btn-ghost" id="onboardExitBtn">SAIR</button>
       <button class="btn-primary" id="onboardEnterBtn">ENTRAR</button>
@@ -925,6 +932,13 @@
 </div>
 
 <script>
+/* ============ ACESSIBILIDADE: anúncios para leitor de tela ============ */
+const a11yAnnouncer = document.getElementById('a11yAnnouncer');
+function announce(msg){
+  if(!a11yAnnouncer) return;
+  a11yAnnouncer.textContent = '';
+  setTimeout(()=>{ a11yAnnouncer.textContent = msg; }, 50);
+}
 /* ============ DADOS ============ */
 const LOCATIONS = [
   {
@@ -1048,7 +1062,7 @@ const ICONS = {
 /* ============ RENDER CARDS ============ */
 function cardHTML(loc){
   return `
-    <article class="park-card" data-id="${loc.id}" tabindex="0">
+    <article class="park-card" data-id="${loc.id}" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Ver detalhes de ${loc.name}, ${loc.official}">
       <div class="thumb">
         <span class="zone-tag">${loc.zone}</span>
         <img src="${loc.img}" alt="Foto real de ${loc.name}, Aracaju" loading="lazy">
@@ -1085,6 +1099,9 @@ LOCATIONS.forEach(loc=>{
   const g = document.createElementNS('http://www.w3.org/2000/svg','g');
   g.setAttribute('class','map-pin');
   g.setAttribute('data-id', loc.id);
+  g.setAttribute('role', 'button');
+  g.setAttribute('tabindex', '0');
+  g.setAttribute('aria-label', `Ver detalhes de ${loc.name}`);
   g.innerHTML = `
     <circle class="pulse" cx="${loc.pin.x}" cy="${loc.pin.y}" r="10" fill="${loc.zoneColor}"/>
     <g class="pin-core">
@@ -1151,16 +1168,33 @@ function openModal(id){
   `;
 
   overlay.classList.add('open');
+  overlay.removeAttribute('aria-hidden');
   document.body.style.overflow = 'hidden';
   document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
   document.getElementById('modalCloseBtn').focus();
+  announce(`Detalhes de ${loc.name} abertos.`);
 }
 
 function closeModal(){
   overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
   if(lastFocused) lastFocused.focus();
 }
+
+/* trap de foco: Tab/Shift+Tab não escapam do modal enquanto ele estiver aberto */
+overlay.addEventListener('keydown', (e)=>{
+  if(e.key !== 'Tab' || !overlay.classList.contains('open')) return;
+  const focusables = modalCard.querySelectorAll('button, a[href], input, [tabindex]:not([tabindex="-1"])');
+  if(!focusables.length) return;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if(e.shiftKey && document.activeElement === first){
+    e.preventDefault(); last.focus();
+  } else if(!e.shiftKey && document.activeElement === last){
+    e.preventDefault(); first.focus();
+  }
+});
 
 overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
 document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
@@ -1172,9 +1206,13 @@ document.addEventListener('click', (e)=>{
   if(pin){ openModal(pin.dataset.id); }
 });
 document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter'){
+  if(e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar'){
     const card = e.target.closest('.park-card');
-    if(card){ openModal(card.dataset.id); }
+    const pin = e.target.closest('.map-pin');
+    if(card || pin){
+      e.preventDefault();
+      openModal((card || pin).dataset.id);
+    }
   }
 });
 
@@ -1185,7 +1223,19 @@ hamburgerBtn.addEventListener('click', ()=>{
   const isOpen = mobileNav.classList.toggle('open');
   hamburgerBtn.classList.toggle('open', isOpen);
   hamburgerBtn.setAttribute('aria-expanded', isOpen);
+  mobileNav.setAttribute('aria-hidden', String(!isOpen));
   document.body.style.overflow = isOpen ? 'hidden' : '';
+  if(isOpen) mobileNav.querySelector('a')?.focus();
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape' && mobileNav.classList.contains('open')){
+    mobileNav.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded', 'false');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    hamburgerBtn.focus();
+  }
 });
 mobileNav.querySelectorAll('a').forEach(a=>{
   a.addEventListener('click', ()=>{
@@ -1225,13 +1275,17 @@ function showWelcomeBar(name){
 function openOnboard(){
   onboardGreeting.textContent = `${saudacaoPorHorario()}!`;
   onboardOverlay.classList.add('open');
+  onboardOverlay.removeAttribute('aria-hidden');
   document.body.style.overflow = 'hidden';
   setTimeout(()=> onboardInput.focus(), 350);
 }
 function closeOnboard(){
   onboardOverlay.classList.remove('open');
+  onboardOverlay.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
 }
+
+const onboardError = document.getElementById('onboardError');
 
 onboardEnterBtn.addEventListener('click', ()=>{
   const name = onboardInput.value.trim();
@@ -1239,16 +1293,35 @@ onboardEnterBtn.addEventListener('click', ()=>{
     onboardInput.classList.remove('shake');
     void onboardInput.offsetWidth;
     onboardInput.classList.add('shake');
+    onboardError.textContent = 'Opa, escreve seu nome ali pra gente continuar.';
+    onboardInput.setAttribute('aria-invalid', 'true');
     onboardInput.focus();
     return;
   }
+  onboardError.textContent = '';
+  onboardInput.removeAttribute('aria-invalid');
   localStorage.setItem(STORAGE_KEY, name);
   closeOnboard();
   showWelcomeBar(name);
+  announce(`Bem-vindo, ${name}. Iniciando tour guiado pelo site.`);
   setTimeout(startTour, 500);
 });
 onboardInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') onboardEnterBtn.click(); });
 onboardExitBtn.addEventListener('click', closeOnboard);
+
+/* trap de foco dentro do modal de boas-vindas */
+onboardOverlay.addEventListener('keydown', (e)=>{
+  if(e.key !== 'Tab' || !onboardOverlay.classList.contains('open')) return;
+  const focusables = onboardOverlay.querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])');
+  if(!focusables.length) return;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if(e.shiftKey && document.activeElement === first){
+    e.preventDefault(); last.focus();
+  } else if(!e.shiftKey && document.activeElement === last){
+    e.preventDefault(); first.focus();
+  }
+});
 
 wbDismissBtn.addEventListener('click', ()=> welcomeBar.classList.remove('show'));
 replayTourBtn.addEventListener('click', startTour);
@@ -1307,6 +1380,7 @@ function showTourStep(i){
     tourText.textContent = step.text;
     tourNextBtn.textContent = (i === TOUR_STEPS.length - 1) ? 'Concluir' : 'Continuar';
     tourTooltip.classList.add('show');
+    announce(`Passo ${i+1} de ${TOUR_STEPS.length}: ${step.title}. ${step.text}`);
   }, 350);
 }
 
@@ -1336,7 +1410,7 @@ window.addEventListener('resize', ()=>{
 (function(){
   const FONT_KEY = 'a11y_fontStep';
   const THEME_KEY = 'a11y_theme';
-  const steps = [85,92.5,100,110,120,130,140];
+  const steps = [85,92.5,100,110,120,130,140,160,180,200];
 
   const toggleBtn = document.getElementById('a11yToggleBtn');
   const panel = document.getElementById('a11yPanel');
@@ -1347,25 +1421,27 @@ window.addEventListener('resize', ()=>{
   const themeIcon = document.getElementById('a11yThemeIcon');
   const themeLabel = document.getElementById('a11yThemeLabel');
 
-  function applyFontStep(i){
+  function applyFontStep(i, silent){
     i = Math.max(0, Math.min(steps.length - 1, i));
     document.documentElement.style.fontSize = steps[i] + '%';
     resetBtn.textContent = steps[i] + '%';
     localStorage.setItem(FONT_KEY, i);
+    if(!silent && typeof announce === 'function') announce(`Tamanho do texto: ${steps[i]}%`);
   }
-  function applyTheme(theme){
+  function applyTheme(theme, silent){
     document.documentElement.setAttribute('data-theme', theme);
     const isLight = theme === 'light';
     themeIcon.textContent = isLight ? '☀️' : '🌙';
     themeLabel.textContent = isLight ? 'Tema claro' : 'Tema escuro';
     localStorage.setItem(THEME_KEY, theme);
+    if(!silent && typeof announce === 'function') announce(isLight ? 'Tema claro ativado' : 'Tema escuro ativado');
   }
 
   let currentStep = parseInt(localStorage.getItem(FONT_KEY), 10);
   if(isNaN(currentStep)) currentStep = 2; // 100%
-  applyFontStep(currentStep);
+  applyFontStep(currentStep, true);
 
-  applyTheme(localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark');
+  applyTheme(localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark', true);
 
   toggleBtn.addEventListener('click', ()=>{
     const isOpen = panel.classList.toggle('open');
