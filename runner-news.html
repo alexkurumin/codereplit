@@ -19,12 +19,58 @@
 
   *{ box-sizing:border-box; }
 
+  html{ font-size: 100%; } /* base 16px — permite zoom do navegador escalar tudo em rem/em */
+
   html,body{
     margin:0;
     padding:0;
     background: var(--paper-2);
     height: 100%;
     overflow: hidden;
+  }
+
+  /* ---------- link de pular para o conteúdo (só some quando NÃO focado) ---------- */
+  .skip-link{
+    position: absolute;
+    left: 8px;
+    top: -60px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    padding: 10px 16px;
+    z-index: 999;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: top .2s ease;
+  }
+  .skip-link:focus{ top: 8px; }
+
+  /* ---------- indicador de foco visível (navegação por teclado) ---------- */
+  a:focus-visible,
+  button:focus-visible{
+    outline: 3px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  /* ---------- respeita "reduzir movimento" do sistema do usuário ---------- */
+  @media (prefers-reduced-motion: reduce){
+    *{
+      transition-duration: 0.001ms !important;
+      animation-duration: 0.001ms !important;
+    }
+  }
+
+  /* ---------- oculta visualmente mas mantém audível para leitor de tela ---------- */
+  .sr-only{
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
   }
 
   body{
@@ -403,12 +449,15 @@
 </head>
 <body>
 
+<a class="skip-link" href="#mainContent">Pular para o conteúdo</a>
+<div class="sr-only" id="liveRegion" role="status" aria-live="polite"></div>
+
 <div class="paper">
 
   <header>
     <div class="topbar">
       <span>ANO I · Nº 001</span>
-      <button class="back-btn" id="backBtn">← voltar à capa</button>
+      <button class="back-btn" id="backBtn" aria-label="Voltar à capa do jornal">← voltar à capa</button>
       <span>DISTRIBUIÇÃO GRATUITA</span>
     </div>
 
@@ -430,16 +479,16 @@
     </div>
   </header>
 
-  <main>
+  <main id="mainContent" tabindex="-1">
 
     <!-- ============ COVER (chamadas curtas) ============ -->
-    <div id="cover">
+    <div id="cover" aria-hidden="false" tabindex="-1">
 
       <div class="lead-teaser">
         <span class="eyebrow">Corrida de Rua · Rio de Janeiro</span>
         <h2>28ª Rio Half Marathon reafirma a orla como maior palco da meia maratona brasileira</h2>
         <p class="dek">Entre Copacabana e o Aterro do Flamengo, a prova voltou a bater recordes de procura e reafirmou o Rio como destino de peso no calendário nacional.</p>
-        <button class="read-more" data-article="rio">Leia a matéria completa <span class="arrow">→</span></button>
+        <button class="read-more" data-article="rio">Leia a matéria completa <span class="arrow" aria-hidden="true">→</span></button>
       </div>
 
       <div class="trail-divider">
@@ -453,35 +502,35 @@
           <span class="eyebrow">Corrida de Rua · São Paulo</span>
           <h3>Maratona Fila leva os 42 km de volta ao campus da USP</h3>
           <p class="dek">Uma das duas maratonas oficiais do calendário paulistano larga do Cepeusp em um agosto lotado de provas.</p>
-          <button class="read-more" data-article="fila">Leia mais <span class="arrow">→</span></button>
+          <button class="read-more" data-article="fila">Leia mais <span class="sr-only">sobre a Maratona Fila</span><span class="arrow" aria-hidden="true">→</span></button>
         </div>
 
         <div class="teaser">
           <span class="eyebrow">Trail Run · Serra Fina, MG</span>
           <h3>La Misión Brasil transforma Passa Quatro no epicentro do trail nacional</h3>
           <p class="dek">A 11ª edição reuniu mais de 5 mil atletas nas encostas da Serra Fina, perto da Pedra da Mina.</p>
-          <button class="read-more" data-article="misison">Leia mais <span class="arrow">→</span></button>
+          <button class="read-more" data-article="misison">Leia mais <span class="sr-only">sobre a La Misión Brasil</span><span class="arrow" aria-hidden="true">→</span></button>
         </div>
 
         <div class="teaser">
           <span class="eyebrow">Trail Run · Paraty, RJ</span>
           <h3>Paraty Brazil by UTMB é a única etapa nacional do circuito mundial</h3>
           <p class="dek">Porta de entrada para o Mont-Blanc, a prova mistura Mata Atlântica e litoral fluminense.</p>
-          <button class="read-more" data-article="paraty">Leia mais <span class="arrow">→</span></button>
+          <button class="read-more" data-article="paraty">Leia mais <span class="sr-only">sobre a Paraty Brazil by UTMB</span><span class="arrow" aria-hidden="true">→</span></button>
         </div>
 
       </div>
     </div>
 
     <!-- ============ ARTICLE (matéria completa) ============ -->
-    <div id="article">
+    <div id="article" aria-hidden="true">
       <div class="article-inner">
         <span class="eyebrow" id="artEyebrow"></span>
-        <h2 id="artTitle"></h2>
+        <h2 id="artTitle" tabindex="-1"></h2>
         <div class="byline" id="artByline"></div>
         <div class="article-body" id="artBody"></div>
         <div class="article-meta" id="artMeta"></div>
-        <button class="back-btn back-btn--inline" id="backBtnInline">← voltar à capa</button>
+        <button class="back-btn back-btn--inline" id="backBtnInline" aria-label="Voltar à capa do jornal">← voltar à capa</button>
       </div>
     </div>
 
@@ -581,29 +630,78 @@
   const coverEl = document.getElementById("cover");
   const articleEl = document.getElementById("article");
   const backBtn = document.getElementById("backBtn");
+  const artTitleEl = document.getElementById("artTitle");
+  const liveRegion = document.getElementById("liveRegion");
+  const supportsInert = "inert" in HTMLElement.prototype;
+  let lastFocusedButton = null;
 
-  function openArticle(id){
+  function announce(msg){
+    liveRegion.textContent = "";
+    // pequeno atraso garante que leitores de tela percebam a mudança de texto
+    setTimeout(() => { liveRegion.textContent = msg; }, 60);
+  }
+
+  function openArticle(id, triggerBtn){
     const a = articles[id];
     if(!a) return;
+    lastFocusedButton = triggerBtn || document.activeElement;
+
     document.getElementById("artEyebrow").textContent = a.eyebrow;
-    document.getElementById("artTitle").textContent = a.title;
+    artTitleEl.textContent = a.title;
     document.getElementById("artByline").textContent = a.byline;
     document.getElementById("artBody").innerHTML = a.body.map(p => `<p>${p}</p>`).join("");
     document.getElementById("artMeta").textContent = a.meta;
+
     document.body.classList.add("reading");
     articleEl.scrollTop = 0;
+
+    // painel da capa sai da árvore de foco/leitura enquanto estiver invisível
+    coverEl.setAttribute("aria-hidden", "true");
+    articleEl.setAttribute("aria-hidden", "false");
+    if(supportsInert){
+      coverEl.inert = true;
+      articleEl.inert = false;
+    }
+
+    // move o foco para o título da matéria — essencial p/ navegação por teclado e leitor de tela
+    artTitleEl.focus();
+    announce(`Matéria aberta: ${a.title}`);
   }
 
   function closeArticle(){
     document.body.classList.remove("reading");
-    coverEl.scrollTop = coverEl.scrollTop; // keep position
+
+    articleEl.setAttribute("aria-hidden", "true");
+    coverEl.setAttribute("aria-hidden", "false");
+    if(supportsInert){
+      articleEl.inert = true;
+      coverEl.inert = false;
+    }
+
+    // devolve o foco para o botão que abriu a matéria (ou para a capa, como alternativa)
+    if(lastFocusedButton && document.body.contains(lastFocusedButton)){
+      lastFocusedButton.focus();
+    } else {
+      coverEl.focus();
+    }
+    announce("Voltou à capa do jornal");
   }
 
   document.querySelectorAll(".read-more").forEach(btn => {
-    btn.addEventListener("click", () => openArticle(btn.dataset.article));
+    btn.addEventListener("click", () => openArticle(btn.dataset.article, btn));
   });
   backBtn.addEventListener("click", closeArticle);
   document.getElementById("backBtnInline").addEventListener("click", closeArticle);
+
+  // Esc também fecha a matéria, como em qualquer painel/modal acessível
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape" && document.body.classList.contains("reading")){
+      closeArticle();
+    }
+  });
+
+  // estado inicial: article fora da árvore de foco (inert) já que começa oculto
+  if(supportsInert){ articleEl.inert = true; }
 </script>
 
 </body>
