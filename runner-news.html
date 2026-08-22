@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RUNNER NEWS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EDE7D8;
+    --paper-2: #E5DEC9;
+    --ink: #211E19;
+    --ink-soft: #4A453C;
+    --rule: #B9AF97;
+    --red: #7A1F1F;
+    --olive: #5C5A3F;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background: var(--paper-2);
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body{
+    font-family:'Source Serif 4', serif;
+    color: var(--ink);
+    display:flex;
+    justify-content:center;
+    align-items: stretch;
+    padding: 16px 12px;
+  }
+
+  .paper{
+    width: 100%;
+    max-width: 1180px;
+    height: 100%;
+    max-height: calc(100vh - 32px);
+    display: flex;
+    flex-direction: column;
+    background:
+      radial-gradient(ellipse at top left, rgba(0,0,0,0.03), transparent 60%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.03), transparent 60%),
+      var(--paper);
+    border: 1px solid #00000014;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.35), 0 4px 10px rgba(0,0,0,0.08);
+    padding: 18px clamp(16px, 3.5vw, 44px) 16px;
+    overflow: hidden;
+  }
+
+  /* ============ HEADER (collapsible) ============ */
+
+  header{ flex: none; }
+
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule);
+    overflow: hidden;
+    transition: max-height .4s ease, opacity .3s ease, margin .4s ease, padding .4s ease;
+    max-height: 30px;
+    opacity: 1;
+  }
+
+  .masthead{
+    text-align:center;
+    padding: 10px 0 6px;
+    transition: padding .4s ease;
+  }
+  .masthead .kicker{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    transition: max-height .4s ease, opacity .3s ease, margin .4s ease;
+    max-height: 20px;
+    overflow: hidden;
+  }
+  .masthead h1{
+    font-family:'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(30px, 5.5vw, 50px);
+    letter-spacing: 0.01em;
+    margin: 0;
+    line-height: 0.95;
+    transition: font-size .4s ease;
+  }
+  .masthead h1 .run{ color: var(--red); font-style: italic; font-weight: 700; }
+  .masthead .tagline{
+    font-family:'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+    letter-spacing: 0.02em;
+    transition: max-height .4s ease, opacity .3s ease, margin .4s ease;
+    max-height: 20px;
+    overflow: hidden;
+  }
+
+  .rule-thick{ height:2px; background:var(--ink); }
+  .rule-thin{ height:1px; background:var(--ink); margin-top:3px; margin-bottom: 0;}
+
+  .dateline{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 8px 2px;
+    border-bottom: 3px double var(--ink);
+    transition: padding .4s ease;
+  }
+  .dateline .pace-box{
+    display:flex;
+    align-items:baseline;
+    gap: 8px;
+  }
+  .dateline .pace-label{
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 10px;
+    color: var(--olive);
+  }
+  .dateline .pace-value{
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--red);
+  }
+  .dateline .pace-value .unit{
+    font-size: 9.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-left: 2px;
+  }
+
+  /* --- header collapse state (reading mode) --- */
+  body.reading .topbar{
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    border-bottom: none;
+    margin: 0;
+  }
+  body.reading .masthead{ padding: 6px 0 4px; }
+  body.reading .masthead .kicker{ max-height:0; opacity:0; margin:0; }
+  body.reading .masthead h1{ font-size: 24px; }
+  body.reading .masthead .tagline{ max-height:0; opacity:0; margin:0; }
+  body.reading .dateline{ padding: 5px 2px; }
+
+  .back-btn{
+    display:none;
+    align-items:center;
+    gap: 6px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--red);
+    background:none;
+    border: 1px solid var(--red);
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+  }
+  .back-btn:hover{ background: var(--red); color: var(--paper); }
+  body.reading .back-btn{ display:inline-flex; }
+  body.reading .dateline{ justify-content: flex-start; gap: 18px; }
+
+  /* ============ MAIN AREA (cover / article crossfade) ============ */
+
+  main{
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    margin-top: 14px;
+  }
+
+  #cover, #article{
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    transition: opacity .38s ease, transform .38s ease;
+  }
+  #cover::-webkit-scrollbar, #article::-webkit-scrollbar{ width: 6px; }
+  #cover::-webkit-scrollbar-thumb, #article::-webkit-scrollbar-thumb{ background: var(--rule); }
+
+  #cover{
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  #article{
+    opacity: 0;
+    transform: translateX(24px);
+    pointer-events: none;
+  }
+  body.reading #cover{
+    opacity: 0;
+    transform: translateX(-24px);
+    pointer-events: none;
+  }
+  body.reading #article{
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  /* ============ TRAIL DIVIDER ============ */
+  .trail-divider{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    margin: 16px 0 12px;
+  }
+  .trail-divider .label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    white-space: nowrap;
+    border: 1px solid var(--ink);
+    padding: 3px 9px;
+  }
+  .trail-divider .track{
+    flex:1;
+    height: 0;
+    border-top: 2px dashed var(--rule);
+    position: relative;
+  }
+  .trail-divider .track::after{
+    content:"›";
+    position:absolute;
+    right:-2px; top:-11px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 16px;
+    color: var(--ink-soft);
+  }
+
+  /* ============ TEASERS (cover) ============ */
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+
+  .lead-teaser h2{
+    font-family:'Playfair Display', serif;
+    font-weight: 800;
+    font-size: clamp(22px, 3.4vw, 32px);
+    line-height: 1.1;
+    margin: 4px 0 6px;
+  }
+  .lead-teaser .dek{
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 640px;
+    margin: 0 0 10px;
+  }
+
+  .read-more{
+    display:inline-flex;
+    align-items:center;
+    gap: 7px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--red);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--red);
+    padding: 2px 1px 4px;
+    cursor: pointer;
+    transition: gap .2s ease, opacity .2s ease;
+  }
+  .read-more:hover{ gap: 12px; }
+  .read-more .arrow{ font-size: 14px; }
+
+  .teaser-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 4px;
+  }
+  .teaser{
+    padding: 0 20px;
+    border-left: 1px solid var(--rule);
+  }
+  .teaser:first-child{ border-left: none; padding-left: 0; }
+  .teaser:last-child{ padding-right: 0; }
+  .teaser h3{
+    font-family:'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.2;
+    margin: 4px 0 6px;
+  }
+  .teaser .dek{
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+
+  /* ============ FULL ARTICLE ============ */
+  .article-inner{ max-width: 780px; }
+  .article-inner h2{
+    font-family:'Playfair Display', serif;
+    font-weight: 800;
+    font-size: clamp(24px, 4vw, 36px);
+    line-height: 1.1;
+    margin: 6px 0 8px;
+  }
+  .byline{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .article-body{
+    columns: 2;
+    column-gap: 30px;
+    font-size: 15.5px;
+    line-height: 1.6;
+  }
+  .article-body p{ margin: 0 0 12px; break-inside: avoid; }
+  .article-body p:first-of-type::first-letter{
+    font-family:'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 50px;
+    float: left;
+    line-height: 0.8;
+    padding: 3px 7px 0 0;
+    color: var(--red);
+  }
+  .article-meta{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--olive);
+    border-top: 1px solid var(--rule);
+    margin-top: 14px;
+    padding-top: 8px;
+  }
+
+  /* ============ FOOTER ============ */
+  footer{
+    flex: none;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 3px double var(--ink);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 860px){
+    body{ overflow: auto; }
+    html,body{ height: auto; overflow: visible; }
+    .paper{ max-height: none; height: auto; }
+    #cover, #article{ position: relative; inset: auto; }
+    main{ margin-top: 10px; }
+    body.reading #cover{ display:none; }
+    #article{ display:none; }
+    body.reading #article{ display:block; }
+    .article-body{ columns: 1; }
+    .teaser-grid{ grid-template-columns: 1fr; }
+    .teaser{ border-left:none; padding: 0 0 16px; border-bottom: 1px dashed var(--rule); margin-bottom: 16px;}
+    .teaser:last-child{ border-bottom:none; margin-bottom:0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="paper">
+
+  <header>
+    <div class="topbar">
+      <span>ANO I · Nº 001</span>
+      <button class="back-btn" id="backBtn">← voltar à capa</button>
+      <span>DISTRIBUIÇÃO GRATUITA</span>
+    </div>
+
+    <div class="masthead">
+      <div class="kicker">Corrida de Rua &amp; Trail Run — desde o km 0</div>
+      <h1>RUNNER<span class="run"> NEWS</span></h1>
+      <div class="tagline">"Toda largada é uma manchete. Toda chegada, uma conquista."</div>
+    </div>
+    <div class="rule-thick"></div>
+    <div class="rule-thin"></div>
+
+    <div class="dateline">
+      <span class="full-date" id="fullDate">carregando data...</span>
+      <span class="pace-box">
+        <span class="pace-label">Ritmo do dia</span>
+        <span class="pace-value" id="paceClock">00'00"00</span>
+        <span class="unit">/dia</span>
+      </span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============ COVER (chamadas curtas) ============ -->
+    <div id="cover">
+
+      <div class="lead-teaser">
+        <span class="eyebrow">Corrida de Rua · Rio de Janeiro</span>
+        <h2>28ª Rio Half Marathon reafirma a orla como maior palco da meia maratona brasileira</h2>
+        <p class="dek">Entre Copacabana e o Aterro do Flamengo, a prova voltou a bater recordes de procura e reafirmou o Rio como destino de peso no calendário nacional.</p>
+        <button class="read-more" data-article="rio">Leia a matéria completa <span class="arrow">→</span></button>
+      </div>
+
+      <div class="trail-divider">
+        <span class="label">Mais Notícias</span>
+        <span class="track"></span>
+      </div>
+
+      <div class="teaser-grid">
+
+        <div class="teaser">
+          <span class="eyebrow">Corrida de Rua · São Paulo</span>
+          <h3>Maratona Fila leva os 42 km de volta ao campus da USP</h3>
+          <p class="dek">Uma das duas maratonas oficiais do calendário paulistano larga do Cepeusp em um agosto lotado de provas.</p>
+          <button class="read-more" data-article="fila">Leia mais <span class="arrow">→</span></button>
+        </div>
+
+        <div class="teaser">
+          <span class="eyebrow">Trail Run · Serra Fina, MG</span>
+          <h3>La Misión Brasil transforma Passa Quatro no epicentro do trail nacional</h3>
+          <p class="dek">A 11ª edição reuniu mais de 5 mil atletas nas encostas da Serra Fina, perto da Pedra da Mina.</p>
+          <button class="read-more" data-article="misison">Leia mais <span class="arrow">→</span></button>
+        </div>
+
+        <div class="teaser">
+          <span class="eyebrow">Trail Run · Paraty, RJ</span>
+          <h3>Paraty Brazil by UTMB é a única etapa nacional do circuito mundial</h3>
+          <p class="dek">Porta de entrada para o Mont-Blanc, a prova mistura Mata Atlântica e litoral fluminense.</p>
+          <button class="read-more" data-article="paraty">Leia mais <span class="arrow">→</span></button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ ARTICLE (matéria completa) ============ -->
+    <div id="article">
+      <div class="article-inner">
+        <span class="eyebrow" id="artEyebrow"></span>
+        <h2 id="artTitle"></h2>
+        <div class="byline" id="artByline"></div>
+        <div class="article-body" id="artBody"></div>
+        <div class="article-meta" id="artMeta"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span>RUNNER NEWS — impresso na trilha, publicado no asfalto</span>
+    <span id="footerDate"></span>
+  </footer>
+
+</div>
+
+<script>
+  /* ---------- relógio / data no formato de pace ---------- */
+  const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+
+  function toRoman(num){
+    const map = [[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+    let res = "";
+    for(const [val, sym] of map){
+      while(num >= val){ res += sym; num -= val; }
+    }
+    return res;
+  }
+  function pad(n, len){ return String(n).padStart(len, "0"); }
+
+  function updateClock(){
+    const now = new Date();
+    const dia = pad(now.getDate(), 2);
+    const mes = meses[now.getMonth()];
+    const mesNum = pad(now.getMonth()+1, 2);
+    const ano = now.getFullYear();
+    const seculo = Math.floor((ano - 1) / 100) + 1;
+
+    const hh = pad(now.getHours(), 2);
+    const mm = pad(now.getMinutes(), 2);
+    const ss = pad(now.getSeconds(), 2);
+    const ms = pad(Math.floor(now.getMilliseconds() / 10), 2);
+
+    document.getElementById("fullDate").textContent =
+      `${dia} de ${mes} de ${ano} (${mesNum}/${ano}) · Séc. ${toRoman(seculo)}`;
+
+    document.getElementById("paceClock").innerHTML =
+      `${hh}'${mm}"${ss}<span class="unit">.${ms}</span>`;
+
+    document.getElementById("footerDate").textContent =
+      `Gerado às ${hh}:${mm}:${ss} — ${dia}/${mesNum}/${ano}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  /* ---------- conteúdo das matérias completas ---------- */
+  const articles = {
+    rio: {
+      eyebrow: "Corrida de Rua · Rio de Janeiro",
+      title: "28ª Rio Half Marathon reafirma a orla como maior palco da meia maratona brasileira",
+      byline: "Redação Runner News — Editoria de Estrada",
+      body: [
+        "A vigésima oitava edição da Meia Maratona Internacional do Rio de Janeiro voltou a colocar a cidade no centro do calendário nacional de corrida de rua. Com largada e chegada entre a Orla de Copacabana e o Aterro do Flamengo, a prova reuniu pelotões nas distâncias de 5 km, 10 km e 21 km, atraindo tanto atletas de elite quanto amadores em busca de um cenário que combina paisagem urbana e litorânea.",
+        "A disputa por vagas voltou a ser acirrada neste ano, reflexo do crescimento contínuo do público participante em provas de meia distância no país. Organizadores destacam que o percurso pela orla carioca, com vista para o Pão de Açúcar e o Corcovado, segue como um dos maiores atrativos do evento, consolidando o Rio como destino de peso no turismo esportivo ligado à corrida.",
+        "Com o inverno ainda favorecendo o desempenho nas provas de longa distância no Sudeste, a expectativa da organização é de que os tempos registrados nesta edição fiquem entre os melhores dos últimos anos, tanto na ponta da elite quanto na faixa intermediária do pelotão."
+      ],
+      meta: "Realizada em 16 de agosto de 2026 · Copacabana / Aterro do Flamengo, RJ · Distâncias: 5K · 10K · 21K"
+    },
+    fila: {
+      eyebrow: "Corrida de Rua · São Paulo",
+      title: "Maratona Fila leva os 42 km de volta ao campus da USP em agosto movimentado",
+      byline: "Editoria de Estrada",
+      body: [
+        "Uma das duas maratonas oficiais do calendário paulistano em 2026, a prova organizada pela Fila tem largada marcada para o Cepeusp, dentro do campus da Universidade de São Paulo, reunindo corredores de longa distância em um traçado que mistura vias internas arborizadas e trechos urbanos.",
+        "O evento chega em meio a um agosto especialmente movimentado na capital paulista, que soma dezenas de provas de rua ao longo do mês, entre elas circuitos noturnos e corridas beneficentes espalhadas por parques da cidade."
+      ],
+      meta: "Realizada em 23/08/2026 · Cepeusp, São Paulo, SP · Distância: 42 km"
+    },
+    misison: {
+      eyebrow: "Trail Run · Serra Fina, MG",
+      title: "La Misión Brasil transforma Passa Quatro no epicentro do trail nacional",
+      byline: "Editoria de Trilha",
+      body: [
+        "Entre os dias 12 e 16 de agosto, a pequena Passa Quatro, no sul de Minas Gerais, recebeu a 11ª edição da La Misión Brasil, uma das provas de montanha mais tradicionais do país, disputada nas encostas da Serra Fina — região que abriga a Pedra da Mina, quarto ponto mais alto do Brasil.",
+        "Desde que passou a ser organizada pela Tambo em 2017, a prova viu o número de inscritos saltar de 250 para mais de 5 mil atletas, tornando-se um dos maiores encontros do trail running latino-americano — combinando autossuficiência, altitude e um público dividido quase igualmente entre estreantes e veteranos da montanha."
+      ],
+      meta: "Realizada entre 12 e 16/08/2026 · Passa Quatro, MG · Distâncias: 7 a 110 km"
+    },
+    paraty: {
+      eyebrow: "Trail Run · Paraty, RJ",
+      title: "Paraty Brazil by UTMB é a única etapa nacional do circuito mundial de trilhas",
+      byline: "Editoria de Trilha",
+      body: [
+        "Com prazo final de inscrições em 10 de agosto, a Paraty Brazil by UTMB segue como a única etapa brasileira do UTMB World Series, o circuito internacional que reúne as provas de trail mais concorridas do planeta e serve de porta de entrada para o Mont-Blanc, na França.",
+        "O evento aproveita a paisagem entre serra e mar do litoral sul fluminense, alternando trechos de mata fechada com vistas para o oceano — um dos fatores que, segundo organizadores, tem atraído cada vez mais atletas estrangeiros à etapa brasileira."
+      ],
+      meta: "Inscrições encerradas em 10/08/2026 · Paraty, RJ · Circuito: UTMB World Series"
+    }
+  };
+
+  const coverEl = document.getElementById("cover");
+  const articleEl = document.getElementById("article");
+  const backBtn = document.getElementById("backBtn");
+
+  function openArticle(id){
+    const a = articles[id];
+    if(!a) return;
+    document.getElementById("artEyebrow").textContent = a.eyebrow;
+    document.getElementById("artTitle").textContent = a.title;
+    document.getElementById("artByline").textContent = a.byline;
+    document.getElementById("artBody").innerHTML = a.body.map(p => `<p>${p}</p>`).join("");
+    document.getElementById("artMeta").textContent = a.meta;
+    document.body.classList.add("reading");
+    articleEl.scrollTop = 0;
+  }
+
+  function closeArticle(){
+    document.body.classList.remove("reading");
+    coverEl.scrollTop = coverEl.scrollTop; // keep position
+  }
+
+  document.querySelectorAll(".read-more").forEach(btn => {
+    btn.addEventListener("click", () => openArticle(btn.dataset.article));
+  });
+  backBtn.addEventListener("click", closeArticle);
+</script>
+
+</body>
+</html>
