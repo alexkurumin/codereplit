@@ -30,7 +30,7 @@
   }
 
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:auto;}
   body{
     margin:0;
     background:
@@ -1371,7 +1371,7 @@ function showTourStep(i){
   const step = TOUR_STEPS[i];
   const el = document.querySelector(step.selector);
   if(el && el.scrollIntoView){
-    el.scrollIntoView({ behavior:'smooth', block:'center' });
+    el.scrollIntoView({ behavior:'auto', block:'center' });
   }
   setTimeout(()=>{
     positionSpotlight(el);
@@ -1381,7 +1381,7 @@ function showTourStep(i){
     tourNextBtn.textContent = (i === TOUR_STEPS.length - 1) ? 'Concluir' : 'Continuar';
     tourTooltip.classList.add('show');
     announce(`Passo ${i+1} de ${TOUR_STEPS.length}: ${step.title}. ${step.text}`);
-  }, 350);
+  }, 60);
 }
 
 function startTour(){
