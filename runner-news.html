@@ -421,8 +421,7 @@
     padding-top: 8px;
     border-top: 3px double var(--ink);
     display:flex;
-    justify-content:space-between;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 4px;
     font-family:'JetBrains Mono', monospace;
     font-size: 10px;
@@ -430,6 +429,244 @@
     color: var(--ink-soft);
     text-transform: uppercase;
   }
+  footer .footer-row{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  footer .privacy-note{
+    text-transform: none;
+    letter-spacing: 0.01em;
+    font-size: 10.5px;
+    color: var(--olive);
+    display:flex;
+    align-items:center;
+    gap: 6px;
+  }
+
+  /* ============ RIBBON DE BOAS-VINDAS (nome em destaque no topo) ============ */
+  .welcome-ribbon{
+    flex: none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 8px;
+    background: var(--red);
+    color: var(--paper);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 10px;
+    margin: -18px 0 12px;
+    border-radius: 2px;
+    animation: ribbonIn .5s ease;
+  }
+  .welcome-ribbon[hidden]{ display:none; }
+  .welcome-ribbon #userNameDisplay{
+    font-family:'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 15px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  @keyframes ribbonIn{
+    from{ transform: translateY(-100%); opacity: 0; }
+    to{ transform: translateY(0); opacity: 1; }
+  }
+
+  /* ============ MODAL DE BOAS-VINDAS ============ */
+  .modal-backdrop{
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 17, 14, 0.72);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index: 1000;
+    padding: 16px;
+  }
+  .modal-backdrop[hidden]{ display:none; }
+
+  .modal-box{
+    width: 100%;
+    max-width: 400px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    box-shadow: 0 30px 70px -20px rgba(0,0,0,0.55);
+    padding: 26px 26px 22px;
+    text-align: center;
+    position: relative;
+  }
+  .modal-box::before{
+    content:"";
+    position:absolute;
+    inset: 6px;
+    border: 1px solid var(--rule);
+    pointer-events: none;
+  }
+  .modal-eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .modal-greeting{
+    font-family:'Playfair Display', serif;
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 1.2;
+    margin: 0 0 4px;
+  }
+  .modal-question{
+    font-family:'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+  }
+  .modal-input{
+    width: 100%;
+    font-family:'Source Serif 4', serif;
+    font-size: 16px;
+    padding: 10px 12px;
+    border: 1px solid var(--ink);
+    background: var(--paper-2);
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .modal-input:focus-visible{
+    outline: 3px solid var(--red);
+    outline-offset: 1px;
+  }
+  .modal-actions{
+    display:flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .modal-actions button{
+    flex: 1;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 11px 8px;
+    cursor: pointer;
+    border: 1px solid var(--ink);
+    transition: background .2s ease, color .2s ease;
+  }
+  #enterBtn{
+    background: var(--ink);
+    color: var(--paper);
+  }
+  #enterBtn:hover{ background: var(--red); border-color: var(--red); }
+  #exitBtn{
+    background: none;
+    color: var(--ink);
+  }
+  #exitBtn:hover{ background: var(--rule); }
+  .modal-hint{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ============ TOUR GUIADO ============ */
+  .tour-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 17, 14, 0.55);
+    z-index: 900;
+  }
+  .tour-overlay[hidden]{ display:none; }
+
+  .tour-highlight{
+    position: relative;
+    z-index: 901;
+    outline: 3px solid var(--red);
+    outline-offset: 4px;
+    border-radius: 3px;
+    box-shadow: 0 0 0 6000px rgba(20, 17, 14, 0.55);
+    background: var(--paper);
+  }
+
+  .tour-box{
+    position: fixed;
+    z-index: 902;
+    width: min(300px, 88vw);
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    box-shadow: 0 20px 50px -15px rgba(0,0,0,0.5);
+    padding: 16px 18px;
+    transition: top .3s ease, left .3s ease;
+  }
+  .tour-box[hidden]{ display:none; }
+  .tour-arrow{
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    transform: rotate(45deg);
+  }
+  .tour-arrow.top{ top: -8px; left: 24px; border-right:none; border-bottom:none; }
+  .tour-arrow.bottom{ bottom: -8px; left: 24px; border-left:none; border-top:none; }
+
+  .tour-step-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+  .tour-title{
+    font-family:'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 17px;
+    margin: 0 0 6px;
+  }
+  .tour-text{
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin: 0 0 14px;
+  }
+  .tour-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 10px;
+  }
+  .tour-close{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background:none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 2px;
+    text-decoration: underline;
+  }
+  .tour-next{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--paper);
+    background: var(--red);
+    border: 1px solid var(--red);
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  .tour-next:hover{ opacity: 0.88; }
 
   @media (max-width: 860px){
     body{ overflow: auto; }
@@ -455,6 +692,11 @@
 <div class="paper">
 
   <header>
+    <div class="welcome-ribbon" id="welcomeRibbon" hidden>
+      <span aria-hidden="true">🏁</span>
+      <span>Bem-vindo(a) de volta,</span>
+      <span id="userNameDisplay"></span>
+    </div>
     <div class="topbar">
       <span>ANO I · Nº 001</span>
       <button class="back-btn" id="backBtn" aria-label="Voltar à capa do jornal">← voltar à capa</button>
@@ -537,10 +779,45 @@
   </main>
 
   <footer>
-    <span>RUNNER NEWS — impresso na trilha, publicado no asfalto</span>
-    <span id="footerDate"></span>
+    <div class="footer-row">
+      <span>RUNNER NEWS — impresso na trilha, publicado no asfalto</span>
+      <span id="footerDate"></span>
+    </div>
+    <div class="privacy-note">
+      <span aria-hidden="true">🔒</span>
+      <span>Seu nome fica salvo apenas neste navegador (armazenamento local) e não é acessível a outros usuários.</span>
+    </div>
   </footer>
 
+</div>
+
+<!-- ============ MODAL DE BOAS-VINDAS ============ -->
+<div class="modal-backdrop" id="welcomeModal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalGreeting" aria-describedby="modalQuestion">
+    <div class="modal-eyebrow">Edição de hoje</div>
+    <h2 class="modal-greeting" id="modalGreeting">Olá, bom dia!</h2>
+    <p class="modal-question" id="modalQuestion">Qual seu nome?</p>
+    <label for="nameInput" class="sr-only">Digite seu nome</label>
+    <input type="text" id="nameInput" class="modal-input" placeholder="Digite seu nome" autocomplete="given-name" maxlength="40">
+    <div class="modal-actions">
+      <button id="exitBtn" type="button">Sair</button>
+      <button id="enterBtn" type="button">Entrar</button>
+    </div>
+    <p class="modal-hint">Pressione SAIR, ou ENTRAR para continuar.</p>
+  </div>
+</div>
+
+<!-- ============ TOUR GUIADO ============ -->
+<div class="tour-overlay" id="tourOverlay" hidden></div>
+<div class="tour-box" id="tourBox" hidden role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-describedby="tourText">
+  <div class="tour-arrow bottom" id="tourArrow"></div>
+  <div class="tour-step-label" id="tourStepLabel">Passo 1 de 5</div>
+  <h3 class="tour-title" id="tourTitle"></h3>
+  <p class="tour-text" id="tourText"></p>
+  <div class="tour-footer">
+    <button class="tour-close" id="tourCloseBtn">Fechar</button>
+    <button class="tour-next" id="tourNextBtn">Continuar →</button>
+  </div>
 </div>
 
 <script>
@@ -702,6 +979,223 @@
 
   // estado inicial: article fora da árvore de foco (inert) já que começa oculto
   if(supportsInert){ articleEl.inert = true; }
+
+  /* =========================================================
+     MODAL DE BOAS-VINDAS + NOME NO LOCALSTORAGE + TOUR GUIADO
+     ========================================================= */
+  const STORAGE_KEY = "runnerNewsUserName";
+
+  const welcomeModal = document.getElementById("welcomeModal");
+  const modalGreeting = document.getElementById("modalGreeting");
+  const nameInput = document.getElementById("nameInput");
+  const enterBtn = document.getElementById("enterBtn");
+  const exitBtn = document.getElementById("exitBtn");
+  const welcomeRibbon = document.getElementById("welcomeRibbon");
+  const userNameDisplay = document.getElementById("userNameDisplay");
+
+  function saudacaoPorHorario(){
+    const h = new Date().getHours();
+    if(h >= 5 && h < 12) return "bom dia";
+    if(h >= 12 && h < 18) return "boa tarde";
+    return "boa noite";
+  }
+
+  function showUserName(name){
+    userNameDisplay.textContent = name;
+    welcomeRibbon.hidden = false;
+  }
+
+  function openWelcomeModal(){
+    modalGreeting.textContent = `Olá, ${saudacaoPorHorario()}!`;
+    welcomeModal.hidden = false;
+    nameInput.value = "";
+    // foco inicial dentro do modal
+    setTimeout(() => nameInput.focus(), 50);
+  }
+
+  function closeWelcomeModal(){
+    welcomeModal.hidden = true;
+  }
+
+  function handleEnter(){
+    const name = nameInput.value.trim();
+    if(!name){
+      nameInput.focus();
+      nameInput.style.outline = "2px solid var(--red)";
+      return;
+    }
+    localStorage.setItem(STORAGE_KEY, name);
+    closeWelcomeModal();
+    showUserName(name);
+    announce(`Bem-vindo(a), ${name}! Iniciando o tour de boas-vindas.`);
+    setTimeout(startTour, 400);
+  }
+
+  function handleExit(){
+    closeWelcomeModal();
+  }
+
+  enterBtn.addEventListener("click", handleEnter);
+  exitBtn.addEventListener("click", handleExit);
+  nameInput.addEventListener("keydown", (e) => {
+    if(e.key === "Enter") handleEnter();
+  });
+  welcomeModal.addEventListener("keydown", (e) => {
+    if(e.key === "Escape") handleExit();
+    // trava simples de foco dentro do modal (Tab cycla entre input, sair, entrar)
+    if(e.key === "Tab"){
+      const focusables = [nameInput, exitBtn, enterBtn];
+      const idx = focusables.indexOf(document.activeElement);
+      if(e.shiftKey && document.activeElement === focusables[0]){
+        e.preventDefault(); focusables[focusables.length - 1].focus();
+      } else if(!e.shiftKey && document.activeElement === focusables[focusables.length - 1]){
+        e.preventDefault(); focusables[0].focus();
+      }
+    }
+  });
+
+  // ---------- checa se já existe nome salvo (só ocorre uma vez) ----------
+  const savedName = localStorage.getItem(STORAGE_KEY);
+  if(savedName){
+    showUserName(savedName);
+  } else {
+    openWelcomeModal();
+  }
+
+  /* ---------------- TOUR GUIADO ---------------- */
+  const tourOverlay = document.getElementById("tourOverlay");
+  const tourBox = document.getElementById("tourBox");
+  const tourArrow = document.getElementById("tourArrow");
+  const tourStepLabel = document.getElementById("tourStepLabel");
+  const tourTitle = document.getElementById("tourTitle");
+  const tourText = document.getElementById("tourText");
+  const tourCloseBtn = document.getElementById("tourCloseBtn");
+  const tourNextBtn = document.getElementById("tourNextBtn");
+
+  const tourSteps = [
+    {
+      selector: ".masthead h1",
+      title: "O jornal",
+      text: "Este é o RUNNER NEWS — seu jornal de corrida em estilo impresso. O nome fica em destaque aqui no alto de cada edição."
+    },
+    {
+      selector: ".dateline .pace-box",
+      title: "O relógio em formato de pace",
+      text: "A hora local é exibida como se fosse um pace de corrida (min'seg\"cent), sempre atualizada em tempo real."
+    },
+    {
+      selector: ".lead-teaser",
+      title: "A manchete principal",
+      text: "Cada notícia mostra só uma chamada curta. Clique em 'Leia a matéria completa' para abrir o texto inteiro."
+    },
+    {
+      selector: ".teaser-grid",
+      title: "As três colunas",
+      text: "As demais notícias ficam organizadas em três colunas — corrida de rua e trail run lado a lado."
+    },
+    {
+      selector: "#userNameDisplay",
+      title: "Seu nome fica salvo",
+      text: "Da próxima vez que você voltar, o jornal já vai te reconhecer por aqui — sem precisar digitar de novo."
+    }
+  ];
+
+  let tourIndex = 0;
+  let tourHighlighted = null;
+
+  function clearHighlight(){
+    if(tourHighlighted){
+      tourHighlighted.classList.remove("tour-highlight");
+      tourHighlighted = null;
+    }
+  }
+
+  function positionTourBox(target){
+    const rect = target.getBoundingClientRect();
+    const boxWidth = tourBox.offsetWidth || 300;
+    const boxHeight = tourBox.offsetHeight || 140;
+    const margin = 14;
+
+    let top = rect.bottom + margin;
+    let arrowPos = "top"; // seta aponta pra cima, caixa fica abaixo do alvo
+
+    // se não couber embaixo, posiciona acima do alvo
+    if(top + boxHeight > window.innerHeight - 10){
+      top = rect.top - boxHeight - margin;
+      arrowPos = "bottom";
+    }
+    // se também não couber acima, centraliza verticalmente
+    if(top < 10){ top = Math.max(10, (window.innerHeight - boxHeight) / 2); }
+
+    let left = rect.left;
+    left = Math.min(left, window.innerWidth - boxWidth - 10);
+    left = Math.max(10, left);
+
+    tourBox.style.top = `${top}px`;
+    tourBox.style.left = `${left}px`;
+
+    tourArrow.className = `tour-arrow ${arrowPos}`;
+    // posiciona a seta alinhada ao alvo, dentro dos limites da caixa
+    const arrowLeft = Math.min(Math.max(rect.left + rect.width / 2 - left - 7, 14), boxWidth - 28);
+    tourArrow.style.left = `${arrowLeft}px`;
+  }
+
+  function showTourStep(index){
+    clearHighlight();
+    const step = tourSteps[index];
+    const target = document.querySelector(step.selector);
+    if(!target){
+      // se o alvo não existir (ex: layout mobile diferente), pula pro próximo
+      if(index < tourSteps.length - 1){ showTourStep(index + 1); } else { endTour(); }
+      return;
+    }
+
+    target.scrollIntoView({ block: "center", behavior: "smooth" });
+
+    tourStepLabel.textContent = `Passo ${index + 1} de ${tourSteps.length}`;
+    tourTitle.textContent = step.title;
+    tourText.textContent = step.text;
+    tourNextBtn.textContent = index === tourSteps.length - 1 ? "Concluir ✓" : "Continuar →";
+
+    setTimeout(() => {
+      target.classList.add("tour-highlight");
+      tourHighlighted = target;
+      positionTourBox(target);
+      tourBox.hidden = false;
+    }, 250);
+  }
+
+  function startTour(){
+    tourIndex = 0;
+    tourOverlay.hidden = false;
+    showTourStep(tourIndex);
+    tourCloseBtn.focus();
+  }
+
+  function nextTourStep(){
+    if(tourIndex < tourSteps.length - 1){
+      tourIndex++;
+      showTourStep(tourIndex);
+    } else {
+      endTour();
+    }
+  }
+
+  function endTour(){
+    clearHighlight();
+    tourOverlay.hidden = true;
+    tourBox.hidden = true;
+    announce("Tour encerrado.");
+  }
+
+  tourNextBtn.addEventListener("click", nextTourStep);
+  tourCloseBtn.addEventListener("click", endTour);
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape" && !tourBox.hidden){ endTour(); }
+  });
+  window.addEventListener("resize", () => {
+    if(!tourBox.hidden && tourHighlighted){ positionTourBox(tourHighlighted); }
+  });
 </script>
 
 </body>
