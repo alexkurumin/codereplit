@@ -182,6 +182,11 @@
   body.reading .back-btn{ display:inline-flex; }
   body.reading .dateline{ justify-content: flex-start; gap: 18px; }
 
+  .back-btn--inline{
+    display: inline-flex;
+    margin-top: 20px;
+  }
+
   /* ============ MAIN AREA (cover / article crossfade) ============ */
 
   main{
@@ -476,6 +481,7 @@
         <div class="byline" id="artByline"></div>
         <div class="article-body" id="artBody"></div>
         <div class="article-meta" id="artMeta"></div>
+        <button class="back-btn back-btn--inline" id="backBtnInline">← voltar à capa</button>
       </div>
     </div>
 
@@ -597,6 +603,7 @@
     btn.addEventListener("click", () => openArticle(btn.dataset.article));
   });
   backBtn.addEventListener("click", closeArticle);
+  document.getElementById("backBtnInline").addEventListener("click", closeArticle);
 </script>
 
 </body>
