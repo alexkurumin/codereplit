@@ -17,6 +17,20 @@
     --olive: #5C5A3F;
   }
 
+  html[data-theme="dark"]{
+    --paper: #1E1B17;
+    --paper-2: #141210;
+    --ink: #EDE7D8;
+    --ink-soft: #C9C2AE;
+    --rule: #4A453C;
+    --red: #E2694C;
+    --olive: #B7AE8F;
+  }
+
+  body, .paper, header, footer, .modal-box, .tour-box{
+    transition: background-color .3s ease, color .3s ease, border-color .3s ease;
+  }
+
   *{ box-sizing:border-box; }
 
   html{ font-size: 100%; } /* base 16px — permite zoom do navegador escalar tudo em rem/em */
@@ -37,7 +51,7 @@
     background: var(--ink);
     color: var(--paper);
     font-family:'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-size: 0.8125rem;
     letter-spacing: 0.04em;
     padding: 10px 16px;
     z-index: 999;
@@ -108,7 +122,7 @@
     justify-content:space-between;
     align-items:baseline;
     font-family:'JetBrains Mono', monospace;
-    font-size: 10.5px;
+    font-size: 0.6562rem;
     letter-spacing: 0.06em;
     color: var(--ink-soft);
     padding-bottom: 6px;
@@ -126,7 +140,7 @@
   }
   .masthead .kicker{
     font-family:'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.28em;
     color: var(--red);
     text-transform: uppercase;
@@ -138,7 +152,7 @@
   .masthead h1{
     font-family:'Playfair Display', serif;
     font-weight: 900;
-    font-size: clamp(30px, 5.5vw, 50px);
+    font-size: clamp(1.875rem, 5.5vw, 3.125rem);
     letter-spacing: 0.01em;
     margin: 0;
     line-height: 0.95;
@@ -148,7 +162,7 @@
   .masthead .tagline{
     font-family:'Source Serif 4', serif;
     font-style: italic;
-    font-size: 12.5px;
+    font-size: 0.7812rem;
     color: var(--ink-soft);
     margin-top: 6px;
     letter-spacing: 0.02em;
@@ -167,7 +181,7 @@
     flex-wrap: wrap;
     gap: 6px 20px;
     font-family:'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 0.6875rem;
     padding: 8px 2px;
     border-bottom: 3px double var(--ink);
     transition: padding .4s ease;
@@ -180,16 +194,16 @@
   .dateline .pace-label{
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    font-size: 10px;
+    font-size: 0.625rem;
     color: var(--olive);
   }
   .dateline .pace-value{
     font-weight: 700;
-    font-size: 15px;
+    font-size: 0.9375rem;
     color: var(--red);
   }
   .dateline .pace-value .unit{
-    font-size: 9.5px;
+    font-size: 0.5938rem;
     font-weight: 500;
     color: var(--ink-soft);
     margin-left: 2px;
@@ -205,7 +219,7 @@
   }
   body.reading .masthead{ padding: 6px 0 4px; }
   body.reading .masthead .kicker{ max-height:0; opacity:0; margin:0; }
-  body.reading .masthead h1{ font-size: 24px; }
+  body.reading .masthead h1{ font-size: 1.5rem; }
   body.reading .masthead .tagline{ max-height:0; opacity:0; margin:0; }
   body.reading .dateline{ padding: 5px 2px; }
 
@@ -214,7 +228,7 @@
     align-items:center;
     gap: 6px;
     font-family:'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 0.6875rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--red);
@@ -281,7 +295,7 @@
   }
   .trail-divider .label{
     font-family:'JetBrains Mono', monospace;
-    font-size: 10.5px;
+    font-size: 0.6562rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--ink);
@@ -300,14 +314,14 @@
     position:absolute;
     right:-2px; top:-11px;
     font-family:'JetBrains Mono', monospace;
-    font-size: 16px;
+    font-size: 1rem;
     color: var(--ink-soft);
   }
 
   /* ============ TEASERS (cover) ============ */
   .eyebrow{
     font-family:'JetBrains Mono', monospace;
-    font-size: 10.5px;
+    font-size: 0.6562rem;
     letter-spacing: 0.16em;
     color: var(--red);
     text-transform: uppercase;
@@ -316,12 +330,12 @@
   .lead-teaser h2{
     font-family:'Playfair Display', serif;
     font-weight: 800;
-    font-size: clamp(22px, 3.4vw, 32px);
+    font-size: clamp(1.375rem, 3.4vw, 2rem);
     line-height: 1.1;
     margin: 4px 0 6px;
   }
   .lead-teaser .dek{
-    font-size: 15px;
+    font-size: 0.9375rem;
     line-height: 1.5;
     max-width: 640px;
     margin: 0 0 10px;
@@ -332,7 +346,7 @@
     align-items:center;
     gap: 7px;
     font-family:'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 0.6875rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--red);
@@ -344,7 +358,7 @@
     transition: gap .2s ease, opacity .2s ease;
   }
   .read-more:hover{ gap: 12px; }
-  .read-more .arrow{ font-size: 14px; }
+  .read-more .arrow{ font-size: 0.875rem; }
 
   .teaser-grid{
     display:grid;
@@ -361,12 +375,12 @@
   .teaser h3{
     font-family:'Playfair Display', serif;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 1.125rem;
     line-height: 1.2;
     margin: 4px 0 6px;
   }
   .teaser .dek{
-    font-size: 13.5px;
+    font-size: 0.8438rem;
     line-height: 1.5;
     margin: 0 0 10px;
     color: var(--ink);
@@ -377,13 +391,13 @@
   .article-inner h2{
     font-family:'Playfair Display', serif;
     font-weight: 800;
-    font-size: clamp(24px, 4vw, 36px);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
     line-height: 1.1;
     margin: 6px 0 8px;
   }
   .byline{
     font-family:'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 0.6875rem;
     color: var(--ink-soft);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -392,14 +406,14 @@
   .article-body{
     columns: 2;
     column-gap: 30px;
-    font-size: 15.5px;
+    font-size: 0.9688rem;
     line-height: 1.6;
   }
   .article-body p{ margin: 0 0 12px; break-inside: avoid; }
   .article-body p:first-of-type::first-letter{
     font-family:'Playfair Display', serif;
     font-weight: 900;
-    font-size: 50px;
+    font-size: 3.125rem;
     float: left;
     line-height: 0.8;
     padding: 3px 7px 0 0;
@@ -407,7 +421,7 @@
   }
   .article-meta{
     font-family:'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 0.6875rem;
     color: var(--olive);
     border-top: 1px solid var(--rule);
     margin-top: 14px;
@@ -424,7 +438,7 @@
     flex-direction: column;
     gap: 4px;
     font-family:'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.05em;
     color: var(--ink-soft);
     text-transform: uppercase;
@@ -438,7 +452,7 @@
   footer .privacy-note{
     text-transform: none;
     letter-spacing: 0.01em;
-    font-size: 10.5px;
+    font-size: 0.6562rem;
     color: var(--olive);
     display:flex;
     align-items:center;
@@ -455,7 +469,7 @@
     background: var(--red);
     color: var(--paper);
     font-family:'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 0.75rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 8px 10px;
@@ -468,7 +482,7 @@
     font-family:'Playfair Display', serif;
     font-style: italic;
     font-weight: 700;
-    font-size: 15px;
+    font-size: 0.9375rem;
     text-transform: none;
     letter-spacing: 0;
   }
@@ -509,7 +523,7 @@
   }
   .modal-eyebrow{
     font-family:'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.28em;
     color: var(--red);
     text-transform: uppercase;
@@ -518,21 +532,21 @@
   .modal-greeting{
     font-family:'Playfair Display', serif;
     font-weight: 800;
-    font-size: 24px;
+    font-size: 1.5rem;
     line-height: 1.2;
     margin: 0 0 4px;
   }
   .modal-question{
     font-family:'Source Serif 4', serif;
     font-style: italic;
-    font-size: 15px;
+    font-size: 0.9375rem;
     color: var(--ink-soft);
     margin: 0 0 18px;
   }
   .modal-input{
     width: 100%;
     font-family:'Source Serif 4', serif;
-    font-size: 16px;
+    font-size: 1rem;
     padding: 10px 12px;
     border: 1px solid var(--ink);
     background: var(--paper-2);
@@ -551,7 +565,7 @@
   .modal-actions button{
     flex: 1;
     font-family:'JetBrains Mono', monospace;
-    font-size: 12.5px;
+    font-size: 0.7812rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 11px 8px;
@@ -571,7 +585,7 @@
   #exitBtn:hover{ background: var(--rule); }
   .modal-hint{
     font-family:'JetBrains Mono', monospace;
-    font-size: 10.5px;
+    font-size: 0.6562rem;
     letter-spacing: 0.04em;
     color: var(--ink-soft);
     margin: 0;
@@ -620,7 +634,7 @@
 
   .tour-step-label{
     font-family:'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--red);
@@ -629,11 +643,11 @@
   .tour-title{
     font-family:'Playfair Display', serif;
     font-weight: 700;
-    font-size: 17px;
+    font-size: 1.0625rem;
     margin: 0 0 6px;
   }
   .tour-text{
-    font-size: 13.5px;
+    font-size: 0.8438rem;
     line-height: 1.5;
     margin: 0 0 14px;
   }
@@ -645,7 +659,7 @@
   }
   .tour-close{
     font-family:'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 0.6875rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-soft);
@@ -657,7 +671,7 @@
   }
   .tour-next{
     font-family:'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 0.75rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--paper);
@@ -667,6 +681,55 @@
     cursor: pointer;
   }
   .tour-next:hover{ opacity: 0.88; }
+
+  /* ============ TOOLBAR DE ACESSIBILIDADE (tema + tamanho de fonte) ============ */
+  .a11y-toolbar{
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 1100;
+    display:flex;
+    align-items:center;
+    gap: 2px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    box-shadow: 0 8px 20px -8px rgba(0,0,0,0.4);
+    padding: 4px;
+  }
+  .a11y-toolbar button{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1;
+    color: var(--ink);
+    background: none;
+    border: 1px solid transparent;
+    padding: 7px 9px;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .a11y-toolbar button:hover{ background: var(--rule); }
+  .a11y-toolbar button:focus-visible{
+    outline: 2px solid var(--red);
+    outline-offset: 1px;
+  }
+  .a11y-toolbar button:disabled{
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .a11y-toolbar button:disabled:hover{ background: none; }
+  .a11y-toolbar .a11y-sep{
+    width: 1px;
+    align-self: stretch;
+    background: var(--rule);
+    margin: 2px 2px;
+  }
+  .a11y-toolbar #themeToggleBtn{ font-size: 0.9375rem; }
+  .a11y-toolbar #fontResetBtn{ font-size: 0.6875rem; letter-spacing: 0.03em; }
+
+  @media (max-width: 860px){
+    .a11y-toolbar{ top: 6px; right: 6px; padding: 3px; }
+    .a11y-toolbar button{ padding: 6px 7px; }
+  }
 
   @media (max-width: 860px){
     body{ overflow: auto; }
@@ -688,6 +751,16 @@
 
 <a class="skip-link" href="#mainContent">Pular para o conteúdo</a>
 <div class="sr-only" id="liveRegion" role="status" aria-live="polite"></div>
+
+<div class="a11y-toolbar" role="group" aria-label="Preferências de exibição">
+  <button type="button" id="themeToggleBtn" aria-label="Alternar entre tema claro e escuro" title="Alternar tema claro/escuro">
+    <span aria-hidden="true" id="themeIcon">🌙</span>
+  </button>
+  <span class="a11y-sep" aria-hidden="true"></span>
+  <button type="button" id="fontDecreaseBtn" aria-label="Diminuir tamanho da fonte" title="Diminuir fonte">A−</button>
+  <button type="button" id="fontResetBtn" aria-label="Voltar fonte ao tamanho original de 100%" title="Fonte em 100%">100%</button>
+  <button type="button" id="fontIncreaseBtn" aria-label="Aumentar tamanho da fonte" title="Aumentar fonte">A+</button>
+</div>
 
 <div class="paper">
 
@@ -1196,6 +1269,79 @@
   window.addEventListener("resize", () => {
     if(!tourBox.hidden && tourHighlighted){ positionTourBox(tourHighlighted); }
   });
+
+  /* =========================================================
+     TEMA CLARO/ESCURO + TAMANHO DE FONTE (toolbar fixa)
+     ========================================================= */
+  const THEME_KEY = "runnerNewsTheme";
+  const FONT_KEY = "runnerNewsFontScale";
+
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+  const themeIcon = document.getElementById("themeIcon");
+  const fontDecreaseBtn = document.getElementById("fontDecreaseBtn");
+  const fontIncreaseBtn = document.getElementById("fontIncreaseBtn");
+  const fontResetBtn = document.getElementById("fontResetBtn");
+
+  // ---------- tema ----------
+  function applyTheme(theme){
+    document.documentElement.setAttribute("data-theme", theme);
+    themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+    themeToggleBtn.setAttribute(
+      "aria-label",
+      theme === "dark" ? "Alternar para tema claro" : "Alternar para tema escuro"
+    );
+    localStorage.setItem(THEME_KEY, theme);
+  }
+
+  function toggleTheme(){
+    const current = document.documentElement.getAttribute("data-theme") || "light";
+    const next = current === "dark" ? "light" : "dark";
+    applyTheme(next);
+    announce(next === "dark" ? "Tema escuro ativado" : "Tema claro ativado");
+  }
+
+  const savedTheme = localStorage.getItem(THEME_KEY)
+    || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  applyTheme(savedTheme);
+  themeToggleBtn.addEventListener("click", toggleTheme);
+
+  // ---------- tamanho de fonte ----------
+  const FONT_STEPS = [80, 90, 100, 110, 125, 150, 175, 200];
+  let fontStepIndex = FONT_STEPS.indexOf(100);
+
+  function applyFontScale(percent){
+    document.documentElement.style.fontSize = percent + "%";
+    fontResetBtn.textContent = percent + "%";
+    fontResetBtn.setAttribute("aria-label", `Voltar fonte ao tamanho original de 100% (atual: ${percent}%)`);
+    localStorage.setItem(FONT_KEY, String(percent));
+    fontDecreaseBtn.disabled = percent <= FONT_STEPS[0];
+    fontIncreaseBtn.disabled = percent >= FONT_STEPS[FONT_STEPS.length - 1];
+  }
+
+  function changeFontStep(delta){
+    fontStepIndex = Math.min(FONT_STEPS.length - 1, Math.max(0, fontStepIndex + delta));
+    const percent = FONT_STEPS[fontStepIndex];
+    applyFontScale(percent);
+    announce(`Tamanho da fonte: ${percent}%`);
+  }
+
+  function resetFont(){
+    fontStepIndex = FONT_STEPS.indexOf(100);
+    applyFontScale(100);
+    announce("Tamanho da fonte redefinido para 100%");
+  }
+
+  fontDecreaseBtn.addEventListener("click", () => changeFontStep(-1));
+  fontIncreaseBtn.addEventListener("click", () => changeFontStep(1));
+  fontResetBtn.addEventListener("click", resetFont);
+
+  const savedFont = parseInt(localStorage.getItem(FONT_KEY), 10);
+  if(!isNaN(savedFont) && FONT_STEPS.includes(savedFont)){
+    fontStepIndex = FONT_STEPS.indexOf(savedFont);
+    applyFontScale(savedFont);
+  } else {
+    applyFontScale(100);
+  }
 </script>
 
 </body>
