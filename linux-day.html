@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>25 de Agosto — Dia do Linux | git log --graph --oneline</title>
+<meta name="description" content="A cronologia do kernel Linux, de 1991 até hoje, em estilo terminal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0f0d;
+    --bg-alt:#0e1411;
+    --surface:#141b17;
+    --surface-2:#1a2320;
+    --line:#26332c;
+    --text:#dfe7e0;
+    --text-dim:#8a988f;
+    --amber:#e0a44a;
+    --amber-dim:#8a6a34;
+    --green:#5cb36a;
+    --green-dim:#3a6b42;
+    --red:#c9604a;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --sans:'IBM Plex Sans', system-ui, sans-serif;
+    --maxw:1120px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(92,179,106,0.06), transparent 40%),
+      radial-gradient(circle at 85% 15%, rgba(224,164,74,0.05), transparent 45%);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.mono{font-family:var(--mono);}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  ::selection{background:var(--green-dim); color:#fff;}
+
+  .container{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+
+  /* reveal-on-view (no scroll-jacking, just fade/slide once in view) */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(11,15,13,0.75);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:var(--maxw); margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-weight:700; letter-spacing:.02em; font-size:15px;}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--green); box-shadow:0 0 8px var(--green);}
+  .brand img{width:22px; height:22px;}
+
+  .nav-links{display:flex; gap:28px; list-style:none; margin:0; padding:0; font-family:var(--mono); font-size:13.5px;}
+  .nav-links a{text-decoration:none; color:var(--text-dim); position:relative; padding:4px 0; transition:color .25s ease;}
+  .nav-links a::before{content:'~/';color:var(--green); opacity:0; transition:opacity .2s ease; margin-right:2px;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-links a:hover::before{opacity:1;}
+
+  .hamburger{
+    display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:8px; z-index:101;
+  }
+  .hamburger span{width:22px; height:2px; background:var(--text); transition:transform .3s ease, opacity .3s ease;}
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:120px 24px 60px;
+    text-align:center;
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:13px; color:var(--green); letter-spacing:.08em;
+    border:1px solid var(--green-dim); background:rgba(92,179,106,0.08);
+    padding:6px 14px; border-radius:100px; margin-bottom:28px; display:inline-block;
+  }
+  .hero h1{
+    font-size:clamp(34px, 6vw, 68px);
+    line-height:1.08; margin:0 0 18px; font-weight:800; letter-spacing:-0.01em;
+  }
+  .hero h1 .accent{color:var(--amber);}
+  .hero p.lede{
+    max-width:640px; color:var(--text-dim); font-size:clamp(15px,2vw,18px); margin:0 auto 40px;
+  }
+
+  .terminal{
+    width:100%; max-width:660px; text-align:left;
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    box-shadow:0 30px 80px -30px rgba(0,0,0,0.7);
+    overflow:hidden;
+  }
+  .terminal-bar{
+    display:flex; align-items:center; gap:8px; padding:11px 14px;
+    background:var(--surface-2); border-bottom:1px solid var(--line);
+  }
+  .terminal-bar .tb-dot{width:10px; height:10px; border-radius:50%;}
+  .tb-dot.r{background:#c9604a;} .tb-dot.y{background:#e0a44a;} .tb-dot.g{background:#5cb36a;}
+  .terminal-bar .tb-title{margin-left:8px; font-family:var(--mono); font-size:12px; color:var(--text-dim);}
+  .terminal-body{padding:20px 18px; font-family:var(--mono); font-size:13.5px; color:var(--text); min-height:150px;}
+  .terminal-body .prompt{color:var(--green);}
+  .terminal-body .path{color:var(--amber);}
+  #typed-line{white-space:pre-wrap; word-break:break-word;}
+  .cursor{display:inline-block; width:8px; height:15px; background:var(--green); margin-left:2px; vertical-align:-2px; animation:blink 1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  .scroll-cue{
+    margin-top:52px; display:flex; flex-direction:column; align-items:center; gap:8px;
+    color:var(--text-dim); font-family:var(--mono); font-size:12px;
+  }
+  .scroll-cue .chevron{width:14px; height:14px; border-right:2px solid var(--green); border-bottom:2px solid var(--green); transform:rotate(45deg); animation:bob 1.8s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(45deg);}50%{transform:translateY(6px) rotate(45deg);}}
+
+  /* ---------- SECTION HEADERS ---------- */
+  section{padding:96px 0;}
+  .sec-head{max-width:640px; margin:0 0 56px;}
+  .sec-head .tag{font-family:var(--mono); color:var(--amber); font-size:13px; letter-spacing:.08em; display:block; margin-bottom:10px;}
+  .sec-head h2{font-size:clamp(26px,4vw,38px); margin:0 0 14px; font-weight:800;}
+  .sec-head p{color:var(--text-dim); margin:0; font-size:15.5px;}
+
+  /* ---------- INTRO / STACK ---------- */
+  .intro-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:center;}
+  .intro-text p{color:var(--text-dim); font-size:15.5px; margin:0 0 16px;}
+  .intro-text strong{color:var(--text); font-weight:600;}
+  .stack{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:22px;
+  }
+  .stack-title{font-family:var(--mono); font-size:12px; color:var(--text-dim); margin-bottom:16px; letter-spacing:.05em;}
+  .chip-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+  .chip{
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:14px 8px;
+    transition:transform .25s ease, border-color .25s ease;
+  }
+  .chip:hover{transform:translateY(-3px); border-color:var(--green-dim);}
+  .chip img{width:26px; height:26px;}
+  .chip span{font-family:var(--mono); font-size:11px; color:var(--text-dim);}
+
+  /* ---------- TIMELINE (git log style) ---------- */
+  .timeline{position:relative;}
+  .glog{position:relative; margin-top:8px;}
+  .glog::before{
+    content:''; position:absolute; left:19px; top:6px; bottom:6px; width:2px;
+    background:linear-gradient(to bottom, var(--green-dim), var(--line) 85%, transparent);
+  }
+  .commit{position:relative; padding-left:56px; margin-bottom:38px;}
+  .commit:last-child{margin-bottom:0;}
+  .commit-node{
+    position:absolute; left:11px; top:4px; width:18px; height:18px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--green); z-index:2;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .commit-node::after{content:''; width:6px; height:6px; border-radius:50%; background:var(--green);}
+  .commit.head .commit-node{border-color:var(--amber); box-shadow:0 0 0 4px rgba(224,164,74,0.15);}
+  .commit.head .commit-node::after{background:var(--amber);}
+
+  .commit-meta{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:8px; font-family:var(--mono); font-size:12.5px;}
+  .hash{color:var(--amber); background:rgba(224,164,74,0.08); border:1px solid var(--amber-dim); padding:2px 8px; border-radius:5px;}
+  .tag-badge{color:var(--green); background:rgba(92,179,106,0.08); border:1px solid var(--green-dim); padding:2px 8px; border-radius:5px;}
+  .commit-date{color:var(--text-dim);}
+
+  .commit-body{background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:16px 18px;}
+  .commit-body h3{margin:0 0 8px; font-size:17px; font-weight:700; color:var(--text);}
+  .commit-body p{margin:0; color:var(--text-dim); font-size:14.5px;}
+
+  /* ---------- CURIOSIDADES ---------- */
+  .facts-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  .fact-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:24px;
+    transition:border-color .3s ease, transform .3s ease;
+  }
+  .fact-card:hover{border-color:var(--green-dim); transform:translateY(-4px);}
+  .fact-card .fnum{font-family:var(--mono); font-size:28px; font-weight:800; color:var(--amber); margin-bottom:8px;}
+  .fact-card h4{margin:0 0 8px; font-size:15px; font-family:var(--mono); color:var(--text);}
+  .fact-card p{margin:0; color:var(--text-dim); font-size:13.5px;}
+
+  /* ---------- ABOUT / FOOTER ---------- */
+  .about{
+    background:var(--bg-alt); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .about-grid{display:grid; grid-template-columns:auto 1fr; gap:40px; align-items:center;}
+  .tux-wrap{
+    width:150px; height:150px; border-radius:50%; background:var(--surface);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center; padding:26px;
+  }
+  .about-text p{color:var(--text-dim); font-size:15px; margin:0 0 14px;}
+  .about-text .gnu-row{display:flex; align-items:center; gap:10px; margin-top:18px;}
+  .about-text .gnu-row img{width:20px; height:20px;}
+  .about-text .gnu-row span{font-family:var(--mono); font-size:12.5px; color:var(--text-dim);}
+
+  footer{padding:36px 0; text-align:center;}
+  footer p{font-family:var(--mono); font-size:12px; color:var(--text-dim); margin:0;}
+  footer .fdot{color:var(--green);}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:860px){
+    .intro-grid{grid-template-columns:1fr; gap:32px;}
+    .facts-grid{grid-template-columns:repeat(2,1fr);}
+    .about-grid{grid-template-columns:1fr; text-align:center; justify-items:center;}
+  }
+  @media (max-width:700px){
+    .nav-links{
+      position:fixed; top:0; right:0; height:100svh; width:min(78vw,300px);
+      background:var(--bg-alt); border-left:1px solid var(--line);
+      flex-direction:column; justify-content:center; align-items:flex-start;
+      padding:40px; gap:26px; font-size:16px;
+      transform:translateX(100%); transition:transform .35s ease;
+      z-index:99;
+    }
+    .nav-links.open{transform:translateX(0);}
+    .hamburger{display:flex;}
+  }
+  @media (max-width:560px){
+    section{padding:64px 0;}
+    .facts-grid{grid-template-columns:1fr;}
+    .chip-grid{grid-template-columns:repeat(3,1fr);}
+    .commit{padding-left:44px;}
+    .glog::before{left:15px;}
+    .commit-node{left:7px; width:16px; height:16px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important;}
+    .reveal{opacity:1; transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="Tux">
+      <span>linux<span style="color:var(--amber)">@</span>kernel<span style="color:var(--text-dim)">:~$</span></span>
+      <span class="dot"></span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#inicio">inicio</a></li>
+      <li><a href="#timeline">linha-do-tempo</a></li>
+      <li><a href="#curiosidades">curiosidades</a></li>
+      <li><a href="#sobre">sobre</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <span class="eyebrow">25 DE AGOSTO · DIA DO LINUX</span>
+    <h1>35 anos de um <span class="accent">"hobby"</span><br>que virou infraestrutura mundial</h1>
+    <p class="lede">Em 25 de agosto de 1991, um estudante finlandês de 21 anos postou uma mensagem despretensiosa num grupo de discussão. Foi o primeiro commit de uma história que ainda está sendo escrita.</p>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="tb-dot r"></span><span class="tb-dot y"></span><span class="tb-dot g"></span>
+        <span class="tb-title">torvalds@minix — comp.os.minix</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="prompt">$</span> <span class="path">cat</span> anuncio_1991.txt</div>
+        <div id="typed-line" style="margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <div class="scroll-cue"><span>role para ver o histórico</span><span class="chevron"></span></div>
+  </section>
+
+  <!-- INTRO -->
+  <section id="intro">
+    <div class="container intro-grid">
+      <div class="intro-text reveal">
+        <span class="sec-head tag" style="margin-bottom:6px; display:block;">POR QUE 25 DE AGOSTO</span>
+        <h2 style="font-size:clamp(24px,3.5vw,32px); margin:0 0 18px; font-weight:800;">A data marca o anúncio, não o código</h2>
+        <p>A data celebra o dia em que <strong>Linus Torvalds</strong> anunciou publicamente seu projeto — não o lançamento do código, que só viria semanas depois. Foi o gesto de abrir o trabalho para outras pessoas que deu início a tudo.</p>
+        <p>Desde então, o kernel Linux deixou de ser um projeto pessoal para se tornar a base de <strong>Android, servidores web, supercomputadores e sistemas embarcados</strong> em praticamente todo o planeta — mantido por milhares de pessoas, em um ciclo de lançamentos que se repete a cada 9 a 10 semanas.</p>
+      </div>
+      <div class="stack reveal">
+        <div class="stack-title">tecnologias@kernel:~$ ls -la</div>
+        <div class="chip-grid">
+          <div class="chip"><img src="https://cdn.simpleicons.org/linux/5cb36a" alt="Linux"><span>linux</span></div>
+          <div class="chip"><img src="https://cdn.simpleicons.org/git/e0a44a" alt="Git"><span>git</span></div>
+          <div class="chip"><img src="https://cdn.simpleicons.org/gnu/dfe7e0" alt="GNU"><span>gnu</span></div>
+          <div class="chip"><img src="https://cdn.simpleicons.org/c/5cb36a" alt="C"><span>c lang</span></div>
+          <div class="chip"><img src="https://cdn.simpleicons.org/rust/e0a44a" alt="Rust"><span>rust</span></div>
+          <div class="chip"><img src="https://cdn.simpleicons.org/gnubash/dfe7e0" alt="Bash"><span>shell</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section id="timeline">
+    <div class="container">
+      <div class="sec-head reveal">
+        <span class="tag">git log --oneline --graph linux.git</span>
+        <h2>A cronologia do kernel</h2>
+        <p>Do "hobby" de 1991 até a versão em desenvolvimento hoje — os marcos que definiram o Linux como o conhecemos.</p>
+      </div>
+
+      <div class="glog">
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">a1e9f3c</span><span class="tag-badge">v0.01</span><span class="commit-date">25 ago 1991</span></div>
+          <div class="commit-body">
+            <h3>O anúncio no comp.os.minix</h3>
+            <p>Linus Torvalds descreve seu sistema como um "hobby" que "não vai ser grande nem profissional como o GNU" — e pergunta o que as pessoas gostariam de ver em um Minix livre.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">6c2a081</span><span class="tag-badge">v0.02</span><span class="commit-date">out 1991</span></div>
+          <div class="commit-body">
+            <h3>O código sai do computador de Linus</h3>
+            <p>As primeiras linhas do kernel são disponibilizadas via FTP. Ainda dependia de ferramentas do projeto Minix para funcionar.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">4f7b920</span><span class="tag-badge">v0.12</span><span class="commit-date">1992</span></div>
+          <div class="commit-body">
+            <h3>Linux adota a licença GPL</h3>
+            <p>Torvalds relicencia o kernel sob a GNU General Public License, garantindo que o código permaneça livre e aberto para sempre.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">9de441a</span><span class="tag-badge">v1.0</span><span class="commit-date">14 mar 1994</span></div>
+          <div class="commit-body">
+            <h3>Primeira versão "estável"</h3>
+            <p>Depois de quase três anos de desenvolvimento, o kernel recebe seu primeiro número de versão considerado maduro para uso geral.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">2b8f015</span><span class="tag-badge">v2.0</span><span class="commit-date">1996</span></div>
+          <div class="commit-body">
+            <h3>Suporte a multiprocessamento e a chegada do Tux</h3>
+            <p>O kernel ganha suporte a SMP (múltiplos processadores) e o pinguim Tux, criado por Larry Ewing, é adotado como mascote oficial do projeto.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">e15d908</span><span class="tag-badge">v2.6</span><span class="commit-date">2003</span></div>
+          <div class="commit-body">
+            <h3>Novo modelo de desenvolvimento</h3>
+            <p>A série 2.6 introduz um ciclo de lançamentos contínuo, sem os antigos ramos "estável" e "instável" separados — modelo que evoluiu para o atual.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">5f30ac1</span><span class="tag-badge">git init</span><span class="commit-date">2005</span></div>
+          <div class="commit-body">
+            <h3>Linus cria o Git</h3>
+            <p>Sem uma ferramenta de controle de versão que atendesse à escala do projeto, Torvalds escreve o Git em poucas semanas — hoje o sistema de versionamento mais usado do mundo.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">c894e02</span><span class="tag-badge">v3.0</span><span class="commit-date">2011</span></div>
+          <div class="commit-body">
+            <h3>20 anos de kernel</h3>
+            <p>Para celebrar a data, Linus simplifica o esquema de numeração de versões, encerrando a era 2.6.x.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">819d0f6</span><span class="tag-badge">v4.0</span><span class="commit-date">2015</span></div>
+          <div class="commit-body">
+            <h3>Patches "ao vivo"</h3>
+            <p>O recurso de live patching permite aplicar correções de segurança críticas sem precisar reiniciar o sistema — essencial para servidores em produção.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">3ba1177</span><span class="tag-badge">v5.0</span><span class="commit-date">2019</span></div>
+          <div class="commit-body">
+            <h3>Um projeto gigantesco</h3>
+            <p>Décadas de contribuições acumuladas fazem do Linux um dos maiores projetos de software colaborativo já criados, mantido por uma comunidade global.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">0e7c422</span><span class="tag-badge">v6.0</span><span class="commit-date">2022</span></div>
+          <div class="commit-body">
+            <h3>Rust entra no kernel</h3>
+            <p>Pela primeira vez, uma linguagem além de C e Assembly passa a ser aceita oficialmente para o desenvolvimento de drivers — um dos maiores debates técnicos da década.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">b52f9d0</span><span class="tag-badge">v6.12 LTS</span><span class="commit-date">2024</span></div>
+          <div class="commit-body">
+            <h3>Suporte de longo prazo consolidado</h3>
+            <p>Nova versão LTS chega com o suporte a Rust cada vez mais maduro para drivers e subsistemas do kernel.</p>
+          </div>
+        </div>
+
+        <div class="commit reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">f1a08e3</span><span class="tag-badge">v7.0</span><span class="commit-date">2026</span></div>
+          <div class="commit-body">
+            <h3>Kernel chega à versão 7</h3>
+            <p>O desenvolvimento mainline avança para a série 7.x, mantendo o ritmo de um novo lançamento a cada 9–10 semanas.</p>
+          </div>
+        </div>
+
+        <div class="commit head reveal">
+          <div class="commit-node"></div>
+          <div class="commit-meta"><span class="hash">HEAD → main</span><span class="tag-badge">35 anos</span><span class="commit-date">25 ago 2026</span></div>
+          <div class="commit-body">
+            <h3>Hoje</h3>
+            <p>O que começou como um "hobby" roda hoje em bilhões de dispositivos — de Raspberry Pis a praticamente todos os supercomputadores mais rápidos do mundo.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CURIOSIDADES -->
+  <section id="curiosidades">
+    <div class="container">
+      <div class="sec-head reveal">
+        <span class="tag">// curiosidades</span>
+        <h2>Números e fatos do kernel</h2>
+        <p>Alguns fatos que dão a dimensão do que aquele "hobby" de 1991 se tornou.</p>
+      </div>
+      <div class="facts-grid">
+        <div class="fact-card reveal">
+          <div class="fnum">9-10</div>
+          <h4>semanas por versão</h4>
+          <p>É o intervalo médio entre um lançamento mainline e o próximo — um ritmo constante mantido há mais de duas décadas.</p>
+        </div>
+        <div class="fact-card reveal">
+          <div class="fnum">100%</div>
+          <h4>dos supercomputadores TOP500</h4>
+          <p>Praticamente todos os supercomputadores mais rápidos do mundo rodam alguma distribuição Linux.</p>
+        </div>
+        <div class="fact-card reveal">
+          <div class="fnum">1996</div>
+          <h4>o ano do Tux</h4>
+          <p>O pinguim foi desenhado por Larry Ewing e escolhido em concurso como mascote oficial do projeto.</p>
+        </div>
+        <div class="fact-card reveal">
+          <div class="fnum">C</div>
+          <h4>a linguagem original</h4>
+          <p>Escrito majoritariamente em C e Assembly desde o início; Rust se juntou ao time oficialmente em 2022.</p>
+        </div>
+        <div class="fact-card reveal">
+          <div class="fnum">Git</div>
+          <h4>criado pelo próprio Linus</h4>
+          <p>Em 2005, sem ferramenta à altura do projeto, Torvalds escreveu o Git — hoje padrão de versionamento no mundo todo.</p>
+        </div>
+        <div class="fact-card reveal">
+          <div class="fnum">∞</div>
+          <h4>onde ele roda</h4>
+          <p>De relógios inteligentes e roteadores até Android, servidores web e a Estação Espacial Internacional.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="sobre" class="about">
+    <div class="container about-grid">
+      <div class="tux-wrap reveal">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="Tux, o mascote do Linux">
+      </div>
+      <div class="about-text reveal">
+        <span class="sec-head tag" style="margin-bottom:8px; display:block;">SOBRE ESTA PÁGINA</span>
+        <p>Esta linha do tempo foi feita para celebrar o <strong>Dia do Linux</strong>, em referência ao anúncio original de Linus Torvalds em 25 de agosto de 1991. É um projeto livre, feito com HTML, CSS e JavaScript puros — sem frameworks, do jeito que o próprio kernel começou: simples e aberto.</p>
+        <div class="gnu-row">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/Heckert_GNU_white.svg" alt="Logo do GNU">
+          <span>licenciado sob espírito GPL — copie, estude, compartilhe</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p><span class="fdot">●</span> feito para o Dia do Linux · 25 de agosto</p>
+</footer>
+
+<script>
+  // Hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    hamburger.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Reveal on view (IntersectionObserver, no scroll-jacking)
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => io.observe(el));
+
+  // Typewriter effect for hero terminal
+  const fullText = `Path: /home/torvalds/minix
+Subject: What would you like to see most in minix?
+
+Hello everybody out there using minix -
+
+I'm doing a (free) operating system (just a hobby, won't be
+big and professional like gnu) for 386(486) AT clones...
+
+  — Linus Benedict Torvalds, 25 ago 1991`;
+
+  const typedEl = document.getElementById('typed-line');
+  let i = 0;
+  function type() {
+    if (i <= fullText.length) {
+      typedEl.innerHTML = fullText.slice(0, i).replace(/\n/g, '<br>') + '<span class="cursor"></span>';
+      i += 2;
+      requestAnimationFrame(() => setTimeout(type, 12));
+    } else {
+      typedEl.innerHTML = fullText.replace(/\n/g, '<br>') + '<span class="cursor"></span>';
+    }
+  }
+  type();
+
+  // Reduced motion: skip typewriter, just show full text
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    typedEl.innerHTML = fullText.replace(/\n/g, '<br>');
+  }
+</script>
+
+</body>
+</html>
