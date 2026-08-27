@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Diário do Robério</title>
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#0a0e1a">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
@@ -18,26 +18,30 @@
         }
 
         :root {
-            --bg-primary: #0b1120;
-            --bg-secondary: #111c2f;
-            --bg-card: #152238;
-            --bg-input: #1a2a42;
-            --border-color: #2a405e;
-            --text-primary: #eaf0f8;
-            --text-secondary: #9bb1cc;
-            --accent-cyan: #22d3ee;
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-input: #1f2a3e;
+            --border-color: #2a3a55;
+            --text-primary: #e8edf5;
+            --text-secondary: #8899bb;
+            --accent-cyan: #00d4ff;
             --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
+            --accent-purple: #7c3aed;
+            --accent-pink: #ec4899;
             --accent-gold: #fbbf24;
+            --accent-green: #34d399;
             --success: #34d399;
             --danger: #f87171;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             --radius: 16px;
             --radius-sm: 10px;
-            --transition: 0.2s ease;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             --font: 'Inter', system-ui, -apple-system, sans-serif;
             --mono: 'JetBrains Mono', monospace;
-            --appbar-h: 64px;
+            --appbar-h: 68px;
+            --glow-cyan: 0 0 30px rgba(0, 212, 255, 0.15);
+            --glow-purple: 0 0 30px rgba(124, 58, 237, 0.15);
         }
 
         body {
@@ -52,157 +56,269 @@
             justify-content: center;
             align-items: center;
             padding: 12px;
+            background-image: 
+                radial-gradient(ellipse at 20% 50%, rgba(0, 212, 255, 0.03) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(124, 58, 237, 0.03) 0%, transparent 50%);
         }
 
         .app-shell {
             width: 100%;
             max-width: 1100px;
             height: 96vh;
-            max-height: 900px;
+            max-height: 920px;
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow), var(--glow-cyan);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(0, 212, 255, 0.15);
             position: relative;
         }
 
+        .app-shell::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.05), rgba(236, 72, 153, 0.05));
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ===== TOP BAR ===== */
         .app-bar {
             flex: 0 0 var(--appbar-h);
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 0 18px;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
+            gap: 14px;
+            padding: 0 20px;
+            background: rgba(10, 14, 26, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
             flex-shrink: 0;
+            position: relative;
+            z-index: 10;
         }
 
         .app-bar .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             font-weight: 700;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             letter-spacing: -0.3px;
             color: var(--text-primary);
+            text-decoration: none;
         }
 
-        .app-bar .logo i {
-            color: var(--accent-cyan);
-            font-size: 1.1rem;
+        .app-bar .logo .code-icon {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.5px;
         }
 
-        .app-bar .logo span {
-            color: var(--accent-gold);
+        .app-bar .logo .code-icon i {
+            font-size: 0.8rem;
+        }
+
+        .app-bar .logo .site-name {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .app-bar .spacer {
             flex: 1;
         }
 
-        .app-bar .toolbar {
+        .app-bar .status-badge {
             display: flex;
             align-items: center;
             gap: 6px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: rgba(0, 212, 255, 0.08);
+            padding: 4px 12px;
+            border-radius: 100px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            font-family: var(--mono);
+            letter-spacing: 0.3px;
+        }
+
+        .app-bar .status-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        .app-bar .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .app-bar .toolbar button {
             background: transparent;
             border: none;
             color: var(--text-secondary);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-size: 1rem;
             transition: var(--transition);
+            position: relative;
         }
 
         .app-bar .toolbar button:hover {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-primary);
         }
 
         .app-bar .toolbar button.admin-btn {
-            background: var(--accent-purple);
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
             color: #fff;
-            padding: 0 16px;
+            padding: 0 18px;
             border-radius: 100px;
             width: auto;
-            gap: 6px;
-            font-size: 0.8rem;
+            gap: 8px;
+            font-size: 0.78rem;
             font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
         }
 
         .app-bar .toolbar button.admin-btn:hover {
-            background: #7c3aed;
             transform: scale(0.97);
+            box-shadow: 0 4px 25px rgba(0, 212, 255, 0.35);
         }
 
         .app-bar .toolbar button.admin-btn i {
             font-size: 0.85rem;
         }
 
+        .app-bar .toolbar button.admin-btn.logout-btn {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            box-shadow: 0 4px 15px rgba(248, 113, 113, 0.2);
+        }
+
+        .app-bar .toolbar button.admin-btn.logout-btn:hover {
+            box-shadow: 0 4px 25px rgba(248, 113, 113, 0.35);
+        }
+
+        /* ===== CONTENT ===== */
         .content {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 24px 16px;
+            padding: 24px 28px 20px;
             background: var(--bg-secondary);
         }
 
         .content .page-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 18px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-family: var(--mono);
+            letter-spacing: -0.5px;
         }
 
         .content .page-title i {
             color: var(--accent-cyan);
+            font-size: 1.1rem;
         }
 
+        .content .page-title .highlight {
+            color: var(--accent-cyan);
+        }
+
+        /* ===== POSTS GRID ===== */
         .post-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
+            gap: 18px;
         }
 
         .post-card {
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(0, 212, 255, 0.08);
             border-radius: var(--radius-sm);
-            padding: 16px;
+            padding: 18px;
             transition: var(--transition);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .post-card:hover::before {
+            opacity: 1;
         }
 
         .post-card:hover {
-            border-color: var(--accent-cyan);
-            transform: translateY(-2px);
+            border-color: rgba(0, 212, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
         }
 
         .post-card .date {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.5px;
             margin-bottom: 6px;
+            font-family: var(--mono);
+        }
+
+        .post-card .date i {
+            color: var(--accent-cyan);
+            margin-right: 4px;
         }
 
         .post-card .title {
             font-size: 1.05rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 6px;
             color: var(--text-primary);
+            font-family: var(--mono);
+            letter-spacing: -0.3px;
         }
 
         .post-card .excerpt {
@@ -213,6 +329,7 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             margin-bottom: 10px;
+            line-height: 1.5;
         }
 
         .post-card .tags {
@@ -222,19 +339,48 @@
         }
 
         .post-card .tags span {
-            background: var(--bg-input);
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.1);
             padding: 2px 10px;
             border-radius: 100px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
             color: var(--accent-cyan);
+            font-family: var(--mono);
+            letter-spacing: 0.3px;
         }
 
+        .post-card .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .post-card .card-footer .read-more {
+            font-size: 0.7rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-family: var(--mono);
+            letter-spacing: 0.5px;
+        }
+
+        .post-card .card-footer .read-more i {
+            transition: var(--transition);
+        }
+
+        .post-card:hover .card-footer .read-more i {
+            transform: translateX(4px);
+        }
+
+        /* ===== MODAL ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
             z-index: 1000;
             display: flex;
             justify-content: center;
@@ -242,7 +388,7 @@
             padding: 20px;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.25s ease;
+            transition: opacity 0.3s ease;
         }
 
         .modal-overlay.open {
@@ -252,16 +398,17 @@
 
         .modal-box {
             background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(0, 212, 255, 0.15);
             border-radius: var(--radius);
-            max-width: 640px;
+            max-width: 680px;
             width: 100%;
             max-height: 85vh;
             overflow-y: auto;
-            padding: 28px 32px;
+            padding: 32px 36px;
             position: relative;
             transform: scale(0.95);
-            transition: transform 0.25s ease;
+            transition: transform 0.3s ease;
+            box-shadow: var(--glow-cyan);
         }
 
         .modal-overlay.open .modal-box {
@@ -270,63 +417,83 @@
 
         .modal-box .close-modal {
             position: absolute;
-            top: 12px;
-            right: 16px;
-            background: transparent;
-            border: none;
+            top: 14px;
+            right: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: var(--text-secondary);
-            font-size: 1.4rem;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-box .close-modal:hover {
+            background: rgba(255, 255, 255, 0.1);
             color: var(--text-primary);
             transform: rotate(90deg);
         }
 
         .modal-box .modal-title {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 6px;
             color: var(--text-primary);
+            font-family: var(--mono);
+            letter-spacing: -0.5px;
         }
 
         .modal-box .modal-date {
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+            font-family: var(--mono);
+        }
+
+        .modal-box .modal-date i {
+            color: var(--accent-cyan);
+            margin-right: 6px;
         }
 
         .modal-box .modal-body p {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             color: var(--text-primary);
+            line-height: 1.7;
         }
 
         .modal-box .modal-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
-            margin: 12px 0 8px;
+            margin: 14px 0 10px;
         }
 
         .modal-box .modal-tags span {
-            background: var(--bg-input);
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.1);
             padding: 2px 12px;
             border-radius: 100px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--accent-cyan);
+            font-family: var(--mono);
         }
 
         .modal-box .modal-signature {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border-color);
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
             font-style: italic;
             color: var(--accent-gold);
             font-size: 0.9rem;
+            font-family: var(--mono);
         }
 
+        /* ===== ADMIN PANEL ===== */
         .admin-panel {
             display: none;
             flex-direction: column;
@@ -345,13 +512,13 @@
 
         .admin-panel .sidebar {
             flex: 0 0 200px;
-            background: var(--bg-primary);
-            border-right: 1px solid var(--border-color);
+            background: rgba(10, 14, 26, 0.95);
+            border-right: 1px solid rgba(0, 212, 255, 0.08);
             padding: 14px 10px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
         }
 
         .admin-panel .sidebar .nav-item {
@@ -362,19 +529,22 @@
             border-radius: var(--radius-sm);
             color: var(--text-secondary);
             font-weight: 500;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: var(--transition);
             border: none;
             background: transparent;
             width: 100%;
             font-family: var(--font);
+            position: relative;
         }
 
         .admin-panel .sidebar .nav-item i {
             width: 20px;
             text-align: center;
             font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: var(--transition);
         }
 
         .admin-panel .sidebar .nav-item:hover {
@@ -382,9 +552,18 @@
             color: var(--text-primary);
         }
 
+        .admin-panel .sidebar .nav-item:hover i {
+            color: var(--accent-cyan);
+        }
+
         .admin-panel .sidebar .nav-item.active {
-            background: var(--accent-cyan);
-            color: var(--bg-primary);
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .admin-panel .sidebar .nav-item.active i {
+            color: var(--accent-cyan);
         }
 
         .admin-panel .sidebar .nav-item.danger {
@@ -392,13 +571,13 @@
         }
 
         .admin-panel .sidebar .nav-item.danger:hover {
-            background: rgba(248, 113, 113, 0.1);
+            background: rgba(248, 113, 113, 0.08);
         }
 
         .admin-panel .sidebar .nav-divider {
             height: 1px;
-            background: var(--border-color);
-            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 6px 0;
         }
 
         .admin-panel .admin-content {
@@ -408,6 +587,7 @@
             background: var(--bg-secondary);
         }
 
+        /* ===== ADMIN COMPONENTS ===== */
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -417,37 +597,47 @@
 
         .stat-card {
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(0, 212, 255, 0.08);
             border-radius: var(--radius-sm);
-            padding: 12px 16px;
+            padding: 14px 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0.5;
         }
 
         .stat-card .label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
             color: var(--text-secondary);
+            font-weight: 600;
         }
 
         .stat-card .value {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 700;
             font-family: var(--mono);
+            margin-top: 2px;
         }
 
-        .stat-card .value.cyan {
-            color: var(--accent-cyan);
-        }
-        .stat-card .value.gold {
-            color: var(--accent-gold);
-        }
-        .stat-card .value.purple {
-            color: var(--accent-purple);
-        }
+        .stat-card .value.cyan { color: var(--accent-cyan); }
+        .stat-card .value.gold { color: var(--accent-gold); }
+        .stat-card .value.purple { color: var(--accent-purple); }
+        .stat-card .value.pink { color: var(--accent-pink); }
 
         .table-wrap {
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(0, 212, 255, 0.08);
             border-radius: var(--radius-sm);
             overflow: hidden;
             margin-top: 6px;
@@ -462,18 +652,19 @@
         .table-wrap th {
             text-align: left;
             padding: 10px 14px;
-            background: var(--bg-primary);
+            background: rgba(10, 14, 26, 0.6);
             color: var(--text-secondary);
             font-weight: 600;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
-            border-bottom: 1px solid var(--border-color);
+            letter-spacing: 0.6px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.06);
+            font-family: var(--mono);
         }
 
         .table-wrap td {
             padding: 10px 14px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             color: var(--text-primary);
             vertical-align: middle;
         }
@@ -505,45 +696,22 @@
         }
 
         .table-wrap .actions button.danger:hover {
-            background: rgba(248, 113, 113, 0.15);
+            background: rgba(248, 113, 113, 0.12);
             color: var(--danger);
         }
 
         .tag-badge {
-            background: var(--accent-purple);
-            color: #fff;
-            font-size: 0.6rem;
-            padding: 2px 8px;
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            color: var(--accent-purple);
+            font-size: 0.55rem;
+            padding: 2px 10px;
             border-radius: 100px;
             font-weight: 600;
             display: inline-block;
             margin: 2px 4px 2px 0;
-        }
-
-        .tag-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 100px;
-            padding: 4px 12px 4px 14px;
-            font-size: 0.8rem;
-            margin: 4px 6px 4px 0;
-        }
-
-        .tag-item .remove-tag {
-            background: transparent;
-            border: none;
-            color: var(--danger);
-            cursor: pointer;
-            font-size: 0.7rem;
-            padding: 0 2px;
-        }
-
-        .tag-item .remove-tag:hover {
-            color: #ef4444;
-            transform: scale(1.2);
+            font-family: var(--mono);
+            letter-spacing: 0.3px;
         }
 
         .form-group {
@@ -552,10 +720,12 @@
 
         .form-group label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--text-secondary);
             margin-bottom: 4px;
+            font-family: var(--mono);
+            letter-spacing: 0.3px;
         }
 
         .form-group input,
@@ -564,7 +734,7 @@
             width: 100%;
             padding: 9px 14px;
             background: var(--bg-input);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(0, 212, 255, 0.1);
             border-radius: var(--radius-sm);
             color: var(--text-primary);
             font-family: var(--font);
@@ -577,12 +747,14 @@
         .form-group select:focus {
             outline: none;
             border-color: var(--accent-cyan);
-            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
         }
 
         .form-group textarea {
             resize: vertical;
             min-height: 70px;
+            font-family: var(--mono);
+            font-size: 0.8rem;
         }
 
         .form-row {
@@ -592,54 +764,61 @@
         }
 
         .btn {
-            padding: 9px 20px;
+            padding: 9px 22px;
             border: none;
             border-radius: var(--radius-sm);
             font-weight: 600;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 8px;
             font-family: var(--font);
+            letter-spacing: 0.3px;
         }
 
         .btn-primary {
-            background: var(--accent-cyan);
-            color: var(--bg-primary);
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
         }
 
         .btn-primary:hover {
-            background: #1bc5de;
             transform: scale(0.97);
+            box-shadow: 0 4px 25px rgba(0, 212, 255, 0.35);
         }
 
         .btn-secondary {
             background: var(--bg-input);
             color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .btn-secondary:hover {
-            background: #1f3450;
+            background: #2a3a55;
         }
 
         .btn-danger {
-            background: var(--danger);
+            background: linear-gradient(135deg, var(--danger), #dc2626);
             color: #fff;
+            box-shadow: 0 4px 15px rgba(248, 113, 113, 0.2);
         }
 
         .btn-danger:hover {
-            background: #ef4444;
+            transform: scale(0.97);
+            box-shadow: 0 4px 25px rgba(248, 113, 113, 0.35);
         }
 
         .btn-success {
-            background: var(--success);
-            color: var(--bg-primary);
+            background: linear-gradient(135deg, var(--success), #10b981);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(52, 211, 153, 0.2);
         }
 
         .btn-success:hover {
-            background: #2dd4a0;
+            transform: scale(0.97);
+            box-shadow: 0 4px 25px rgba(52, 211, 153, 0.35);
         }
 
         .btn-group {
@@ -649,95 +828,10 @@
             margin-top: 6px;
         }
 
-        .btn-sm {
-            padding: 5px 12px;
-            font-size: 0.7rem;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 10px 24px;
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            font-size: 0.85rem;
-            box-shadow: var(--shadow);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 9999;
-        }
-
-        .toast.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .login-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .login-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .login-box {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 32px 36px;
-            max-width: 380px;
-            width: 100%;
-            transform: scale(0.92);
-            transition: transform 0.3s ease;
-        }
-
-        .login-overlay.open .login-box {
-            transform: scale(1);
-        }
-
-        .login-box h2 {
-            font-size: 1.3rem;
-            margin-bottom: 6px;
-            color: var(--text-primary);
-        }
-
-        .login-box p {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
-
-        .login-box .error-msg {
-            color: var(--danger);
-            font-size: 0.8rem;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .login-box .error-msg.show {
-            display: block;
-        }
-
+        /* ===== TAG MANAGEMENT ===== */
         .tag-management {
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(0, 212, 255, 0.08);
             border-radius: var(--radius-sm);
             padding: 16px;
             margin-bottom: 16px;
@@ -756,9 +850,168 @@
         .tag-management .tag-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 6px;
         }
 
+        .tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 212, 255, 0.06);
+            border: 1px solid rgba(0, 212, 255, 0.08);
+            border-radius: 100px;
+            padding: 4px 12px 4px 14px;
+            font-size: 0.75rem;
+            font-family: var(--mono);
+            margin: 2px 4px 2px 0;
+            color: var(--text-primary);
+        }
+
+        .tag-item .remove-tag {
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 0.65rem;
+            padding: 0 2px;
+            transition: var(--transition);
+        }
+
+        .tag-item .remove-tag:hover {
+            color: #ef4444;
+            transform: scale(1.2);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            padding: 10px 24px;
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            box-shadow: var(--shadow), var(--glow-cyan);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 9999;
+            font-family: var(--mono);
+        }
+
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ===== LOGIN ===== */
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .login-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .login-box {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: var(--radius);
+            padding: 34px 38px;
+            max-width: 380px;
+            width: 100%;
+            transform: scale(0.92);
+            transition: transform 0.3s ease;
+            box-shadow: var(--glow-cyan);
+        }
+
+        .login-overlay.open .login-box {
+            transform: scale(1);
+        }
+
+        .login-box .login-icon {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .login-box .login-icon i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-box h2 {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+            font-family: var(--mono);
+            text-align: center;
+        }
+
+        .login-box p {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .login-box .error-msg {
+            color: var(--danger);
+            font-size: 0.75rem;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+        }
+
+        .login-box .error-msg.show {
+            display: block;
+        }
+
+        .login-box .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            color: rgba(0, 212, 255, 0.15);
+        }
+
+        .empty-state p {
+            font-family: var(--mono);
+            font-size: 0.85rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 820px) {
             body {
                 padding: 0;
@@ -768,6 +1021,9 @@
                 height: 100vh;
                 border-radius: 0;
                 border: none;
+            }
+            .app-shell::before {
+                display: none;
             }
             .content {
                 padding: 14px 16px;
@@ -818,6 +1074,12 @@
             .tag-management .tag-input-group {
                 flex-direction: column;
             }
+            .app-bar .status-badge {
+                display: none;
+            }
+            .app-bar .logo .code-icon span {
+                display: none;
+            }
         }
 
         @media (max-width: 480px) {
@@ -830,852 +1092,10 @@
             }
             .app-bar {
                 padding: 0 12px;
-                gap: 6px;
+                gap: 8px;
             }
             .app-bar .logo {
                 font-size: 0.85rem;
             }
-            .app-bar .toolbar button {
-                width: 32px;
-                height: 32px;
-                font-size: 0.85rem;
-            }
-            .app-bar .toolbar button.admin-btn {
-                font-size: 0.7rem;
-                padding: 0 12px;
-                height: 30px;
-            }
-            .content {
-                padding: 10px 12px;
-            }
-            .modal-box {
-                padding: 16px 14px;
-            }
-            .login-box {
-                padding: 20px 16px;
-            }
-        }
-
-        .content::-webkit-scrollbar,
-        .admin-content::-webkit-scrollbar,
-        .sidebar::-webkit-scrollbar,
-        .modal-box::-webkit-scrollbar {
-            width: 4px;
-        }
-        .content::-webkit-scrollbar-track,
-        .admin-content::-webkit-scrollbar-track,
-        .sidebar::-webkit-scrollbar-track,
-        .modal-box::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .content::-webkit-scrollbar-thumb,
-        .admin-content::-webkit-scrollbar-thumb,
-        .sidebar::-webkit-scrollbar-thumb,
-        .modal-box::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: var(--border-color);
-        }
-    </style>
-</head>
-<body>
-
-    <div class="app-shell" id="app">
-
-        <header class="app-bar">
-            <div class="logo">
-                <i class="fa-solid fa-feather-pointed"></i>
-                <span id="siteTitleDisplay">Diário do Robério</span>
-            </div>
-            <div class="spacer"></div>
-            <div class="toolbar">
-                <button id="loginBtn" class="admin-btn" aria-label="Acessar administração">
-                    <i class="fa-solid fa-lock"></i> Admin
-                </button>
-                <button id="logoutBtn" class="admin-btn hidden" style="background:var(--danger);" aria-label="Sair">
-                    <i class="fa-solid fa-right-from-bracket"></i> Sair
-                </button>
-            </div>
-        </header>
-
-        <section class="content" id="publicContent">
-            <div class="page-title"><i class="fa-regular fa-newspaper"></i> Últimas publicações</div>
-            <div id="postGrid" class="post-grid"></div>
-        </section>
-
-        <div class="admin-panel" id="adminPanel">
-            <div class="admin-layout">
-                <nav class="sidebar" id="adminSidebar">
-                    <button class="nav-item active" data-view="dashboard"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></button>
-                    <button class="nav-item" data-view="posts"><i class="fa-solid fa-newspaper"></i> <span>Publicações</span></button>
-                    <button class="nav-item" data-view="tags"><i class="fa-solid fa-tags"></i> <span>Tags</span></button>
-                    <button class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i> <span>Configurações</span></button>
-                    <div class="nav-divider"></div>
-                    <button class="nav-item" data-view="security"><i class="fa-solid fa-lock"></i> <span>Segurança</span></button>
-                    <button class="nav-item" data-view="backup"><i class="fa-solid fa-database"></i> <span>Backup</span></button>
-                    <button class="nav-item danger" data-view="danger"><i class="fa-solid fa-triangle-exclamation"></i> <span>Perigos</span></button>
-                </nav>
-                <div class="admin-content" id="adminContent"></div>
-            </div>
-        </div>
-
-        <div class="modal-overlay" id="postModal">
-            <div class="modal-box">
-                <button class="close-modal" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
-                <div id="modalContent"></div>
-            </div>
-        </div>
-
-        <div class="login-overlay" id="loginOverlay">
-            <div class="login-box">
-                <h2><i class="fa-solid fa-lock" style="color:var(--accent-cyan);"></i> Acesso Admin</h2>
-                <p>Digite a senha para gerenciar o conteúdo.</p>
-                <form id="loginForm" onsubmit="return handleLogin(event)">
-                    <div class="form-group">
-                        <label>Senha</label>
-                        <input type="password" id="loginPassword" placeholder="Digite a senha" required />
-                    </div>
-                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar</button>
-                    <div class="error-msg" id="loginError">Senha incorreta. Tente novamente.</div>
-                </form>
-                <button style="margin-top:12px;background:transparent;border:none;color:var(--text-secondary);font-size:0.75rem;cursor:pointer;width:100%;" onclick="closeLogin()">Cancelar</button>
-            </div>
-        </div>
-
-        <div class="toast" id="toast"></div>
-    </div>
-
-    <script>
-        // =================================================================
-        // DATA LAYER
-        // =================================================================
-        let posts = [{
-            id: 1,
-            day: 27,
-            month: 8,
-            year: 2026,
-            month_abbr: 'Ago',
-            month_full: 'Agosto',
-            title: 'Bom Dia',
-            paragraphs: ['Bom dia,', 'A quinta-feira - que dia especial! - é o melhor dia da semana para nós, militares da ativa e da reserva...'],
-            signature: 'Fé, força e coragem... Sempre!',
-            tags: ['Cotidiano']
-        }, {
-            id: 2,
-            day: 25,
-            month: 8,
-            year: 2026,
-            month_abbr: 'Ago',
-            month_full: 'Agosto',
-            title: 'Ruptura institucional.',
-            paragraphs: ['Boa tarde,', 'Um dia - não sei quando - haverá uma ruptura institucional. Pode até demorar, mas vai acontecer...'],
-            signature: 'Fé, força e coragem... Sempre!',
-            tags: ['Política', 'Sociedade']
-        }, {
-            id: 3,
-            day: 15,
-            month: 8,
-            year: 2026,
-            month_abbr: 'Ago',
-            month_full: 'Agosto',
-            title: 'Por que sou de direita?',
-            paragraphs: ['Por que sou de direita?', 'Porque acredito no livre mercado; porque acredito que o empreendedorismo gera mais empregos...'],
-            signature: 'Fé, força e coragem... Sempre!',
-            tags: ['Política', 'Sociedade', 'Família']
-        }];
-
-        let tagsData = [
-            { name: 'Política', icon: 'fa-landmark' },
-            { name: 'Sociedade', icon: 'fa-people-group' },
-            { name: 'Família', icon: 'fa-house-chimney' },
-            { name: 'Saúde', icon: 'fa-heart-pulse' },
-            { name: 'Esportes', icon: 'fa-futbol' },
-            { name: 'Fé', icon: 'fa-dove' },
-            { name: 'Cotidiano', icon: 'fa-mug-hot' },
-            { name: 'Diversos', icon: 'fa-shapes' }
-        ];
-
-        let siteTitle = 'Diário do Robério';
-        let adminPassword = 'admin123';
-        let nextPostId = 4;
-        let isAdmin = false;
-
-        // =================================================================
-        // DOM REFS
-        // =================================================================
-        const publicContent = document.getElementById('publicContent');
-        const postGrid = document.getElementById('postGrid');
-        const adminPanel = document.getElementById('adminPanel');
-        const adminContent = document.getElementById('adminContent');
-        const loginOverlay = document.getElementById('loginOverlay');
-        const loginPassword = document.getElementById('loginPassword');
-        const loginError = document.getElementById('loginError');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const postModal = document.getElementById('postModal');
-        const modalContent = document.getElementById('modalContent');
-        const closeModal = document.getElementById('closeModal');
-        const toast = document.getElementById('toast');
-        const siteTitleDisplay = document.getElementById('siteTitleDisplay');
-
-        // =================================================================
-        // TOAST
-        // =================================================================
-        let toastTimer;
-
-        function showToast(msg, isError = false) {
-            toast.textContent = msg;
-            toast.style.borderColor = isError ? 'var(--danger)' : 'var(--accent-cyan)';
-            toast.classList.add('show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
-        }
-
-        // =================================================================
-        // ESCAPE
-        // =================================================================
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>"']/g, function(c) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } [c] || c;
-            });
-        }
-
-        // =================================================================
-        // RENDER PUBLIC POSTS
-        // =================================================================
-        function renderPublicPosts() {
-            if (posts.length === 0) {
-                postGrid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fa-regular fa-face-frown"></i><p>Nenhuma publicação ainda.</p></div>`;
-                return;
-            }
-            let html = '';
-            posts.forEach(p => {
-                const excerpt = (p.paragraphs && p.paragraphs[0]) || '';
-                const tagsHtml = (p.tags || []).map(t => `<span>${escapeHtml(t)}</span>`).join('');
-                html += `
-                    <div class="post-card" data-id="${p.id}">
-                        <div class="date">${p.day} de ${p.month_full} de ${p.year}</div>
-                        <div class="title">${escapeHtml(p.title)}</div>
-                        <div class="excerpt">${escapeHtml(excerpt)}</div>
-                        <div class="tags">${tagsHtml}</div>
-                    </div>
-                `;
-            });
-            postGrid.innerHTML = html;
-
-            document.querySelectorAll('.post-card').forEach(el => {
-                el.addEventListener('click', function() {
-                    const id = parseInt(this.dataset.id);
-                    const post = posts.find(p => p.id === id);
-                    if (post) openPostModal(post);
-                });
-            });
-        }
-
-        // =================================================================
-        // POST MODAL
-        // =================================================================
-        function openPostModal(post) {
-            const tagsHtml = (post.tags || []).map(t => `<span>${escapeHtml(t)}</span>`).join('');
-            const bodyHtml = (post.paragraphs || []).map(p => `<p>${escapeHtml(p)}</p>`).join('');
-            const sigHtml = post.signature ? `<div class="modal-signature">${escapeHtml(post.signature)}</div>` : '';
-
-            modalContent.innerHTML = `
-                <div class="modal-title">${escapeHtml(post.title)}</div>
-                <div class="modal-date">${post.day} de ${post.month_full} de ${post.year}</div>
-                <div class="modal-tags">${tagsHtml}</div>
-                <div class="modal-body">${bodyHtml}</div>
-                ${sigHtml}
-            `;
-            postModal.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closePostModal() {
-            postModal.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        closeModal.addEventListener('click', closePostModal);
-        postModal.addEventListener('click', function(e) {
-            if (e.target === this) closePostModal();
-        });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closePostModal();
-        });
-
-        // =================================================================
-        // LOGIN / LOGOUT
-        // =================================================================
-        function openLogin() {
-            loginOverlay.classList.add('open');
-            loginPassword.value = '';
-            loginError.classList.remove('show');
-            setTimeout(() => loginPassword.focus(), 200);
-        }
-
-        function closeLogin() {
-            loginOverlay.classList.remove('open');
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const pass = loginPassword.value.trim();
-            if (pass === adminPassword) {
-                isAdmin = true;
-                closeLogin();
-                showToast('Login realizado com sucesso!');
-                enterAdminMode();
-            } else {
-                loginError.classList.add('show');
-                loginPassword.value = '';
-                loginPassword.focus();
-            }
-            return false;
-        }
-
-        function enterAdminMode() {
-            publicContent.style.display = 'none';
-            adminPanel.classList.add('active');
-            loginBtn.classList.add('hidden');
-            logoutBtn.classList.remove('hidden');
-            renderAdminView('dashboard');
-        }
-
-        function exitAdminMode() {
-            isAdmin = false;
-            publicContent.style.display = 'block';
-            adminPanel.classList.remove('active');
-            loginBtn.classList.remove('hidden');
-            logoutBtn.classList.add('hidden');
-            renderPublicPosts();
-            showToast('Sessão encerrada.');
-        }
-
-        loginBtn.addEventListener('click', openLogin);
-        logoutBtn.addEventListener('click', function() {
-            if (confirm('Deseja realmente sair do painel administrativo?')) {
-                exitAdminMode();
-            }
-        });
-
-        // =================================================================
-        // ADMIN RENDER
-        // =================================================================
-        function renderAdminView(view) {
-            document.querySelectorAll('#adminSidebar .nav-item').forEach(el => el.classList.remove('active'));
-            const navBtn = document.querySelector(`#adminSidebar .nav-item[data-view="${view}"]`);
-            if (navBtn) navBtn.classList.add('active');
-
-            switch (view) {
-                case 'dashboard':
-                    renderAdminDashboard();
-                    break;
-                case 'posts':
-                    renderAdminPosts();
-                    break;
-                case 'tags':
-                    renderAdminTags();
-                    break;
-                case 'settings':
-                    renderAdminSettings();
-                    break;
-                case 'security':
-                    renderAdminSecurity();
-                    break;
-                case 'backup':
-                    renderAdminBackup();
-                    break;
-                case 'danger':
-                    renderAdminDanger();
-                    break;
-                default:
-                    adminContent.innerHTML = '<div class="empty-state"><i class="fa-solid fa-ban"></i><p>Seção não encontrada</p></div>';
-            }
-        }
-
-        // ---- ADMIN DASHBOARD ----
-        function renderAdminDashboard() {
-            const total = posts.length;
-            const totalTags = tagsData.length;
-            adminContent.innerHTML = `
-                <div class="page-title"><i class="fa-solid fa-gauge-high"></i> Dashboard</div>
-                <div class="stat-grid">
-                    <div class="stat-card"><span class="label">Publicações</span><span class="value cyan">${total}</span></div>
-                    <div class="stat-card"><span class="label">Tags</span><span class="value gold">${totalTags}</span></div>
-                    <div class="stat-card"><span class="label">Última publicação</span><span class="value purple" style="font-size:0.9rem;">${posts.length ? posts[posts.length-1].title : '—'}</span></div>
-                </div>
-                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:16px;">
-                    <p style="color:var(--text-secondary);font-size:0.85rem;">
-                        <i class="fa-solid fa-circle-info" style="color:var(--accent-cyan);"></i>
-                        Painel administrativo do <strong>${siteTitle}</strong>. Gerencie publicações, tags e configurações.
-                    </p>
-                </div>
-            `;
-        }
-
-        // ---- ADMIN POSTS ----
-        function renderAdminPosts() {
-            let html = `
-                <div class="page-title"><i class="fa-solid fa-newspaper"></i> Publicações</div>
-                <div style="margin-bottom:12px;">
-                    <button class="btn btn-primary" onclick="showAdminPostForm()"><i class="fa-solid fa-plus"></i> Nova publicação</button>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Título</th><th>Data</th><th>Tags</th><th style="width:90px;">Ações</th></tr></thead>
-                        <tbody>
-            `;
-            if (posts.length === 0) {
-                html += `<tr><td colspan="4" style="text-align:center;color:var(--text-secondary);padding:20px;">Nenhuma publicação</td></tr>`;
-            } else {
-                posts.forEach((p, idx) => {
-                    const tagsHtml = (p.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
-                    html += `
-                        <tr>
-                            <td><strong>${escapeHtml(p.title)}</strong></td>
-                            <td>${p.day}/${p.month_abbr}/${p.year}</td>
-                            <td>${tagsHtml}</td>
-                            <td>
-                                <div class="actions">
-                                    <button onclick="editAdminPost(${idx})" title="Editar"><i class="fa-regular fa-pen-to-square"></i></button>
-                                    <button class="danger" onclick="deleteAdminPost(${idx})" title="Excluir"><i class="fa-regular fa-trash-can"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
-            html += `</tbody></table></div>`;
-            adminContent.innerHTML = html;
-        }
-
-        // ---- ADMIN TAGS ----
-        function renderAdminTags() {
-            let html = `
-                <div class="page-title"><i class="fa-solid fa-tags"></i> Gerenciar Tags</div>
-                <div class="tag-management">
-                    <div class="tag-input-group">
-                        <input type="text" id="newTagInput" placeholder="Nome da nova tag" />
-                        <button class="btn btn-primary" onclick="addTag()"><i class="fa-solid fa-plus"></i> Adicionar</button>
-                    </div>
-                    <div class="tag-list" id="tagList">
-            `;
-            tagsData.forEach(t => {
-                const count = posts.filter(p => (p.tags || []).includes(t.name)).length;
-                html += `
-                    <span class="tag-item">
-                        <i class="fa-solid ${t.icon}" style="color:var(--accent-cyan);"></i>
-                        ${t.name}
-                        <span style="color:var(--text-secondary);font-size:0.7rem;">(${count})</span>
-                        <button class="remove-tag" onclick="removeTag('${t.name}')" title="Remover tag"><i class="fa-solid fa-xmark"></i></button>
-                    </span>
-                `;
-            });
-            html += `
-                    </div>
-                </div>
-                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:16px;margin-top:12px;">
-                    <p style="color:var(--text-secondary);font-size:0.8rem;">
-                        <i class="fa-solid fa-circle-info" style="color:var(--accent-cyan);"></i>
-                        Tags em uso não podem ser removidas. Para remover uma tag, primeiro remova-a de todas as publicações.
-                    </p>
-                </div>
-            `;
-            adminContent.innerHTML = html;
-        }
-
-        // ---- ADMIN SETTINGS ----
-        function renderAdminSettings() {
-            adminContent.innerHTML = `
-                <div class="page-title"><i class="fa-solid fa-gear"></i> Configurações</div>
-                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:20px;">
-                    <div class="form-group">
-                        <label>Título do site</label>
-                        <input type="text" id="siteTitleInput" value="${escapeHtml(siteTitle)}" />
-                    </div>
-                    <button class="btn btn-primary" onclick="saveSiteTitle()"><i class="fa-solid fa-floppy-disk"></i> Salvar título</button>
-                </div>
-            `;
-        }
-
-        // ---- ADMIN SECURITY ----
-        function renderAdminSecurity() {
-            adminContent.innerHTML = `
-                <div class="page-title"><i class="fa-solid fa-lock"></i> Segurança</div>
-                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:20px;">
-                    <p style="color:var(--text-secondary);margin-bottom:14px;">Altere a senha de acesso ao painel administrativo.</p>
-                    <div class="form-group">
-                        <label>Nova senha</label>
-                        <input type="password" id="newPassInput" placeholder="Digite a nova senha" />
-                    </div>
-                    <div class="form-group">
-                        <label>Confirmar senha</label>
-                        <input type="password" id="confirmPassInput" placeholder="Confirme a nova senha" />
-                    </div>
-                    <button class="btn btn-primary" onclick="changeAdminPassword()"><i class="fa-solid fa-key"></i> Atualizar senha</button>
-                </div>
-            `;
-        }
-
-        // ---- ADMIN BACKUP ----
-        function renderAdminBackup() {
-            adminContent.innerHTML = `
-                <div class="page-title"><i class="fa-solid fa-database"></i> Backup</div>
-                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:20px;">
-                    <p style="color:var(--text-secondary);margin-bottom:14px;">Exporte todas as publicações em formato JSON para backup.</p>
-                    <button class="btn btn-success" onclick="exportBackup()"><i class="fa-solid fa-download"></i> Exportar JSON</button>
-                    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border-color);">
-                        <p style="color:var(--text-secondary);font-size:0.8rem;">
-                            <i class="fa-solid fa-circle-info" style="color:var(--accent-cyan);"></i>
-                            O arquivo JSON contém todas as publicações com título, data, conteúdo, assinatura e tags.
-                        </p>
-                    </div>
-                </div>
-            `;
-        }
-
-        // ---- ADMIN DANGER ----
-        function renderAdminDanger() {
-            adminContent.innerHTML = `
-                <div class="page-title"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger);"></i> Zona de Perigo</div>
-                <div style="background:var(--bg-card);border:1px solid var(--danger);border-radius:var(--radius-sm);padding:20px;">
-                    <p style="color:var(--text-secondary);margin-bottom:14px;">Ações irreversíveis. Use com extremo cuidado.</p>
-                    <div style="display:flex;flex-wrap:wrap;gap:10px;">
-                        <button class="btn btn-danger" onclick="resetAllData()"><i class="fa-solid fa-trash-can"></i> Resetar todos os dados</button>
-                        <button class="btn btn-danger" onclick="resetToSample()"><i class="fa-solid fa-rotate"></i> Restaurar exemplos</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        // =================================================================
-        // ADMIN CRUD
-        // =================================================================
-        function showAdminPostForm(postData, idx) {
-            const isEdit = !!postData;
-            const p = postData || { title: '', paragraphs: ['', ''], signature: '', tags: [] };
-            const tagsOpts = tagsData.map(t =>
-                `<option value="${t.name}" ${(p.tags || []).includes(t.name) ? 'selected' : ''}>${t.name}</option>`
-            ).join('');
-
-            adminContent.innerHTML = `
-                <div class="page-title"><i class="fa-solid ${isEdit ? 'fa-pen-to-square' : 'fa-plus'}"></i> ${isEdit ? 'Editar' : 'Nova'} publicação</div>
-                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:20px;">
-                    <form id="adminPostForm" onsubmit="saveAdminPost(event, ${isEdit ? idx : 'null'})">
-                        <div class="form-group">
-                            <label>Título</label>
-                            <input type="text" name="title" value="${escapeHtml(p.title)}" required />
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Dia</label>
-                                <input type="number" name="day" value="${p.day || 1}" min="1" max="31" required />
-                            </div>
-                            <div class="form-group">
-                                <label>Mês</label>
-                                <select name="month_abbr">
-                                    ${['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'].map((m,i) =>
-                                        `<option value="${m}" ${(p.month_abbr === m) ? 'selected' : ''}>${m}</option>`
-                                    ).join('')}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Ano</label>
-                            <input type="number" name="year" value="${p.year || 2026}" min="2020" max="2030" required />
-                        </div>
-                        <div class="form-group">
-                            <label>Parágrafos (um por linha)</label>
-                            <textarea name="paragraphs" rows="4">${(p.paragraphs || []).join('\n')}</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Assinatura</label>
-                            <input type="text" name="signature" value="${escapeHtml(p.signature || '')}" />
-                        </div>
-                        <div class="form-group">
-                            <label>Tags</label>
-                            <select name="tags" multiple style="height:70px;">
-                                ${tagsOpts}
-                            </select>
-                            <span style="font-size:0.65rem;color:var(--text-secondary);">Segure Ctrl/Cmd para múltiplas</span>
-                        </div>
-                        <div class="btn-group">
-                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
-                            <button type="button" class="btn btn-secondary" onclick="renderAdminPosts()">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
-            `;
-        }
-
-        function saveAdminPost(e, idx) {
-            e.preventDefault();
-            const form = document.getElementById('adminPostForm');
-            const fd = new FormData(form);
-            const tags = fd.getAll('tags');
-            const paragraphs = fd.get('paragraphs').split('\n').filter(l => l.trim());
-            const monthAbbr = fd.get('month_abbr');
-            const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
-                'Novembro', 'Dezembro'
-            ];
-            const idxMonth = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'].indexOf(
-            monthAbbr);
-            const data = {
-                title: fd.get('title'),
-                day: parseInt(fd.get('day')),
-                month_abbr: monthAbbr,
-                month_full: months[idxMonth] || monthAbbr,
-                year: parseInt(fd.get('year')),
-                paragraphs: paragraphs.length ? paragraphs : [''],
-                signature: fd.get('signature'),
-                tags: tags,
-            };
-
-            if (idx !== null && idx !== undefined && idx !== 'null') {
-                posts[idx] = { ...posts[idx], ...data };
-                showToast('Publicação atualizada!');
-            } else {
-                data.id = nextPostId++;
-                posts.push(data);
-                showToast('Publicação criada!');
-            }
-            renderAdminPosts();
-            renderPublicPosts();
-        }
-
-        function editAdminPost(idx) {
-            if (idx < 0 || idx >= posts.length) return;
-            showAdminPostForm(posts[idx], idx);
-        }
-
-        function deleteAdminPost(idx) {
-            if (idx < 0 || idx >= posts.length) return;
-            if (confirm(`Excluir "${posts[idx].title}"?`)) {
-                posts.splice(idx, 1);
-                showToast('Publicação excluída.');
-                renderAdminPosts();
-                renderPublicPosts();
-            }
-        }
-
-        // =================================================================
-        // TAG MANAGEMENT
-        // =================================================================
-        function addTag() {
-            const input = document.getElementById('newTagInput');
-            const name = input.value.trim();
-            if (!name) {
-                showToast('Digite um nome para a tag.', true);
-                return;
-            }
-            if (tagsData.find(t => t.name.toLowerCase() === name.toLowerCase())) {
-                showToast('Esta tag já existe.', true);
-                return;
-            }
-            const icon = 'fa-tag';
-            tagsData.push({ name, icon });
-            input.value = '';
-            showToast(`Tag "${name}" adicionada!`);
-            renderAdminTags();
-        }
-
-        function removeTag(tagName) {
-            const inUse = posts.some(p => (p.tags || []).includes(tagName));
-            if (inUse) {
-                showToast(`A tag "${tagName}" está em uso e não pode ser removida.`, true);
-                return;
-            }
-            if (confirm(`Remover a tag "${tagName}"?`)) {
-                tagsData = tagsData.filter(t => t.name !== tagName);
-                showToast(`Tag "${tagName}" removida.`);
-                renderAdminTags();
-            }
-        }
-
-        // =================================================================
-        // ADMIN SETTINGS ACTIONS
-        // =================================================================
-        function saveSiteTitle() {
-            const input = document.getElementById('siteTitleInput');
-            if (input) {
-                siteTitle = input.value.trim() || 'Diário do Robério';
-                siteTitleDisplay.textContent = siteTitle;
-                showToast('Título do site atualizado!');
-                renderAdminView('dashboard');
-            }
-        }
-
-        function changeAdminPassword() {
-            const newPass = document.getElementById('newPassInput');
-            const confirmPass = document.getElementById('confirmPassInput');
-            if (!newPass || !confirmPass) return;
-            if (newPass.value.trim().length < 4) {
-                showToast('A senha deve ter pelo menos 4 caracteres.', true);
-                return;
-            }
-            if (newPass.value !== confirmPass.value) {
-                showToast('As senhas não coincidem.', true);
-                return;
-            }
-            adminPassword = newPass.value.trim();
-            showToast('Senha atualizada com sucesso!');
-            newPass.value = '';
-            confirmPass.value = '';
-        }
-
-        // =================================================================
-        // BACKUP
-        // =================================================================
-        function exportBackup() {
-            const backupData = {
-                exportedAt: new Date().toISOString(),
-                siteTitle: siteTitle,
-                totalPosts: posts.length,
-                posts: posts.map(p => ({
-                    id: p.id,
-                    title: p.title,
-                    day: p.day,
-                    month_abbr: p.month_abbr,
-                    month_full: p.month_full,
-                    year: p.year,
-                    paragraphs: p.paragraphs,
-                    signature: p.signature || '',
-                    tags: p.tags || []
-                }))
-            };
-
-            const json = JSON.stringify(backupData, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `backup_${siteTitle.replace(/\s/g, '_')}_${new Date().toISOString().slice(0,10)}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast('Backup exportado com sucesso!');
-        }
-
-        // =================================================================
-        // ADMIN DANGER ACTIONS
-        // =================================================================
-        function resetAllData() {
-            if (confirm('⚠️ Isso irá APAGAR TODOS OS DADOS. Tem certeza?')) {
-                posts = [];
-                nextPostId = 1;
-                showToast('Todos os dados foram removidos.');
-                renderAdminView('dashboard');
-                renderPublicPosts();
-            }
-        }
-
-        function resetToSample() {
-            if (confirm('Restaurar os dados de exemplo?')) {
-                posts = [{
-                    id: 1,
-                    day: 27,
-                    month: 8,
-                    year: 2026,
-                    month_abbr: 'Ago',
-                    month_full: 'Agosto',
-                    title: 'Bom Dia',
-                    paragraphs: ['Bom dia,', 'A quinta-feira - que dia especial! - é o melhor dia da semana...'],
-                    signature: 'Fé, força e coragem... Sempre!',
-                    tags: ['Cotidiano']
-                }, {
-                    id: 2,
-                    day: 25,
-                    month: 8,
-                    year: 2026,
-                    month_abbr: 'Ago',
-                    month_full: 'Agosto',
-                    title: 'Ruptura institucional.',
-                    paragraphs: ['Boa tarde,', 'Um dia - não sei quando - haverá uma ruptura institucional...'],
-                    signature: 'Fé, força e coragem... Sempre!',
-                    tags: ['Política', 'Sociedade']
-                }, {
-                    id: 3,
-                    day: 15,
-                    month: 8,
-                    year: 2026,
-                    month_abbr: 'Ago',
-                    month_full: 'Agosto',
-                    title: 'Por que sou de direita?',
-                    paragraphs: ['Por que sou de direita?', 'Porque acredito no livre mercado...'],
-                    signature: 'Fé, força e coragem... Sempre!',
-                    tags: ['Política', 'Sociedade', 'Família']
-                }];
-                nextPostId = 4;
-                showToast('Dados de exemplo restaurados.');
-                renderAdminView('dashboard');
-                renderPublicPosts();
-            }
-        }
-
-        // =================================================================
-        // SIDEBAR NAV
-        // =================================================================
-        document.getElementById('adminSidebar').addEventListener('click', function(e) {
-            const btn = e.target.closest('.nav-item');
-            if (!btn) return;
-            const view = btn.dataset.view;
-            if (view) renderAdminView(view);
-        });
-
-        // =================================================================
-        // EXPOSE GLOBALS PARA ONCLICK
-        // =================================================================
-        window.showAdminPostForm = showAdminPostForm;
-        window.saveAdminPost = saveAdminPost;
-        window.editAdminPost = editAdminPost;
-        window.deleteAdminPost = deleteAdminPost;
-        window.renderAdminPosts = renderAdminPosts;
-        window.renderAdminView = renderAdminView;
-        window.saveSiteTitle = saveSiteTitle;
-        window.changeAdminPassword = changeAdminPassword;
-        window.resetAllData = resetAllData;
-        window.resetToSample = resetToSample;
-        window.handleLogin = handleLogin;
-        window.closeLogin = closeLogin;
-        window.addTag = addTag;
-        window.removeTag = removeTag;
-        window.exportBackup = exportBackup;
-
-        // =================================================================
-        // INIT
-        // =================================================================
-        renderPublicPosts();
-
-        loginOverlay.addEventListener('click', function(e) {
-            if (e.target === this) closeLogin();
-        });
-
-        loginPassword.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') handleLogin(e);
-        });
-
-        console.log('🔐 Diário do Robério - Admin');
-        console.log('📝 Senha padrão: admin123');
-        console.log('👆 Clique em "Admin" no topo para acessar o painel.');
-        console.log('📦 Backup: exporte suas publicações em JSON na seção Backup.');
-    </script>
-</body>
-</html>
+            .app-bar .logo .code-icon {
+                padding: 4px 
