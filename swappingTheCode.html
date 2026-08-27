@@ -1098,4 +1098,888 @@
                 font-size: 0.85rem;
             }
             .app-bar .logo .code-icon {
-                padding: 4px 
+                padding: 4px 8px;
+                font-size: 0.6rem;
+            }
+            .app-bar .toolbar button {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+            .app-bar .toolbar button.admin-btn {
+                font-size: 0.65rem;
+                padding: 0 12px;
+                height: 30px;
+            }
+            .content {
+                padding: 10px 12px;
+            }
+            .modal-box {
+                padding: 16px 14px;
+            }
+            .login-box {
+                padding: 20px 16px;
+            }
+            .post-card {
+                padding: 14px;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        .content::-webkit-scrollbar,
+        .admin-content::-webkit-scrollbar,
+        .sidebar::-webkit-scrollbar,
+        .modal-box::-webkit-scrollbar {
+            width: 4px;
+        }
+        .content::-webkit-scrollbar-track,
+        .admin-content::-webkit-scrollbar-track,
+        .sidebar::-webkit-scrollbar-track,
+        .modal-box::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .content::-webkit-scrollbar-thumb,
+        .admin-content::-webkit-scrollbar-thumb,
+        .sidebar::-webkit-scrollbar-thumb,
+        .modal-box::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 4px;
+        }
+        .content::-webkit-scrollbar-thumb:hover,
+        .admin-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 212, 255, 0.4);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-card {
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        .post-card:nth-child(2) { animation-delay: 0.05s; }
+        .post-card:nth-child(3) { animation-delay: 0.1s; }
+        .post-card:nth-child(4) { animation-delay: 0.15s; }
+        .post-card:nth-child(5) { animation-delay: 0.2s; }
+        .post-card:nth-child(6) { animation-delay: 0.25s; }
+    </style>
+</head>
+<body>
+
+    <div class="app-shell" id="app">
+
+        <!-- TOP BAR -->
+        <header class="app-bar">
+            <div class="logo">
+                <div class="code-icon">
+                    <i class="fa-solid fa-code"></i>
+                    <span>&lt;/&gt;</span>
+                </div>
+                <span class="site-name" id="siteTitleDisplay">Diário do Robério</span>
+            </div>
+            <div class="spacer"></div>
+            <div class="status-badge">
+                <span class="dot"></span>
+                <span>SYSTEM v2.0</span>
+            </div>
+            <div class="toolbar">
+                <button id="loginBtn" class="admin-btn" aria-label="Acessar administração">
+                    <i class="fa-solid fa-lock"></i> Admin
+                </button>
+                <button id="logoutBtn" class="admin-btn logout-btn hidden" aria-label="Sair">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sair
+                </button>
+            </div>
+        </header>
+
+        <!-- PUBLIC CONTENT -->
+        <section class="content" id="publicContent">
+            <div class="page-title">
+                <i class="fa-regular fa-newspaper"></i>
+                <span>Últimas <span class="highlight">publicações</span></span>
+            </div>
+            <div id="postGrid" class="post-grid"></div>
+        </section>
+
+        <!-- ADMIN PANEL -->
+        <div class="admin-panel" id="adminPanel">
+            <div class="admin-layout">
+                <nav class="sidebar" id="adminSidebar">
+                    <button class="nav-item active" data-view="dashboard"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></button>
+                    <button class="nav-item" data-view="posts"><i class="fa-solid fa-newspaper"></i> <span>Publicações</span></button>
+                    <button class="nav-item" data-view="tags"><i class="fa-solid fa-tags"></i> <span>Tags</span></button>
+                    <button class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i> <span>Configurações</span></button>
+                    <div class="nav-divider"></div>
+                    <button class="nav-item" data-view="security"><i class="fa-solid fa-lock"></i> <span>Segurança</span></button>
+                    <button class="nav-item" data-view="backup"><i class="fa-solid fa-database"></i> <span>Backup</span></button>
+                    <button class="nav-item danger" data-view="danger"><i class="fa-solid fa-triangle-exclamation"></i> <span>Perigos</span></button>
+                </nav>
+                <div class="admin-content" id="adminContent"></div>
+            </div>
+        </div>
+
+        <!-- POST MODAL -->
+        <div class="modal-overlay" id="postModal">
+            <div class="modal-box">
+                <button class="close-modal" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
+                <div id="modalContent"></div>
+            </div>
+        </div>
+
+        <!-- LOGIN OVERLAY -->
+        <div class="login-overlay" id="loginOverlay">
+            <div class="login-box">
+                <div class="login-icon">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <h2>Acesso Admin</h2>
+                <p>Digite a senha para acessar o painel</p>
+                <form id="loginForm" onsubmit="return handleLogin(event)">
+                    <div class="form-group">
+                        <label>Senha</label>
+                        <input type="password" id="loginPassword" placeholder="Digite a senha" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar</button>
+                    <div class="error-msg" id="loginError">Senha incorreta. Tente novamente.</div>
+                </form>
+                <button style="margin-top:14px;background:transparent;border:none;color:var(--text-secondary);font-size:0.7rem;cursor:pointer;width:100%;font-family:var(--mono);" onclick="closeLogin()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- TOAST -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+        // =================================================================
+        // DATA LAYER
+        // =================================================================
+        let posts = [{
+            id: 1,
+            day: 27,
+            month: 8,
+            year: 2026,
+            month_abbr: 'Ago',
+            month_full: 'Agosto',
+            title: 'Bom Dia',
+            paragraphs: ['Bom dia,', 'A quinta-feira - que dia especial! - é o melhor dia da semana para nós, militares da ativa e da reserva...'],
+            signature: 'Fé, força e coragem... Sempre!',
+            tags: ['Cotidiano']
+        }, {
+            id: 2,
+            day: 25,
+            month: 8,
+            year: 2026,
+            month_abbr: 'Ago',
+            month_full: 'Agosto',
+            title: 'Ruptura institucional.',
+            paragraphs: ['Boa tarde,', 'Um dia - não sei quando - haverá uma ruptura institucional. Pode até demorar, mas vai acontecer...'],
+            signature: 'Fé, força e coragem... Sempre!',
+            tags: ['Política', 'Sociedade']
+        }, {
+            id: 3,
+            day: 15,
+            month: 8,
+            year: 2026,
+            month_abbr: 'Ago',
+            month_full: 'Agosto',
+            title: 'Por que sou de direita?',
+            paragraphs: ['Por que sou de direita?', 'Porque acredito no livre mercado; porque acredito que o empreendedorismo gera mais empregos...'],
+            signature: 'Fé, força e coragem... Sempre!',
+            tags: ['Política', 'Sociedade', 'Família']
+        }];
+
+        let tagsData = [
+            { name: 'Política', icon: 'fa-landmark' },
+            { name: 'Sociedade', icon: 'fa-people-group' },
+            { name: 'Família', icon: 'fa-house-chimney' },
+            { name: 'Saúde', icon: 'fa-heart-pulse' },
+            { name: 'Esportes', icon: 'fa-futbol' },
+            { name: 'Fé', icon: 'fa-dove' },
+            { name: 'Cotidiano', icon: 'fa-mug-hot' },
+            { name: 'Diversos', icon: 'fa-shapes' }
+        ];
+
+        let siteTitle = 'Diário do Robério';
+        let adminPassword = 'admin123';
+        let nextPostId = 4;
+        let isAdmin = false;
+
+        // =================================================================
+        // DOM REFS
+        // =================================================================
+        const publicContent = document.getElementById('publicContent');
+        const postGrid = document.getElementById('postGrid');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminContent = document.getElementById('adminContent');
+        const loginOverlay = document.getElementById('loginOverlay');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginError = document.getElementById('loginError');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const postModal = document.getElementById('postModal');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementById('closeModal');
+        const toast = document.getElementById('toast');
+        const siteTitleDisplay = document.getElementById('siteTitleDisplay');
+
+        // =================================================================
+        // TOAST
+        // =================================================================
+        let toastTimer;
+
+        function showToast(msg, isError = false) {
+            toast.textContent = msg;
+            toast.style.borderColor = isError ? 'var(--danger)' : 'var(--accent-cyan)';
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+        }
+
+        // =================================================================
+        // ESCAPE
+        // =================================================================
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } [c] || c;
+            });
+        }
+
+        // =================================================================
+        // RENDER PUBLIC POSTS
+        // =================================================================
+        function renderPublicPosts() {
+            if (posts.length === 0) {
+                postGrid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fa-regular fa-face-frown"></i><p>Nenhuma publicação ainda.</p></div>`;
+                return;
+            }
+            let html = '';
+            posts.forEach(p => {
+                const excerpt = (p.paragraphs && p.paragraphs[0]) || '';
+                const tagsHtml = (p.tags || []).map(t => `<span>${escapeHtml(t)}</span>`).join('');
+                html += `
+                    <div class="post-card" data-id="${p.id}">
+                        <div class="date"><i class="fa-regular fa-calendar"></i> ${p.day} de ${p.month_full} de ${p.year}</div>
+                        <div class="title">${escapeHtml(p.title)}</div>
+                        <div class="excerpt">${escapeHtml(excerpt)}</div>
+                        <div class="tags">${tagsHtml}</div>
+                        <div class="card-footer">
+                            <span class="read-more">Ler mais <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                `;
+            });
+            postGrid.innerHTML = html;
+
+            document.querySelectorAll('.post-card').forEach(el => {
+                el.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const post = posts.find(p => p.id === id);
+                    if (post) openPostModal(post);
+                });
+            });
+        }
+
+        // =================================================================
+        // POST MODAL
+        // =================================================================
+        function openPostModal(post) {
+            const tagsHtml = (post.tags || []).map(t => `<span>${escapeHtml(t)}</span>`).join('');
+            const bodyHtml = (post.paragraphs || []).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+            const sigHtml = post.signature ? `<div class="modal-signature">${escapeHtml(post.signature)}</div>` : '';
+
+            modalContent.innerHTML = `
+                <div class="modal-title">${escapeHtml(post.title)}</div>
+                <div class="modal-date"><i class="fa-regular fa-calendar"></i> ${post.day} de ${post.month_full} de ${post.year}</div>
+                <div class="modal-tags">${tagsHtml}</div>
+                <div class="modal-body">${bodyHtml}</div>
+                ${sigHtml}
+            `;
+            postModal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePostModal() {
+            postModal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        closeModal.addEventListener('click', closePostModal);
+        postModal.addEventListener('click', function(e) {
+            if (e.target === this) closePostModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closePostModal();
+        });
+
+        // =================================================================
+        // LOGIN / LOGOUT
+        // =================================================================
+        function openLogin() {
+            loginOverlay.classList.add('open');
+            loginPassword.value = '';
+            loginError.classList.remove('show');
+            setTimeout(() => loginPassword.focus(), 200);
+        }
+
+        function closeLogin() {
+            loginOverlay.classList.remove('open');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const pass = loginPassword.value.trim();
+            if (pass === adminPassword) {
+                isAdmin = true;
+                closeLogin();
+                showToast('Login realizado com sucesso!');
+                enterAdminMode();
+            } else {
+                loginError.classList.add('show');
+                loginPassword.value = '';
+                loginPassword.focus();
+            }
+            return false;
+        }
+
+        function enterAdminMode() {
+            publicContent.style.display = 'none';
+            adminPanel.classList.add('active');
+            loginBtn.classList.add('hidden');
+            logoutBtn.classList.remove('hidden');
+            renderAdminView('dashboard');
+        }
+
+        function exitAdminMode() {
+            isAdmin = false;
+            publicContent.style.display = 'block';
+            adminPanel.classList.remove('active');
+            loginBtn.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
+            renderPublicPosts();
+            showToast('Sessão encerrada.');
+        }
+
+        loginBtn.addEventListener('click', openLogin);
+        logoutBtn.addEventListener('click', function() {
+            if (confirm('Deseja realmente sair do painel administrativo?')) {
+                exitAdminMode();
+            }
+        });
+
+        // =================================================================
+        // ADMIN RENDER
+        // =================================================================
+        function renderAdminView(view) {
+            document.querySelectorAll('#adminSidebar .nav-item').forEach(el => el.classList.remove('active'));
+            const navBtn = document.querySelector(`#adminSidebar .nav-item[data-view="${view}"]`);
+            if (navBtn) navBtn.classList.add('active');
+
+            switch (view) {
+                case 'dashboard':
+                    renderAdminDashboard();
+                    break;
+                case 'posts':
+                    renderAdminPosts();
+                    break;
+                case 'tags':
+                    renderAdminTags();
+                    break;
+                case 'settings':
+                    renderAdminSettings();
+                    break;
+                case 'security':
+                    renderAdminSecurity();
+                    break;
+                case 'backup':
+                    renderAdminBackup();
+                    break;
+                case 'danger':
+                    renderAdminDanger();
+                    break;
+                default:
+                    adminContent.innerHTML = '<div class="empty-state"><i class="fa-solid fa-ban"></i><p>Seção não encontrada</p></div>';
+            }
+        }
+
+        // ---- ADMIN DASHBOARD ----
+        function renderAdminDashboard() {
+            const total = posts.length;
+            const totalTags = tagsData.length;
+            adminContent.innerHTML = `
+                <div class="page-title"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></div>
+                <div class="stat-grid">
+                    <div class="stat-card"><span class="label">Publicações</span><span class="value cyan">${total}</span></div>
+                    <div class="stat-card"><span class="label">Tags</span><span class="value gold">${totalTags}</span></div>
+                    <div class="stat-card"><span class="label">Última publicação</span><span class="value purple" style="font-size:0.85rem;">${posts.length ? posts[posts.length-1].title : '—'}</span></div>
+                    <div class="stat-card"><span class="label">Status</span><span class="value pink" style="font-size:0.85rem;">● Online</span></div>
+                </div>
+                <div style="background:var(--bg-card);border:1px solid rgba(0,212,255,0.08);border-radius:var(--radius-sm);padding:16px;">
+                    <p style="color:var(--text-secondary);font-size:0.8rem;font-family:var(--mono);">
+                        <i class="fa-solid fa-circle-info" style="color:var(--accent-cyan);"></i>
+                        Painel administrativo do <strong style="color:var(--text-primary);">${siteTitle}</strong>.
+                        Gerencie publicações, tags e configurações.
+                    </p>
+                </div>
+            `;
+        }
+
+        // ---- ADMIN POSTS ----
+        function renderAdminPosts() {
+            let html = `
+                <div class="page-title"><i class="fa-solid fa-newspaper"></i> <span>Publicações</span></div>
+                <div style="margin-bottom:12px;">
+                    <button class="btn btn-primary" onclick="showAdminPostForm()"><i class="fa-solid fa-plus"></i> Nova publicação</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Título</th><th>Data</th><th>Tags</th><th style="width:90px;">Ações</th></tr></thead>
+                        <tbody>
+            `;
+            if (posts.length === 0) {
+                html += `<tr><td colspan="4" style="text-align:center;color:var(--text-secondary);padding:20px;">Nenhuma publicação</td></tr>`;
+            } else {
+                posts.forEach((p, idx) => {
+                    const tagsHtml = (p.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
+                    html += `
+                        <tr>
+                            <td><strong>${escapeHtml(p.title)}</strong></td>
+                            <td style="font-family:var(--mono);font-size:0.7rem;">${p.day}/${p.month_abbr}/${p.year}</td>
+                            <td>${tagsHtml}</td>
+                            <td>
+                                <div class="actions">
+                                    <button onclick="editAdminPost(${idx})" title="Editar"><i class="fa-regular fa-pen-to-square"></i></button>
+                                    <button class="danger" onclick="deleteAdminPost(${idx})" title="Excluir"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            html += `</tbody></table></div>`;
+            adminContent.innerHTML = html;
+        }
+
+        // ---- ADMIN TAGS ----
+        function renderAdminTags() {
+            let html = `
+                <div class="page-title"><i class="fa-solid fa-tags"></i> <span>Gerenciar Tags</span></div>
+                <div class="tag-management">
+                    <div class="tag-input-group">
+                        <input type="text" id="newTagInput" placeholder="Nome da nova tag" />
+                        <button class="btn btn-primary" onclick="addTag()"><i class="fa-solid fa-plus"></i> Adicionar</button>
+                    </div>
+                    <div class="tag-list" id="tagList">
+            `;
+            tagsData.forEach(t => {
+                const count = posts.filter(p => (p.tags || []).includes(t.name)).length;
+                html += `
+                    <span class="tag-item">
+                        <i class="fa-solid ${t.icon}" style="color:var(--accent-cyan);"></i>
+                        ${t.name}
+                        <span style="color:var(--text-secondary);font-size:0.6rem;font-family:var(--mono);">(${count})</span>
+                        <button class="remove-tag" onclick="removeTag('${t.name}')" title="Remover tag"><i class="fa-solid fa-xmark"></i></button>
+                    </span>
+                `;
+            });
+            html += `
+                    </div>
+                </div>
+                <div style="background:var(--bg-card);border:1px solid rgba(0,212,255,0.08);border-radius:var(--radius-sm);padding:14px;margin-top:12px;">
+                    <p style="color:var(--text-secondary);font-size:0.7rem;font-family:var(--mono);">
+                        <i class="fa-solid fa-circle-info" style="color:var(--accent-cyan);"></i>
+                        Tags em uso não podem ser removidas. Para remover uma tag, primeiro remova-a de todas as publicações.
+                    </p>
+                </div>
+            `;
+            adminContent.innerHTML = html;
+        }
+
+        // ---- ADMIN SETTINGS ----
+        function renderAdminSettings() {
+            adminContent.innerHTML = `
+                <div class="page-title"><i class="fa-solid fa-gear"></i> <span>Configurações</span></div>
+                <div style="background:var(--bg-card);border:1px solid rgba(0,212,255,0.08);border-radius:var(--radius-sm);padding:20px;">
+                    <div class="form-group">
+                        <label>Título do site</label>
+                        <input type="text" id="siteTitleInput" value="${escapeHtml(siteTitle)}" />
+                    </div>
+                    <button class="btn btn-primary" onclick="saveSiteTitle()"><i class="fa-solid fa-floppy-disk"></i> Salvar título</button>
+                </div>
+            `;
+        }
+
+        // ---- ADMIN SECURITY ----
+        function renderAdminSecurity() {
+            adminContent.innerHTML = `
+                <div class="page-title"><i class="fa-solid fa-lock"></i> <span>Segurança</span></div>
+                <div style="background:var(--bg-card);border:1px solid rgba(0,212,255,0.08);border-radius:var(--radius-sm);padding:20px;">
+                    <p style="color:var(--text-secondary);margin-bottom:14px;font-family:var(--mono);font-size:0.8rem;">Altere a senha de acesso ao painel administrativo.</p>
+                    <div class="form-group">
+                        <label>Nova senha</label>
+                        <input type="password" id="newPassInput" placeholder="Digite a nova senha" />
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmar senha</label>
+                        <input type="password" id="confirmPassInput" placeholder="Confirme a nova senha" />
+                    </div>
+                    <button class="btn btn-primary" onclick="changeAdminPassword()"><i class="fa-solid fa-key"></i> Atualizar senha</button>
+                </div>
+            `;
+        }
+
+        // ---- ADMIN BACKUP ----
+        function renderAdminBackup() {
+            adminContent.innerHTML = `
+                <div class="page-title"><i class="fa-solid fa-database"></i> <span>Backup</span></div>
+                <div style="background:var(--bg-card);border:1px solid rgba(0,212,255,0.08);border-radius:var(--radius-sm);padding:20px;">
+                    <p style="color:var(--text-secondary);margin-bottom:14px;font-family:var(--mono);font-size:0.8rem;">Exporte todas as publicações em formato JSON para backup.</p>
+                    <button class="btn btn-success" onclick="exportBackup()"><i class="fa-solid fa-download"></i> Exportar JSON</button>
+                    <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.04);">
+                        <p style="color:var(--text-secondary);font-size:0.7rem;font-family:var(--mono);">
+                            <i class="fa-solid fa-circle-info" style="color:var(--accent-cyan);"></i>
+                            O arquivo JSON contém todas as publicações com título, data, conteúdo, assinatura e tags.
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ---- ADMIN DANGER ----
+        function renderAdminDanger() {
+            adminContent.innerHTML = `
+                <div class="page-title"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger);"></i> <span>Zona de Perigo</span></div>
+                <div style="background:var(--bg-card);border:1px solid var(--danger);border-radius:var(--radius-sm);padding:20px;">
+                    <p style="color:var(--text-secondary);margin-bottom:14px;font-family:var(--mono);font-size:0.8rem;">Ações irreversíveis. Use com extremo cuidado.</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                        <button class="btn btn-danger" onclick="resetAllData()"><i class="fa-solid fa-trash-can"></i> Resetar todos os dados</button>
+                        <button class="btn btn-danger" onclick="resetToSample()"><i class="fa-solid fa-rotate"></i> Restaurar exemplos</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =================================================================
+        // ADMIN CRUD
+        // =================================================================
+        function showAdminPostForm(postData, idx) {
+            const isEdit = !!postData;
+            const p = postData || { title: '', paragraphs: ['', ''], signature: '', tags: [] };
+            const tagsOpts = tagsData.map(t =>
+                `<option value="${t.name}" ${(p.tags || []).includes(t.name) ? 'selected' : ''}>${t.name}</option>`
+            ).join('');
+
+            adminContent.innerHTML = `
+                <div class="page-title"><i class="fa-solid ${isEdit ? 'fa-pen-to-square' : 'fa-plus'}"></i> <span>${isEdit ? 'Editar' : 'Nova'} publicação</span></div>
+                <div style="background:var(--bg-card);border:1px solid rgba(0,212,255,0.08);border-radius:var(--radius-sm);padding:20px;">
+                    <form id="adminPostForm" onsubmit="saveAdminPost(event, ${isEdit ? idx : 'null'})">
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" name="title" value="${escapeHtml(p.title)}" required />
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Dia</label>
+                                <input type="number" name="day" value="${p.day || 1}" min="1" max="31" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Mês</label>
+                                <select name="month_abbr">
+                                    ${['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'].map((m,i) =>
+                                        `<option value="${m}" ${(p.month_abbr === m) ? 'selected' : ''}>${m}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Ano</label>
+                            <input type="number" name="year" value="${p.year || 2026}" min="2020" max="2030" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Parágrafos (um por linha)</label>
+                            <textarea name="paragraphs" rows="4">${(p.paragraphs || []).join('\n')}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Assinatura</label>
+                            <input type="text" name="signature" value="${escapeHtml(p.signature || '')}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tags</label>
+                            <select name="tags" multiple style="height:70px;">
+                                ${tagsOpts}
+                            </select>
+                            <span style="font-size:0.6rem;color:var(--text-secondary);font-family:var(--mono);">Segure Ctrl/Cmd para múltiplas</span>
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
+                            <button type="button" class="btn btn-secondary" onclick="renderAdminPosts()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+        }
+
+        function saveAdminPost(e, idx) {
+            e.preventDefault();
+            const form = document.getElementById('adminPostForm');
+            const fd = new FormData(form);
+            const tags = fd.getAll('tags');
+            const paragraphs = fd.get('paragraphs').split('\n').filter(l => l.trim());
+            const monthAbbr = fd.get('month_abbr');
+            const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
+                'Novembro', 'Dezembro'
+            ];
+            const idxMonth = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'].indexOf(
+            monthAbbr);
+            const data = {
+                title: fd.get('title'),
+                day: parseInt(fd.get('day')),
+                month_abbr: monthAbbr,
+                month_full: months[idxMonth] || monthAbbr,
+                year: parseInt(fd.get('year')),
+                paragraphs: paragraphs.length ? paragraphs : [''],
+                signature: fd.get('signature'),
+                tags: tags,
+            };
+
+            if (idx !== null && idx !== undefined && idx !== 'null') {
+                posts[idx] = { ...posts[idx], ...data };
+                showToast('Publicação atualizada!');
+            } else {
+                data.id = nextPostId++;
+                posts.push(data);
+                showToast('Publicação criada!');
+            }
+            renderAdminPosts();
+            renderPublicPosts();
+        }
+
+        function editAdminPost(idx) {
+            if (idx < 0 || idx >= posts.length) return;
+            showAdminPostForm(posts[idx], idx);
+        }
+
+        function deleteAdminPost(idx) {
+            if (idx < 0 || idx >= posts.length) return;
+            if (confirm(`Excluir "${posts[idx].title}"?`)) {
+                posts.splice(idx, 1);
+                showToast('Publicação excluída.');
+                renderAdminPosts();
+                renderPublicPosts();
+            }
+        }
+
+        // =================================================================
+        // TAG MANAGEMENT
+        // =================================================================
+        function addTag() {
+            const input = document.getElementById('newTagInput');
+            const name = input.value.trim();
+            if (!name) {
+                showToast('Digite um nome para a tag.', true);
+                return;
+            }
+            if (tagsData.find(t => t.name.toLowerCase() === name.toLowerCase())) {
+                showToast('Esta tag já existe.', true);
+                return;
+            }
+            const icon = 'fa-tag';
+            tagsData.push({ name, icon });
+            input.value = '';
+            showToast(`Tag "${name}" adicionada!`);
+            renderAdminTags();
+        }
+
+        function removeTag(tagName) {
+            const inUse = posts.some(p => (p.tags || []).includes(tagName));
+            if (inUse) {
+                showToast(`A tag "${tagName}" está em uso e não pode ser removida.`, true);
+                return;
+            }
+            if (confirm(`Remover a tag "${tagName}"?`)) {
+                tagsData = tagsData.filter(t => t.name !== tagName);
+                showToast(`Tag "${tagName}" removida.`);
+                renderAdminTags();
+            }
+        }
+
+        // =================================================================
+        // ADMIN SETTINGS ACTIONS
+        // =================================================================
+        function saveSiteTitle() {
+            const input = document.getElementById('siteTitleInput');
+            if (input) {
+                siteTitle = input.value.trim() || 'Diário do Robério';
+                siteTitleDisplay.textContent = siteTitle;
+                showToast('Título do site atualizado!');
+                renderAdminView('dashboard');
+            }
+        }
+
+        function changeAdminPassword() {
+            const newPass = document.getElementById('newPassInput');
+            const confirmPass = document.getElementById('confirmPassInput');
+            if (!newPass || !confirmPass) return;
+            if (newPass.value.trim().length < 4) {
+                showToast('A senha deve ter pelo menos 4 caracteres.', true);
+                return;
+            }
+            if (newPass.value !== confirmPass.value) {
+                showToast('As senhas não coincidem.', true);
+                return;
+            }
+            adminPassword = newPass.value.trim();
+            showToast('Senha atualizada com sucesso!');
+            newPass.value = '';
+            confirmPass.value = '';
+        }
+
+        // =================================================================
+        // BACKUP
+        // =================================================================
+        function exportBackup() {
+            const backupData = {
+                exportedAt: new Date().toISOString(),
+                siteTitle: siteTitle,
+                totalPosts: posts.length,
+                posts: posts.map(p => ({
+                    id: p.id,
+                    title: p.title,
+                    day: p.day,
+                    month_abbr: p.month_abbr,
+                    month_full: p.month_full,
+                    year: p.year,
+                    paragraphs: p.paragraphs,
+                    signature: p.signature || '',
+                    tags: p.tags || []
+                }))
+            };
+
+            const json = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_${siteTitle.replace(/\s/g, '_')}_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Backup exportado com sucesso!');
+        }
+
+        // =================================================================
+        // ADMIN DANGER ACTIONS
+        // =================================================================
+        function resetAllData() {
+            if (confirm('⚠️ Isso irá APAGAR TODOS OS DADOS. Tem certeza?')) {
+                posts = [];
+                nextPostId = 1;
+                showToast('Todos os dados foram removidos.');
+                renderAdminView('dashboard');
+                renderPublicPosts();
+            }
+        }
+
+        function resetToSample() {
+            if (confirm('Restaurar os dados de exemplo?')) {
+                posts = [{
+                    id: 1,
+                    day: 27,
+                    month: 8,
+                    year: 2026,
+                    month_abbr: 'Ago',
+                    month_full: 'Agosto',
+                    title: 'Bom Dia',
+                    paragraphs: ['Bom dia,', 'A quinta-feira - que dia especial! - é o melhor dia da semana...'],
+                    signature: 'Fé, força e coragem... Sempre!',
+                    tags: ['Cotidiano']
+                }, {
+                    id: 2,
+                    day: 25,
+                    month: 8,
+                    year: 2026,
+                    month_abbr: 'Ago',
+                    month_full: 'Agosto',
+                    title: 'Ruptura institucional.',
+                    paragraphs: ['Boa tarde,', 'Um dia - não sei quando - haverá uma ruptura institucional...'],
+                    signature: 'Fé, força e coragem... Sempre!',
+                    tags: ['Política', 'Sociedade']
+                }, {
+                    id: 3,
+                    day: 15,
+                    month: 8,
+                    year: 2026,
+                    month_abbr: 'Ago',
+                    month_full: 'Agosto',
+                    title: 'Por que sou de direita?',
+                    paragraphs: ['Por que sou de direita?', 'Porque acredito no livre mercado...'],
+                    signature: 'Fé, força e coragem... Sempre!',
+                    tags: ['Política', 'Sociedade', 'Família']
+                }];
+                nextPostId = 4;
+                showToast('Dados de exemplo restaurados.');
+                renderAdminView('dashboard');
+                renderPublicPosts();
+            }
+        }
+
+        // =================================================================
+        // SIDEBAR NAV
+        // =================================================================
+        document.getElementById('adminSidebar').addEventListener('click', function(e) {
+            const btn = e.target.closest('.nav-item');
+            if (!btn) return;
+            const view = btn.dataset.view;
+            if (view) renderAdminView(view);
+        });
+
+        // =================================================================
+        // EXPOSE GLOBALS PARA ONCLICK
+        // =================================================================
+        window.showAdminPostForm = showAdminPostForm;
+        window.saveAdminPost = saveAdminPost;
+        window.editAdminPost = editAdminPost;
+        window.deleteAdminPost = deleteAdminPost;
+        window.renderAdminPosts = renderAdminPosts;
+        window.renderAdminView = renderAdminView;
+        window.saveSiteTitle = saveSiteTitle;
+        window.changeAdminPassword = changeAdminPassword;
+        window.resetAllData = resetAllData;
+        window.resetToSample = resetToSample;
+        window.handleLogin = handleLogin;
+        window.closeLogin = closeLogin;
+        window.addTag = addTag;
+        window.removeTag = removeTag;
+        window.exportBackup = exportBackup;
+
+        // =================================================================
+        // INIT
+        // =================================================================
+        renderPublicPosts();
+
+        loginOverlay.addEventListener('click', function(e) {
+            if (e.target === this) closeLogin();
+        });
+
+        loginPassword.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleLogin(e);
+        });
+
+        console.log('%c🔐 Diário do Robério - Admin Panel', 'font-size:16px;font-weight:bold;color:#00d4ff;');
+        console.log('%c📝 Senha padrão: admin123', 'font-size:13px;color:#8899bb;');
+        console.log('%c👆 Clique em "Admin" no topo para acessar o painel.', 'font-size:13px;color:#8899bb;');
+        console.log('%c📦 Backup disponível na seção Backup.', 'font-size:13px;color:#8899bb;');
+    </script>
+</body>
+</html>
