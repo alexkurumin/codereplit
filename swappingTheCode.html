@@ -69,7 +69,6 @@
             position: relative;
         }
 
-        /* ===== TOP BAR ===== */
         .app-bar {
             flex: 0 0 var(--appbar-h);
             display: flex;
@@ -130,11 +129,6 @@
             color: var(--text-primary);
         }
 
-        .app-bar .toolbar button.active {
-            background: var(--accent-cyan);
-            color: var(--bg-primary);
-        }
-
         .app-bar .toolbar button.admin-btn {
             background: var(--accent-purple);
             color: #fff;
@@ -155,7 +149,6 @@
             font-size: 0.85rem;
         }
 
-        /* ===== CONTENT ===== */
         .content {
             flex: 1;
             overflow-y: auto;
@@ -176,7 +169,6 @@
             color: var(--accent-cyan);
         }
 
-        /* ===== POSTS CARDS (público) ===== */
         .post-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -238,7 +230,6 @@
             color: var(--accent-cyan);
         }
 
-        /* ===== POST DETAIL MODAL ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -336,7 +327,6 @@
             font-size: 0.9rem;
         }
 
-        /* ===== ADMIN PANEL (hidden by default) ===== */
         .admin-panel {
             display: none;
             flex-direction: column;
@@ -418,7 +408,6 @@
             background: var(--bg-secondary);
         }
 
-        /* ===== ADMIN FORMS & TABLES ===== */
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -531,6 +520,32 @@
             margin: 2px 4px 2px 0;
         }
 
+        .tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            padding: 4px 12px 4px 14px;
+            font-size: 0.8rem;
+            margin: 4px 6px 4px 0;
+        }
+
+        .tag-item .remove-tag {
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0 2px;
+        }
+
+        .tag-item .remove-tag:hover {
+            color: #ef4444;
+            transform: scale(1.2);
+        }
+
         .form-group {
             margin-bottom: 14px;
         }
@@ -623,6 +638,10 @@
             color: var(--bg-primary);
         }
 
+        .btn-success:hover {
+            background: #2dd4a0;
+        }
+
         .btn-group {
             display: flex;
             gap: 10px;
@@ -635,7 +654,6 @@
             font-size: 0.7rem;
         }
 
-        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -659,7 +677,6 @@
             pointer-events: auto;
         }
 
-        /* ===== LOGIN OVERLAY ===== */
         .login-overlay {
             position: fixed;
             inset: 0;
@@ -707,19 +724,6 @@
             margin-bottom: 20px;
         }
 
-        .login-box .form-group {
-            margin-bottom: 14px;
-        }
-
-        .login-box .form-group label {
-            font-size: 0.75rem;
-        }
-
-        .login-box .btn {
-            width: 100%;
-            justify-content: center;
-        }
-
         .login-box .error-msg {
             color: var(--danger);
             font-size: 0.8rem;
@@ -731,7 +735,30 @@
             display: block;
         }
 
-        /* ===== RESPONSIVE ===== */
+        .tag-management {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .tag-management .tag-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tag-management .tag-input-group input {
+            flex: 1;
+        }
+
+        .tag-management .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
         @media (max-width: 820px) {
             body {
                 padding: 0;
@@ -788,6 +815,9 @@
                 padding: 6px 10px;
                 white-space: nowrap;
             }
+            .tag-management .tag-input-group {
+                flex-direction: column;
+            }
         }
 
         @media (max-width: 480px) {
@@ -826,7 +856,6 @@
             }
         }
 
-        /* ===== SCROLL ===== */
         .content::-webkit-scrollbar,
         .admin-content::-webkit-scrollbar,
         .sidebar::-webkit-scrollbar,
@@ -862,27 +891,16 @@
             margin-bottom: 10px;
             color: var(--border-color);
         }
-
-        .admin-badge {
-            background: var(--accent-gold);
-            color: var(--bg-primary);
-            font-size: 0.6rem;
-            font-weight: 700;
-            padding: 2px 10px;
-            border-radius: 100px;
-            letter-spacing: 0.3px;
-        }
     </style>
 </head>
 <body>
 
     <div class="app-shell" id="app">
 
-        <!-- TOP BAR -->
         <header class="app-bar">
             <div class="logo">
                 <i class="fa-solid fa-feather-pointed"></i>
-                <span>Diário do Robério</span>
+                <span id="siteTitleDisplay">Diário do Robério</span>
             </div>
             <div class="spacer"></div>
             <div class="toolbar">
@@ -895,13 +913,11 @@
             </div>
         </header>
 
-        <!-- CONTEÚDO PÚBLICO -->
         <section class="content" id="publicContent">
             <div class="page-title"><i class="fa-regular fa-newspaper"></i> Últimas publicações</div>
             <div id="postGrid" class="post-grid"></div>
         </section>
 
-        <!-- ADMIN PANEL (oculto) -->
         <div class="admin-panel" id="adminPanel">
             <div class="admin-layout">
                 <nav class="sidebar" id="adminSidebar">
@@ -911,13 +927,13 @@
                     <button class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i> <span>Configurações</span></button>
                     <div class="nav-divider"></div>
                     <button class="nav-item" data-view="security"><i class="fa-solid fa-lock"></i> <span>Segurança</span></button>
+                    <button class="nav-item" data-view="backup"><i class="fa-solid fa-database"></i> <span>Backup</span></button>
                     <button class="nav-item danger" data-view="danger"><i class="fa-solid fa-triangle-exclamation"></i> <span>Perigos</span></button>
                 </nav>
                 <div class="admin-content" id="adminContent"></div>
             </div>
         </div>
 
-        <!-- MODAL DE DETALHE DO POST -->
         <div class="modal-overlay" id="postModal">
             <div class="modal-box">
                 <button class="close-modal" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
@@ -925,7 +941,6 @@
             </div>
         </div>
 
-        <!-- LOGIN OVERLAY -->
         <div class="login-overlay" id="loginOverlay">
             <div class="login-box">
                 <h2><i class="fa-solid fa-lock" style="color:var(--accent-cyan);"></i> Acesso Admin</h2>
@@ -942,7 +957,6 @@
             </div>
         </div>
 
-        <!-- TOAST -->
         <div class="toast" id="toast"></div>
     </div>
 
@@ -985,7 +999,7 @@
             tags: ['Política', 'Sociedade', 'Família']
         }];
 
-        const tagsData = [
+        let tagsData = [
             { name: 'Política', icon: 'fa-landmark' },
             { name: 'Sociedade', icon: 'fa-people-group' },
             { name: 'Família', icon: 'fa-house-chimney' },
@@ -997,7 +1011,7 @@
         ];
 
         let siteTitle = 'Diário do Robério';
-        const ADMIN_PASSWORD = 'admin123';
+        let adminPassword = 'admin123';
         let nextPostId = 4;
         let isAdmin = false;
 
@@ -1017,6 +1031,7 @@
         const modalContent = document.getElementById('modalContent');
         const closeModal = document.getElementById('closeModal');
         const toast = document.getElementById('toast');
+        const siteTitleDisplay = document.getElementById('siteTitleDisplay');
 
         // =================================================================
         // TOAST
@@ -1064,7 +1079,6 @@
             });
             postGrid.innerHTML = html;
 
-            // eventos de clique
             document.querySelectorAll('.post-card').forEach(el => {
                 el.addEventListener('click', function() {
                     const id = parseInt(this.dataset.id);
@@ -1123,7 +1137,7 @@
         function handleLogin(e) {
             e.preventDefault();
             const pass = loginPassword.value.trim();
-            if (pass === ADMIN_PASSWORD) {
+            if (pass === adminPassword) {
                 isAdmin = true;
                 closeLogin();
                 showToast('Login realizado com sucesso!');
@@ -1185,6 +1199,9 @@
                 case 'security':
                     renderAdminSecurity();
                     break;
+                case 'backup':
+                    renderAdminBackup();
+                    break;
                 case 'danger':
                     renderAdminDanger();
                     break;
@@ -1207,7 +1224,7 @@
                 <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:16px;">
                     <p style="color:var(--text-secondary);font-size:0.85rem;">
                         <i class="fa-solid fa-circle-info" style="color:var(--accent-cyan);"></i>
-                        Painel administrativo do Diário do Robério. Gerencie publicações, tags e configurações.
+                        Painel administrativo do <strong>${siteTitle}</strong>. Gerencie publicações, tags e configurações.
                     </p>
                 </div>
             `;
@@ -1252,20 +1269,35 @@
         // ---- ADMIN TAGS ----
         function renderAdminTags() {
             let html = `
-                <div class="page-title"><i class="fa-solid fa-tags"></i> Tags</div>
-                <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                <div class="page-title"><i class="fa-solid fa-tags"></i> Gerenciar Tags</div>
+                <div class="tag-management">
+                    <div class="tag-input-group">
+                        <input type="text" id="newTagInput" placeholder="Nome da nova tag" />
+                        <button class="btn btn-primary" onclick="addTag()"><i class="fa-solid fa-plus"></i> Adicionar</button>
+                    </div>
+                    <div class="tag-list" id="tagList">
             `;
             tagsData.forEach(t => {
                 const count = posts.filter(p => (p.tags || []).includes(t.name)).length;
                 html += `
-                    <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:8px 14px;display:flex;align-items:center;gap:10px;">
+                    <span class="tag-item">
                         <i class="fa-solid ${t.icon}" style="color:var(--accent-cyan);"></i>
-                        <span>${t.name}</span>
-                        <span style="background:var(--bg-input);padding:0 8px;border-radius:100px;font-size:0.7rem;color:var(--text-secondary);">${count}</span>
-                    </div>
+                        ${t.name}
+                        <span style="color:var(--text-secondary);font-size:0.7rem;">(${count})</span>
+                        <button class="remove-tag" onclick="removeTag('${t.name}')" title="Remover tag"><i class="fa-solid fa-xmark"></i></button>
+                    </span>
                 `;
             });
-            html += `</div>`;
+            html += `
+                    </div>
+                </div>
+                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:16px;margin-top:12px;">
+                    <p style="color:var(--text-secondary);font-size:0.8rem;">
+                        <i class="fa-solid fa-circle-info" style="color:var(--accent-cyan);"></i>
+                        Tags em uso não podem ser removidas. Para remover uma tag, primeiro remova-a de todas as publicações.
+                    </p>
+                </div>
+            `;
             adminContent.innerHTML = html;
         }
 
@@ -1298,6 +1330,23 @@
                         <input type="password" id="confirmPassInput" placeholder="Confirme a nova senha" />
                     </div>
                     <button class="btn btn-primary" onclick="changeAdminPassword()"><i class="fa-solid fa-key"></i> Atualizar senha</button>
+                </div>
+            `;
+        }
+
+        // ---- ADMIN BACKUP ----
+        function renderAdminBackup() {
+            adminContent.innerHTML = `
+                <div class="page-title"><i class="fa-solid fa-database"></i> Backup</div>
+                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:20px;">
+                    <p style="color:var(--text-secondary);margin-bottom:14px;">Exporte todas as publicações em formato JSON para backup.</p>
+                    <button class="btn btn-success" onclick="exportBackup()"><i class="fa-solid fa-download"></i> Exportar JSON</button>
+                    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border-color);">
+                        <p style="color:var(--text-secondary);font-size:0.8rem;">
+                            <i class="fa-solid fa-circle-info" style="color:var(--accent-cyan);"></i>
+                            O arquivo JSON contém todas as publicações com título, data, conteúdo, assinatura e tags.
+                        </p>
+                    </div>
                 </div>
             `;
         }
@@ -1427,14 +1476,49 @@
         }
 
         // =================================================================
+        // TAG MANAGEMENT
+        // =================================================================
+        function addTag() {
+            const input = document.getElementById('newTagInput');
+            const name = input.value.trim();
+            if (!name) {
+                showToast('Digite um nome para a tag.', true);
+                return;
+            }
+            if (tagsData.find(t => t.name.toLowerCase() === name.toLowerCase())) {
+                showToast('Esta tag já existe.', true);
+                return;
+            }
+            const icon = 'fa-tag';
+            tagsData.push({ name, icon });
+            input.value = '';
+            showToast(`Tag "${name}" adicionada!`);
+            renderAdminTags();
+        }
+
+        function removeTag(tagName) {
+            const inUse = posts.some(p => (p.tags || []).includes(tagName));
+            if (inUse) {
+                showToast(`A tag "${tagName}" está em uso e não pode ser removida.`, true);
+                return;
+            }
+            if (confirm(`Remover a tag "${tagName}"?`)) {
+                tagsData = tagsData.filter(t => t.name !== tagName);
+                showToast(`Tag "${tagName}" removida.`);
+                renderAdminTags();
+            }
+        }
+
+        // =================================================================
         // ADMIN SETTINGS ACTIONS
         // =================================================================
         function saveSiteTitle() {
             const input = document.getElementById('siteTitleInput');
             if (input) {
                 siteTitle = input.value.trim() || 'Diário do Robério';
-                document.querySelector('.logo span').textContent = siteTitle;
+                siteTitleDisplay.textContent = siteTitle;
                 showToast('Título do site atualizado!');
+                renderAdminView('dashboard');
             }
         }
 
@@ -1450,11 +1534,44 @@
                 showToast('As senhas não coincidem.', true);
                 return;
             }
-            // Em produção, isso seria salvo no backend.
-            // Aqui simulamos alterando a constante.
-            showToast('Senha atualizada com sucesso! (simulação)');
+            adminPassword = newPass.value.trim();
+            showToast('Senha atualizada com sucesso!');
             newPass.value = '';
             confirmPass.value = '';
+        }
+
+        // =================================================================
+        // BACKUP
+        // =================================================================
+        function exportBackup() {
+            const backupData = {
+                exportedAt: new Date().toISOString(),
+                siteTitle: siteTitle,
+                totalPosts: posts.length,
+                posts: posts.map(p => ({
+                    id: p.id,
+                    title: p.title,
+                    day: p.day,
+                    month_abbr: p.month_abbr,
+                    month_full: p.month_full,
+                    year: p.year,
+                    paragraphs: p.paragraphs,
+                    signature: p.signature || '',
+                    tags: p.tags || []
+                }))
+            };
+
+            const json = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_${siteTitle.replace(/\s/g, '_')}_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Backup exportado com sucesso!');
         }
 
         // =================================================================
@@ -1514,7 +1631,7 @@
         }
 
         // =================================================================
-        // SIDEBAR NAV (admin)
+        // SIDEBAR NAV
         // =================================================================
         document.getElementById('adminSidebar').addEventListener('click', function(e) {
             const btn = e.target.closest('.nav-item');
@@ -1538,18 +1655,19 @@
         window.resetToSample = resetToSample;
         window.handleLogin = handleLogin;
         window.closeLogin = closeLogin;
+        window.addTag = addTag;
+        window.removeTag = removeTag;
+        window.exportBackup = exportBackup;
 
         // =================================================================
         // INIT
         // =================================================================
         renderPublicPosts();
 
-        // Fecha login ao clicar fora
         loginOverlay.addEventListener('click', function(e) {
             if (e.target === this) closeLogin();
         });
 
-        // Enter no campo de login
         loginPassword.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') handleLogin(e);
         });
@@ -1557,6 +1675,7 @@
         console.log('🔐 Diário do Robério - Admin');
         console.log('📝 Senha padrão: admin123');
         console.log('👆 Clique em "Admin" no topo para acessar o painel.');
+        console.log('📦 Backup: exporte suas publicações em JSON na seção Backup.');
     </script>
 </body>
 </html>
