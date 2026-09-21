@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Khalifa Aminu — Projetos e Protótipos</title>
+<style>
+:root{--bg:#07090d;--card:#0d121a;--ink:#f5f7fb;--muted:#aab4c2;--cyan:#35e6ff;--green:#7dff9d;--line:#223043}
+*{box-sizing:border-box}html,body{margin:0;background:#030508;color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+body{min-height:100vh;display:grid;place-items:center;padding:16px}
+.carousel{width:min(100%,1080px);height:min(92vh,1350px);aspect-ratio:4/5;position:relative;overflow:hidden;border:1px solid #1b2635;border-radius:28px;background:var(--bg);box-shadow:0 20px 70px #000}
+.track{height:100%;display:flex;transition:transform .45s cubic-bezier(.22,.8,.24,1);touch-action:pan-y}
+.slide{min-width:100%;height:100%;position:relative;overflow:hidden;padding:54px}
+.slide::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.72) 80%);pointer-events:none}
+.slide>*{position:relative;z-index:2}
+.hero{padding:0}.hero img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.95) contrast(1.05)}
+.hero .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08) 20%,rgba(0,0,0,.84) 82%);z-index:1}
+.kicker{display:inline-flex;gap:8px;align-items:center;text-transform:uppercase;letter-spacing:.16em;font-size:13px;color:var(--cyan);font-weight:800}
+h1{font-size:clamp(42px,7vw,92px);line-height:.92;margin:14px 0 18px;max-width:900px}
+h2{font-size:clamp(34px,5vw,62px);line-height:.96;margin:10px 0 18px}
+p,li{font-size:clamp(17px,2vw,27px);line-height:1.38;color:#dbe2ea}
+.lead{max-width:860px}
+.tag{display:inline-block;border:1px solid #35506a;border-radius:999px;padding:7px 12px;margin:5px 5px 0 0;color:#ccecf3;font-size:14px}
+.photo{position:absolute;inset:0}.photo img{width:100%;height:100%;object-fit:cover}.content{max-width:820px}
+.panel{background:rgba(5,9,14,.76);border:1px solid rgba(96,128,157,.35);backdrop-filter:blur(10px);padding:26px;border-radius:22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}.box{border:1px solid var(--line);background:#0b1119;border-radius:18px;padding:20px}.box b{color:var(--green);display:block;margin-bottom:7px;font-size:18px}
+.diagram{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:25px}.node{padding:18px;border:1px solid #29445b;border-radius:16px;background:#0b1118;text-align:center;font-weight:750}.arrow{color:var(--cyan);font-size:25px;text-align:center}
+.sources{font-size:13px;color:#91a0b1;line-height:1.45;margin-top:20px}.sources a{color:#91eaff}
+.controls{position:absolute;z-index:10;left:0;right:0;bottom:18px;display:flex;justify-content:center;align-items:center;gap:12px}
+button{border:1px solid #2b4155;background:rgba(4,8,12,.8);color:#fff;border-radius:999px;width:46px;height:46px;font-size:22px;cursor:pointer}
+.dots{display:flex;gap:7px}.dot{width:8px;height:8px;border-radius:50%;background:#526274}.dot.active{background:var(--cyan);width:24px;border-radius:10px}
+.counter{position:absolute;right:24px;top:20px;z-index:10;font-size:13px;color:#b8c4d0;background:rgba(0,0,0,.45);padding:8px 11px;border-radius:999px}
+.credit{position:absolute;left:24px;bottom:24px;z-index:10;font-size:11px;color:#c6d0da;background:rgba(0,0,0,.42);padding:7px 10px;border-radius:10px}
+@media(max-width:700px){body{padding:0}.carousel{width:100vw;height:100svh;max-height:none;border-radius:0;border:0}.slide{padding:30px 24px 90px}.grid{grid-template-columns:1fr}.diagram{grid-template-columns:1fr}.hero h1{font-size:48px}}
+</style>
+</head>
+<body>
+<main class="carousel" aria-label="Carrossel sobre Khalifa Aminu">
+  <div class="counter" id="counter">1 / 7</div>
+  <section class="track" id="track">
+    <article class="slide hero">
+      <img src="https://i0.wp.com/portaldfnoticias.com/wp-content/uploads/2026/09/HQEtqIQXIAAIttd.jpg?fit=770%2C1024&ssl=1" alt="Protótipo de óculos inteligentes de Khalifa Aminu">
+      <div class="overlay"></div>
+      <div style="position:absolute;left:54px;right:54px;bottom:86px;z-index:2">
+        <span class="kicker">INOVAÇÃO • KANO • NIGÉRIA</span>
+        <h1>KHALIFA<br>AMINU</h1>
+        <p class="lead">Projetos e protótipos de um jovem inventor que começou construindo soluções eletrônicas com recursos acessíveis.</p>
+        <span class="tag">IA</span><span class="tag">Robótica</span><span class="tag">IoT</span><span class="tag">Tecnologia assistiva</span>
+      </div>
+      <div class="credit">Foto: Portal DF Notícias / imagem publicada em 19/09/2026</div>
+    </article>
+
+    <article class="slide">
+      <div class="content">
+        <span class="kicker">01 — TECNOLOGIA ASSISTIVA</span>
+        <h2>Blind Glasses<br><small style="color:var(--cyan)">a ideia que ganhou destaque</small></h2>
+        <p>As primeiras versões usavam sensores para detectar obstáculos e emitir alertas sonoros. O projeto nasceu da observação das dificuldades de mobilidade de pessoas com deficiência visual na comunidade de Aminu.</p>
+        <div class="panel">
+          <b>EVOLUÇÃO</b>
+          <p style="margin:8px 0 0">V1: sensores ultrassônicos/infravermelhos e alertas. Depois, o projeto passou a incorporar câmera, IA, GPS e recursos de voz.</p>
+        </div>
+        <div class="grid">
+          <div class="box"><b>Objetivo</b>Auxiliar a percepção de obstáculos e aumentar a autonomia.</div>
+          <div class="box"><b>Status</b>Protótipo em desenvolvimento; não substitui automaticamente recursos de mobilidade já estabelecidos.</div>
+        </div>
+        <div class="sources">Fontes: Gulf News; Portal DF Notícias; YourStory.</div>
+      </div>
+    </article>
+
+    <article class="slide">
+      <div class="photo"><img src="https://media.assettype.com/gulfnews%2Fimport%2F2024%2F09%2F04%2FKhalifa-Aminu_191bd6d5203_large.jpg?auto=format%2Ccompress&fit=max&w=480" alt="Khalifa Aminu usando protótipo de óculos sensoriais"></div>
+      <div class="content" style="position:absolute;left:54px;right:54px;bottom:75px">
+        <div class="panel">
+          <span class="kicker">02 — PROTOTIPAGEM</span>
+          <h2>Construir → testar → ouvir → melhorar</h2>
+          <p>Em 2024, Aminu relatou que testou o dispositivo com uma pessoa com deficiência visual e usou o feedback para fazer ajustes, como componentes menores, acionamento sem fio e lentes escuras.</p>
+          <p style="font-size:15px;color:#aeb9c6">A foto mostra uma versão inicial do projeto; as versões posteriores evoluíram tecnicamente.</p>
+        </div>
+      </div>
+      <div class="credit">Foto: Gulf News / DailyNews24 TV</div>
+    </article>
+
+    <article class="slide">
+      <div class="content">
+        <span class="kicker">03 — GLASS V2</span>
+        <h2>Da eletrônica simples para IA + sensores + GPS</h2>
+        <p>Relatos de 2026 descrevem uma nova etapa do projeto: câmera e sensores para detectar obstáculos, processamento de IA, localização por GPS e desenvolvimento de interação por voz.</p>
+        <div class="diagram">
+          <div class="node">📷<br>Câmera<br><span style="color:#9caaba;font-weight:400">visão do ambiente</span></div>
+          <div class="node">🧠<br>IA + sensores<br><span style="color:#9caaba;font-weight:400">interpretação</span></div>
+          <div class="node">🔊<br>Áudio / vibração<br><span style="color:#9caaba;font-weight:400">feedback</span></div>
+        </div>
+        <div class="panel" style="margin-top:18px">
+          <b style="color:var(--green)">GPS E CONECTIVIDADE</b>
+          <p style="margin:8px 0 0;font-size:17px">O projeto também é descrito como capaz de acompanhar a localização e, em situações previstas pelo sistema, compartilhar a posição com um cuidador.</p>
+        </div>
+        <div class="sources">Fontes: Portal DF Notícias (19/09/2026); YourStory (21/08/2026); relatos públicos do projeto.</div>
+      </div>
+    </article>
+
+    <article class="slide">
+      <div class="content">
+        <span class="kicker">04 — OUTROS PROJETOS</span>
+        <h2>O laboratório não parou nos óculos.</h2>
+        <p>Fontes sobre a trajetória de Aminu também citam outros protótipos e experimentos construídos ao longo dos anos.</p>
+        <div class="grid">
+          <div class="box"><b>📻 Transmissor FM</b>Projeto de estação de rádio local, associado ao nome “Iliya Station”.</div>
+          <div class="box"><b>🚤 Barco / canoa</b>Um dos primeiros projetos de hardware mencionados em reportagens sobre o inventor.</div>
+          <div class="box"><b>🛩️ Drone</b>Protótipo citado entre suas experiências com eletrônica e sistemas de voo.</div>
+          <div class="box"><b>🌱 Agricultura</b>Projetos de automação e pulverização para aplicações agrícolas aparecem entre seus trabalhos mais recentes.</div>
+        </div>
+        <div class="sources">Fonte de referência: Indomie Heroes Awards; Gulf News; relatos públicos de 2026. As descrições acima resumem o que as fontes afirmam, sem tratar os protótipos como produtos comerciais comprovados.</div>
+      </div>
+    </article>
+
+    <article class="slide">
+      <div class="content">
+        <span class="kicker">05 — RECONHECIMENTO</span>
+        <h2>Indomie Heroes Awards · 2024</h2>
+        <p>Aminu foi reconhecido na categoria <strong>Intellectual Bravery</strong> da 16ª edição do Indomie Heroes Awards, por seu trabalho com os óculos destinados a pessoas com deficiência visual.</p>
+        <div class="panel">
+          <p style="font-size:22px;margin:0"><strong>O ponto central do projeto:</strong> transformar eletrônica acessível em uma ferramenta voltada a um problema observado na própria comunidade.</p>
+        </div>
+        <div class="grid">
+          <div class="box"><b>Origem</b>Kano, Nigéria</div>
+          <div class="box"><b>Área</b>Eletrônica, programação e prototipagem</div>
+        </div>
+        <div class="sources">Fontes: Indomie Heroes Awards; Punch Nigeria; Blueprint Newspapers.</div>
+      </div>
+    </article>
+
+    <article class="slide">
+      <div class="content">
+        <span class="kicker">06 — O QUE ESTÁ SENDO CONSTRUÍDO</span>
+        <h2>De protótipo para solução real</h2>
+        <p>O projeto dos óculos continua em desenvolvimento. As fontes recentes descrevem testes práticos e novas funcionalidades, mas também deixam claro que ainda há etapas de engenharia, validação e produção antes de uma solução madura em larga escala.</p>
+        <div class="grid">
+          <div class="box"><b>Problema</b>Mobilidade e percepção do ambiente para pessoas com deficiência visual.</div>
+          <div class="box"><b>Tecnologias</b>IA, sensores, câmera, GPS, áudio e conectividade.</div>
+          <div class="box"><b>Desafio</b>Confiabilidade em ambientes reais, ergonomia, testes independentes e produção.</div>
+          <div class="box"><b>Visão</b>Levar os protótipos de uma oficina/laboratório independente para aplicações mais amplas.</div>
+        </div>
+        <p style="margin-top:26px;color:var(--cyan);font-weight:800">“IDEIA → PROTÓTIPO → TESTE → FEEDBACK → ITERAÇÃO”</p>
+        <div class="sources">Carrossel elaborado com base em informações públicas consultadas em setembro de 2026.</div>
+      </div>
+    </article>
+  </section>
+
+  <div class="controls">
+    <button id="prev" aria-label="Anterior">‹</button>
+    <div class="dots" id="dots"></div>
+    <button id="next" aria-label="Próximo">›</button>
+  </div>
+</main>
+<script>
+const track=document.getElementById('track'), slides=[...document.querySelectorAll('.slide')], dots=document.getElementById('dots'), counter=document.getElementById('counter');
+let i=0,startX=0,drag=false;
+slides.forEach((_,n)=>{const d=document.createElement('span');d.className='dot'+(n===0?' active':'');dots.appendChild(d)});
+function go(n){i=(n+slides.length)%slides.length;track.style.transform=`translateX(-${i*100}%)`;document.querySelectorAll('.dot').forEach((d,k)=>d.classList.toggle('active',k===i));counter.textContent=`${i+1} / ${slides.length}`}
+document.getElementById('prev').onclick=()=>go(i-1);document.getElementById('next').onclick=()=>go(i+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(i+1);if(e.key==='ArrowLeft')go(i-1)});
+track.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;drag=true},{passive:true});
+track.addEventListener('touchend',e=>{if(!drag)return;const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>45)go(i+(dx<0?1:-1));drag=false});
+</script>
+</body>
+</html>
