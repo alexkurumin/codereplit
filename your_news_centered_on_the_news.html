@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<!-- Y.O.U.R - NEWS CENTERED ON THE NEWS -->
+<!-- v2: Rotacao automatica a cada 6h. 3 noticias por ciclo. Antigas sao descartadas da tela. -->
+<!-- Zero midia: sem img, sem SVG, sem fonte externa, sem CDN. So tipografia do sistema. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y.O.U.R - NEWS CENTERED ON THE NEWS</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:#fff;color:#111;line-height:1.6;max-width:1180px;margin:0 auto;padding:0 20px 60px}
+  a{color:#111;text-decoration:none} a:hover{text-decoration:underline}
+  header{border-bottom:3px solid #111;padding:28px 0 16px;text-align:center}
+  header h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.4rem,4vw,2.6rem);letter-spacing:-.02em;line-height:1.1}
+  header p{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;margin-top:8px;color:#555}
+  /* Contador de producao */
+  .counter{border:1px solid #111;margin:16px 0 0;display:grid;grid-template-columns:repeat(4,1fr)}
+  .counter div{padding:12px 14px;border-right:1px solid #111}
+  .counter div:last-child{border-right:0}
+  .counter small{display:block;font-family:ui-monospace,monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#666}
+  .counter strong{display:block;font-family:ui-monospace,monospace;font-size:1.05rem;margin-top:4px}
+  .counter .big strong{font-size:1.4rem}
+  .date-line{display:flex;justify-content:space-between;border-bottom:1px solid #111;padding:8px 0;font-family:ui-monospace,monospace;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:#444}
+  main{padding-top:28px}
+  .cycle-label{font-family:ui-monospace,monospace;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .cycle-label span{border:1px solid #111;padding:4px 8px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #111;border-left:1px solid #111}
+  .card{border-right:1px solid #111;border-bottom:1px solid #111;padding:22px;display:flex;flex-direction:column;gap:12px;min-height:280px}
+  .kicker{font-family:ui-monospace,monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}
+  .kicker span{border:1px solid #111;padding:3px 7px;display:inline-block}
+  .card h2{font-family:Georgia,serif;font-size:1.45rem;line-height:1.25}
+  .preview{font-size:.98rem;color:#333;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.5}
+  .meta{font-family:ui-monospace,monospace;font-size:.76rem;color:#666;margin-top:auto}
+  .read-link{font-family:ui-monospace,monospace;font-weight:700;font-size:.88rem;margin-top:6px;display:inline-block;border-bottom:2px solid #111}
+  .article{max-width:760px;margin:0 auto}
+  .back{font-family:ui-monospace,monospace;font-weight:700;font-size:.88rem;display:inline-block;margin-bottom:22px;border-bottom:2px solid #111}
+  .article h2{font-family:Georgia,serif;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.15;margin:10px 0 14px}
+  .article .lead{font-size:1.15rem;color:#222;font-family:Georgia,serif;border-top:1px solid #111;border-bottom:1px solid #111;padding:14px 0;margin-bottom:20px}
+  .article p{margin-bottom:16px;font-size:1.02rem}
+  .article h3{font-size:1.05rem;margin:22px 0 8px;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.06em}
+  footer{border-top:1px solid #111;margin-top:50px;padding-top:14px;font-family:ui-monospace,monospace;font-size:.76rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;color:#555}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}.card{min-height:auto}.counter{grid-template-columns:1fr 1fr}.counter div:nth-child(2){border-right:0}.counter div{border-bottom:1px solid #111}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Y.O.U.R - NEWS CENTERED ON THE NEWS</h1>
+  <p>Tecnologia da Informacao &bull; Sem ruido &bull; So o fato</p>
+</header>
+
+<!-- CONTADOR: entrada em producao, data atual, total gerado, proxima rotacao -->
+<section class="counter" aria-label="Contador de producao">
+  <div><small>Entrada em producao</small><strong id="prodStart">--</strong></div>
+  <div><small>Data atual</small><strong id="nowDate">--</strong></div>
+  <div class="big"><small>Noticias geradas ate o momento</small><strong id="totalGen">--</strong></div>
+  <div><small>Proxima rotacao em</small><strong id="countdown">--</strong></div>
+</section>
+
+<div class="date-line"><span>Ciclo de 6 horas</span><span>3 noticias por ciclo</span><span>Anteriores excluidas</span></div>
+
+<main id="app"></main>
+
+<footer><span>Y.O.U.R - NEWS CENTERED ON THE NEWS</span><span>Leve &bull; Limpo &bull; Rotacao 6h</span></footer>
+
+<script>
+/* ============ CONFIGURACAO DO CICLO ============ */
+// Data de entrada em producao. Troque apenas esta linha para reiniciar a contagem.
+const PRODUCTION_START = new Date("2026-11-19T00:00:00-03:00");
+const SLOT_MS = 6 * 60 * 60 * 1000; // 6 horas
+const NEWS_PER_CYCLE = 3;
+
+/* ============ BANCO DE LOTES: cada lote = 3 noticias de um ciclo ============ */
+/* O sistema mostra SOMENTE o lote do ciclo atual. O lote anterior nao e renderizado, mantendo o index leve. */
+const BATCHES = [
+  [ // Lote 1 - Ciclo atual inicial
+    {id:"b1-1",category:"Inteligencia Artificial",readTime:"Tempo estimado de leitura: 5 minutos",title:"Modelos pequenos superam gigantes em tarefas especificas",
+     preview:"Modelos compactos e especializados vencem modelos gigantes em suporte, classificacao e extracao. O custo menor e a latencia baixa mudam a escolha de arquitetura.",
+     body:["Equipes de produto estao trocando modelos gigantes por modelos pequenos e bem treinados para tarefas especificas. Em classificacao, extracao de dados e suporte com contexto limitado, um modelo de poucos bilhoes de parametros, ajustado com dados limpos, entrega precisao igual ou superior com latencia muito menor.","O ganho e operacional. Menos tokens, menos GPU e resposta mais rapida permitem colocar IA dentro do fluxo principal do produto, sem fila e sem custo por chamada que inviabilize a margem. A engenharia passa a focar em dados, avaliacao e roteamento, nao apenas em tamanho do modelo.","Para adotar, defina o conjunto de avaliacao antes de treinar, meça precisao, alucinacao e latencia P95, e compare custo por mil tarefas. Modelos pequenos vencem quando o problema e bem delimitado. Modelos gigantes continuam melhores para raciocinio aberto e tarefas gerais."]},
+    {id:"b1-2",category:"Ciberseguranca",readTime:"Tempo estimado de leitura: 5 minutos",title:"Phishing com IA exige autenticacao resistente a phishing",
+     preview:"Ataques gerados por IA imitam voz, estilo e contexto com alta fidelidade. Senhas e SMS deixam de ser defesa suficiente contra engenharia social moderna.",
+     body:["O phishing evoluiu de e-mails genericos para mensagens personalizadas que imitam estilo, contexto e ate voz. Modelos generativos criam textos sem erro, paginas clonadas e pretextos convincentes em escala. A defesa baseada apenas em treinamento do usuario ja nao segura a operacao.","A resposta tecnica e autenticacao resistente a phishing: chaves de acesso, WebAuthn e dispositivos FIDO2, alem de verificacao de remetente com DMARC, SPF e DKIM bem configurados. No lado da organizacao, acesso de menor privilegio e revisao continua de permissoes limitam o dano de um clique errado.","O processo tambem importa. Pagamentos, redefinicao de acesso e mudanca de dados bancarios devem exigir confirmacao por canal secundario e aprovacao dupla. Seguranca moderna nao depende de o usuario acertar sempre, mas de o sistema resistir quando ele erra."]},
+    {id:"b1-3",category:"Cloud Computing",readTime:"Tempo estimado de leitura: 4 minutos",title:"Kubernetes simplifica custos com autoscaling inteligente",
+     preview:"Autoscaling por fila, por latencia e por custo evita clusters superdimensionados. A nuvem passa a escalar por demanda real, nao por pico estimado.",
+     body:["Clusters superdimensionados sao uma das maiores fontes de desperdicio em nuvem. O autoscaling inteligente combina HPA, KEDA e escalonamento por fila ou latencia para subir replicas apenas quando ha demanda real, e descer rapido quando ela passa. O resultado e conta menor sem perda de disponibilidade.","A chave e medir o sinal certo. CPU sozinha engana. Fila de mensagens, tempo de resposta e throughput por replica refletem melhor a experiencia do usuario. Com limites de recursos bem definidos e testes de carga, o cluster passa a reagir em segundos, nao em minutos.","Para equipes pequenas, o caminho e comecar por um servico, definir orçamento de erro e alertas de custo, e automatizar o desligamento de ambientes de desenvolvimento fora do horario. Escalar por demanda e disciplina de engenharia, nao apenas uma flag no YAML."]}
+  ],
+  [ // Lote 2
+    {id:"b2-1",category:"Engenharia de Software",readTime:"Tempo estimado de leitura: 5 minutos",title:"Rust avanca em sistemas embarcados e firmware",
+     preview:"Firmware em Rust reduz falhas de memoria em dispositivos criticos. Fabricantes adotam a linguagem para drivers, boot e comunicacao segura.",
+     body:["O firmware tradicional em C concentra grande parte das falhas de memoria em dispositivos embarcados. Rust muda esse cenario com verificacao em tempo de compilacao, sem coletor de lixo e sem custo de runtime. Fabricantes passam a usar Rust em bootloaders, drivers de sensores e pilhas de comunicacao.","A adocao e incremental. Novas placas e novos modulos sao escritos em Rust, enquanto o legado em C e mantido com interfaces bem definidas. Ferramentas de teste em hardware, simulacao e analise estatica ajudam a validar comportamento em condicoes reais de energia e temperatura.","Para o desenvolvedor, o recado e pratico: aprender ownership, lifetimes e crates no_std abre portas em IoT, automotivo e aeroespacial. A seguranca de memoria deixa de ser promessa e passa a ser garantida pelo compilador."]},
+    {id:"b2-2",category:"Banco de Dados",readTime:"Tempo estimado de leitura: 5 minutos",title:"Postgres vira plataforma com vetores e tempo real",
+     preview:"Postgres acumula extensoes de vetor, series temporais e JSON. Equipes consolidam bancos e reduzem a complexidade de operar varias engines.",
+     body:["O Postgres deixou de ser apenas um banco relacional. Com extensoes de busca vetorial, series temporais, JSON e filas, ele cobre busca semantica, telemetria e aplicacoes transacionais em uma unica engine. A consolidacao reduz custo operacional e simplifica backup, observabilidade e seguranca.","O cuidado e nao transformar consolidacao em sobrecarga. Indices vetoriais, particionamento e configuracao de memoria precisam de ajuste por workload. Benchmarks com dados reais e planos de consulta explicam mais do que comparacoes genericas de marketing.","A estrategia vencedora e comecar pelo Postgres como padrao, e extrair para uma engine especializada apenas quando houver evidencia de gargalo. Menos bancos significa menos superficie de falha e mais velocidade de entrega."]},
+    {id:"b2-3",category:"Hardware",readTime:"Tempo estimado de leitura: 4 minutos",title:"Chips com memoria integrada aceleram IA no edge",
+     preview:"Memoria proxima ao processador reduz latencia e consumo em dispositivos. IA no edge fica viavel sem depender sempre da nuvem.",
+     body:["A latencia de IA no edge muitas vezes vem da memoria, nao do processador. Novos chips integram memoria de alta largura de banda junto ao compute, reduzindo viagens de dados e consumo de energia. O resultado e inferencia local mais rapida em cameras, robos e dispositivos moveis.","Para o produto, isso significa privacidade e resiliencia. Dados sensiveis podem ser processados no dispositivo, com sincronizacao seletiva para a nuvem. O desafio passa a ser gerenciar modelos, atualizacoes e telemetria em frota distribuida.","A decisao de arquitetura deve considerar custo por dispositivo, consumo termico e facilidade de atualizacao. Edge nao substitui a nuvem, mas complementa onde latencia e privacidade sao criticas."]}
+  ],
+  [ // Lote 3
+    {id:"b3-1",category:"Redes",readTime:"Tempo estimado de leitura: 5 minutos",title:"Wi-Fi 7 muda redes densas em escritorio e industria",
+     preview:"Canais mais largos e operacao multi-link reduzem congestionamento em ambientes densos. A rede passa a sustentar video, IoT e tempo real juntos.",
+     body:["O Wi-Fi 7 introduz canais de 320 MHz, operacao multi-link e modulacao mais eficiente. Em escritorios densos, galpoes e eventos, isso significa menos colisao, latencia mais estavel e throughput maior para video, voz e IoT ao mesmo tempo.","A migracaoo exige planejamento. Pontos de acesso novos pedem cabeamento, PoE e controladoras capazes de gerenciar espectro e roaming. Sem levantamento de radiofrequencia, o ganho teorico nao aparece na pratica.","O ponto de partida e medir o ambiente atual, mapear interferencia e priorizar areas criticas. Wi-Fi 7 nao resolve rede mal projetada, mas potencializa uma rede bem desenhada."]},
+    {id:"b3-2",category:"Inteligencia Artificial",readTime:"Tempo estimado de leitura: 6 minutos",title:"Agentes de codigo exigem testes e revisao automatizada",
+     preview:"Agentes geram codigo em escala, mas sem testes a velocidade vira divida. Pipelines com verificacao automatica se tornam obrigatorios.",
+     body:["Agentes de codigo aceleram a escrita de funcoes, testes e migracoes. O risco e a velocidade sem verificacao: codigo que compila, mas nao atende ao requisito, passa despercebido. A resposta e tratar o agente como um desenvolvedor junior com supervisao rigorosa.","Pipelines eficazes combinam testes unitarios, testes de contrato, lint, analise estatica e revisao humana em mudancas criticas. O agente deve trabalhar em branches pequenas, com descricao clara e criterios de aceite. Cada geracao passa por CI antes de qualquer merge.","O ganho real aparece quando a equipe mede taxa de retrabalho, tempo de revisao e defeitos em producao. Agente bom nao e o que gera mais linhas, e o que gera mudancas pequenas, testadas e reversiveis."]},
+    {id:"b3-3",category:"Ciberseguranca",readTime:"Tempo estimado de leitura: 5 minutos",title:"Segredos vazados em repositorios viram porta de entrada",
+     preview:"Chaves, tokens e senhas em commits antigos continuam validos. Varredura e rotacao automatica viram controle basico de seguranca.",
+     body:["Grande parte dos incidentes comeca com um segredo esquecido em um commit, log ou variavel de ambiente. Chaves de API, tokens de acesso e senhas vazadas permanecem validas por meses, permitindo acesso silencioso a repositorios, nuvens e bancos.","A defesa combina prevencao e resposta. Pre-commit hooks bloqueiam segredos novos, varredura continua encontra segredos antigos e cofres com credenciais de curta duracao reduzem a janela de exposicao. Quando um segredo vaza, a rotacao deve ser imediata, nao na proxima sprint.","O processo deve ser automatizado e auditavel. Inventario de segredos, alertas e rotacao programada transformam um risco invisivel em um controle mensuravel."]}
+  ],
+  [ // Lote 4
+    {id:"b4-1",category:"Cloud Computing",readTime:"Tempo estimado de leitura: 5 minutos",title:"Serverless amadurece para cargas de longa duracao",
+     preview:"Funcoes serverless agora suportam jobs longos, filas e estado. A arquitetura por eventos ganha espaco alem de APIs simples.",
+     body:["O serverless deixou de ser apenas para APIs curtas. Com tempos de execucao maiores, filas, orquestracao e armazenamento de estado, ele passa a suportar processamento de arquivos, ETL e tarefas agendadas com custo por uso real.","O cuidado e o desenho da arquitetura. Funcoes longas pedem idempotencia, retries com backoff, dead-letter e observabilidade por evento. Sem isso, falhas parciais viram duplicacao e perda de dados.","A escolha entre serverless e containers depende de padrao de carga, latencia e controle. Para picos imprevisiveis e jobs eventuais, serverless vence em custo. Para carga constante e controle fino, containers ainda sao mais previsiveis."]},
+    {id:"b4-2",category:"Engenharia de Software",readTime:"Tempo estimado de leitura: 4 minutos",title:"TypeScript domina front-end com tipos e ferramentas",
+     preview:"Tipagem estatica reduz bugs em interfaces complexas. O ecossistema de ferramentas consolida o TypeScript como padrao de front-end.",
+     body:["O TypeScript se consolidou como padrao para aplicacoes front-end de medio e grande porte. Tipos explicitos, inferencia e ferramentas de refatoracao reduzem erros em tempo de execucao e tornam o codigo mais legivel para equipes grandes.","O ganho aparece em manutencao. Mudancas em APIs, estados e componentes sao detectadas pelo compilador antes de chegar ao usuario. Testes continuam importantes, mas passam a focar em comportamento, nao em erros de tipo basicos.","A disciplina recomendada e evitar any, tipar fronteiras de API e manter configuracao estrita. TypeScript nao elimina testes, mas elimina uma classe inteira de defeitos silenciosos."]},
+    {id:"b4-3",category:"Inteligencia Artificial",readTime:"Tempo estimado de leitura: 5 minutos",title:"RAG com dados proprios supera modelo generico solto",
+     preview:"Busca com recuperacao e citacao vence respostas genericas. Empresas passam a tratar dados internos como vantagem competitiva.",
+     body:["O RAG combina busca em dados proprios com geracao de linguagem natural. Em vez de responder de memoria, o modelo consulta documentos, politicas e bases internas, e cita a fonte. Isso reduz alucinacao e aumenta a confianca em suporte, juridico e operacoes.","O sucesso depende da qualidade da base. Documentos desatualizados, duplicados e sem metadados geram respostas erradas com citacao. O trabalho de curadoria, chunking e avaliacao de recuperacao e tao importante quanto o modelo escolhido.","A metrica certa e a precisao da recuperacao e a utilidade da resposta, medidas com perguntas reais. RAG bem feito transforma conhecimento interno em produto. RAG mal feito apenas automatiza a desinformacao."]}
+  ]
+];
+
+/* ============ LOGICA DE ROTACAO: 3 NOVAS A CADA 6H ============ */
+function getCycle(now){
+  const elapsed = now - PRODUCTION_START;
+  const slot = elapsed < 0 ? 0 : Math.floor(elapsed / SLOT_MS);
+  const batchIndex = slot % BATCHES.length; // gira entre os lotes
+  const totalGenerated = (slot + 1) * NEWS_PER_CYCLE; // acumulado ate o momento
+  const nextRotation = new Date(PRODUCTION_START.getTime() + (slot + 1) * SLOT_MS);
+  return { slot, batchIndex, totalGenerated, nextRotation };
+}
+function fmtDate(d){ return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"}) + " " + d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
+function fmtCountdown(ms){
+  if(ms < 0) ms = 0;
+  const h = String(Math.floor(ms/3600000)).padStart(2,"0");
+  const m = String(Math.floor(ms%3600000/60000)).padStart(2,"0");
+  const s = String(Math.floor(ms%60000/1000)).padStart(2,"0");
+  return h+":"+m+":"+s;
+}
+
+/* ============ CONTADOR EM TEMPO REAL ============ */
+function renderCounter(){
+  const now = new Date();
+  const c = getCycle(now);
+  document.getElementById("prodStart").textContent = fmtDate(PRODUCTION_START);
+  document.getElementById("nowDate").textContent = fmtDate(now);
+  document.getElementById("totalGen").textContent = c.totalGenerated + " noticias";
+  document.getElementById("countdown").textContent = fmtCountdown(c.nextRotation - now);
+  // Se o ciclo virou, recarrega o lote (sem precisar de refresh manual)
+  if(window.__lastSlot !== undefined && window.__lastSlot !== c.slot){ renderHome(); }
+  window.__lastSlot = c.slot;
+}
+renderCounter();
+setInterval(renderCounter, 1000);
+
+/* ============ SPA: HOME (grade) <-> ARTIGO ============ */
+const app = document.getElementById("app");
+function currentBatch(){ return BATCHES[getCycle(new Date()).batchIndex]; }
+function renderHome(){
+  const batch = currentBatch();
+  const c = getCycle(new Date());
+  app.innerHTML = `
+    <div class="cycle-label"><span>Ciclo #${c.slot + 1} &bull; Lote ${c.batchIndex + 1}</span><span>3 noticias ativas &bull; Anteriores excluidas</span></div>
+    <section class="grid">
+      ${batch.map(a=>`
+        <article class="card">
+          <div class="kicker"><span>${a.category}</span></div>
+          <h2>${a.title}</h2>
+          <p class="preview">${a.preview}</p>
+          <div class="meta">${a.readTime}</div>
+          <a class="read-link" href="#${a.id}" data-id="${a.id}">[Ler noticia completa]</a>
+        </article>`).join("")}
+    </section>`;
+  app.querySelectorAll("[data-id]").forEach(l=>l.addEventListener("click",e=>{e.preventDefault();renderArticle(l.dataset.id);window.scrollTo({top:0,behavior:"smooth"});}));
+}
+function renderArticle(id){
+  const a = currentBatch().find(x=>x.id===id) || currentBatch()[0];
+  app.innerHTML = `
+    <article class="article">
+      <a class="back" href="#" data-back>[&lt;- Voltar para a pagina principal]</a>
+      <div class="kicker"><span>${a.category}</span></div>
+      <h2>${a.title}</h2>
+      <p class="meta">${a.readTime}</p>
+      <p class="lead">${a.preview}</p>
+      ${a.body.map(p=>`<p>${p}</p>`).join("")}
+      <h3>Por que isso importa</h3>
+      <p>Para quem constroi e opera sistemas, este tema muda custo, risco e velocidade de entrega. Vale revisar a arquitetura atual, documentar decisoes e testar em escala pequena antes de adotar em producao.</p>
+      <a class="back" href="#" data-back style="margin-top:22px;display:inline-block;">[&lt;- Voltar para a pagina principal]</a>
+    </article>`;
+  app.querySelectorAll("[data-back]").forEach(l=>l.addEventListener("click",e=>{e.preventDefault();renderHome();window.scrollTo({top:0,behavior:"smooth"});}));
+}
+renderHome();
+</script>
+</body>
+</html>
