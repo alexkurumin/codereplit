@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<!-- M.A.K.E - Code for code's sake -->
+<!-- Portal de linguagens e ecossistema de programacao. HTML + CSS + JS em um unico arquivo. -->
+<!-- Zero midia: sem img, sem SVG, sem fonte externa, sem CDN. So tipografia do sistema. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M.A.K.E - Code for code's sake</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:#fff;color:#111;line-height:1.6;max-width:1180px;margin:0 auto;padding:0 20px 60px}
+  a{color:#111;text-decoration:none} a:hover{text-decoration:underline}
+  header{border-bottom:3px solid #111;padding:28px 0 16px;text-align:center}
+  header h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.4rem,4vw,2.6rem);letter-spacing:-.02em;line-height:1.1}
+  header p{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;margin-top:8px;color:#555}
+  /* Contador de producao */
+  .counter{border:1px solid #111;margin:16px 0 0;display:grid;grid-template-columns:repeat(4,1fr)}
+  .counter div{padding:12px 14px;border-right:1px solid #111}
+  .counter div:last-child{border-right:0}
+  .counter small{display:block;font-family:ui-monospace,monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#666}
+  .counter strong{display:block;font-family:ui-monospace,monospace;font-size:1.05rem;margin-top:4px}
+  .counter .big strong{font-size:1.4rem}
+  .date-line{display:flex;justify-content:space-between;border-bottom:1px solid #111;padding:8px 0;font-family:ui-monospace,monospace;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:#444}
+  main{padding-top:28px}
+  .cycle-label{font-family:ui-monospace,monospace;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .cycle-label span{border:1px solid #111;padding:4px 8px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #111;border-left:1px solid #111}
+  .card{border-right:1px solid #111;border-bottom:1px solid #111;padding:22px;display:flex;flex-direction:column;gap:12px;min-height:280px}
+  .kicker{font-family:ui-monospace,monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}
+  .kicker span{border:1px solid #111;padding:3px 7px;display:inline-block}
+  .card h2{font-family:Georgia,serif;font-size:1.45rem;line-height:1.25}
+  .preview{font-size:.98rem;color:#333;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.5}
+  .meta{font-family:ui-monospace,monospace;font-size:.76rem;color:#666;margin-top:auto}
+  .read-link{font-family:ui-monospace,monospace;font-weight:700;font-size:.88rem;margin-top:6px;display:inline-block;border-bottom:2px solid #111}
+  .article{max-width:760px;margin:0 auto}
+  .back{font-family:ui-monospace,monospace;font-weight:700;font-size:.88rem;display:inline-block;margin-bottom:22px;border-bottom:2px solid #111}
+  .article h2{font-family:Georgia,serif;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.15;margin:10px 0 14px}
+  .article .lead{font-size:1.15rem;color:#222;font-family:Georgia,serif;border-top:1px solid #111;border-bottom:1px solid #111;padding:14px 0;margin-bottom:20px}
+  .article p{margin-bottom:16px;font-size:1.02rem}
+  .article h3{font-size:1.05rem;margin:22px 0 8px;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.06em}
+  .article code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#f1f1f1;padding:1px 5px;font-size:.92rem}
+  .article pre{font-family:ui-monospace,Menlo,Consolas,monospace;background:#f6f6f6;border:1px solid #ddd;padding:12px;overflow-x:auto;font-size:.85rem;margin:0 0 16px;line-height:1.5}
+  footer{border-top:1px solid #111;margin-top:50px;padding-top:14px;font-family:ui-monospace,monospace;font-size:.76rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;color:#555}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}.card{min-height:auto}.counter{grid-template-columns:1fr 1fr}.counter div:nth-child(2){border-right:0}.counter div{border-bottom:1px solid #111}}
+</style>
+</head>
+<body>
+<header>
+  <h1>M.A.K.E - Code for code's sake</h1>
+  <p>Linguagens &bull; Ecossistema &bull; Ferramentas &bull; Cultura Dev</p>
+</header>
+
+<!-- CONTADOR: entrada em producao, data atual, total gerado, proxima rotacao -->
+<section class="counter" aria-label="Contador de producao">
+  <div><small>Entrada em producao</small><strong id="prodStart">--</strong></div>
+  <div><small>Data atual</small><strong id="nowDate">--</strong></div>
+  <div class="big"><small>Noticias geradas ate o momento</small><strong id="totalGen">--</strong></div>
+  <div><small>Proxima rotacao em</small><strong id="countdown">--</strong></div>
+</section>
+
+<div class="date-line"><span>Ciclo de 6 horas</span><span>3 noticias por ciclo</span><span>Anteriores excluidas</span></div>
+
+<main id="app"></main>
+
+<footer><span>M.A.K.E - Code for code's sake</span><span>Leve &bull; Limpo &bull; Rotacao 6h</span></footer>
+
+<script>
+/* ============ CONFIGURACAO DO CICLO ============ */
+const PRODUCTION_START = new Date("2026-11-19T00:00:00-03:00");
+const SLOT_MS = 6 * 60 * 60 * 1000; // 6 horas
+const NEWS_PER_CYCLE = 3;
+
+/* ============ BANCO DE LOTES: cada lote = 3 noticias de um ciclo ============ */
+/* Foco total: linguagens e todo o ecossistema da programacao. */
+/* Somente o lote do ciclo atual e renderizado. O anterior e descartado da tela. */
+const BATCHES = [
+  [ // Lote 1 - Linguagens compiladas
+    {id:"m1-1",category:"Linguagem / Rust",readTime:"Tempo estimado de leitura: 5 minutos",title:"Rust consolida ecossistema com crates maduras",
+     preview:"Rust deixa de ser promessa e vira base de sistemas reais. Crates de async, serializacao e rede amadurecem e reduzem o custo de adotar a linguagem.",
+     body:["O ecossistema Rust atingiu um ponto de maturidade visivel. Crates como tokio, serde, axum e clap formam uma base estavel para APIs, CLIs e servicos de alta performance. Projetos novos ja comecam com templates prontos, testes e CI, sem precisar reinventar o basico.","O diferencial continua sendo o modelo de ownership. Erros de memoria que em C exigiriam revisao manual e ferramentas externas passam a ser pegos em tempo de compilacao. Para equipes que mantem sistemas criticos, isso significa menos incidentes em producao e revisoes de codigo mais focadas em regra de negocio.","O desafio agora e de pessoas, nao de ferramenta. O tempo de compilacao, a curva de aprendizado de lifetimes e a interoperabilidade com C ainda pesam. A recomendacao pratica e comecar por CLIs e servicos isolados, dominar o borrow checker em codigo pequeno e so depois atacar nucleos mais complexos.","Exemplo de base moderna: <code>cargo new api --bin</code>, <code>cargo add tokio axum serde</code> e testes com <code>cargo test</code>. O ecossistema premia quem usa as convenções, nao quem luta contra elas."]},
+    {id:"m1-2",category:"Linguagem / Go",readTime:"Tempo estimado de leitura: 4 minutos",title:"Go simplifica concorrencia com goroutines praticas",
+     preview:"Go mantem a promessa de simplicidade em sistemas concorrentes. Goroutines, canais e padrao de contexto resolvem servicos reais sem complexidade excessiva.",
+     body:["Go continua sendo a escolha de quem precisa de concorrencia sem drama. Goroutines custam pouco, canais deixam o fluxo explicito e o pacote context padroniza cancelamento e timeout. Servicos de API, workers e proxies ganham escala com codigo legivel.","O ecossistema reforca essa simplicidade: formatacao padrao com gofmt, modulos, testes embutidos e uma biblioteca padrao que ja resolve HTTP, JSON e tempo. Menos decisao de ferramenta significa mais tempo para o problema real.","O cuidado e nao confundir simplicidade com falta de rigor. Canais sem buffer, goroutines vazadas e falta de contexto em chamadas externas geram travamentos sutis. O padrao correto e sempre propagar context, limitar concorrencia com semaforos e testar com <code>go test -race</code>."]},
+    {id:"m1-3",category:"Ecossistema / Ferramentas",readTime:"Tempo estimado de leitura: 5 minutos",title:"Gerenciadores de pacotes viram parte do build",
+     preview:"npm, Cargo, pip e Go Modules deixam de ser detalhe. Lockfiles, cache e auditoria de dependencias entram no centro da engenharia.",
+     body:["O gerenciador de pacotes virou parte critica do build. Lockfiles garantem reproducao, cache acelera CI e auditoria de vulnerabilidades vira etapa obrigatoria. Um projeto sem <code>package-lock.json</code>, <code>Cargo.lock</code> ou <code>go.sum</code> versionado esta sujeito a builds diferentes em maquinas diferentes.","O ecossistema tambem mudou a forma de publicar. Registries privados, namespaces e assinaturas de pacotes reduzem o risco de typosquatting e dependencia confusa. Ferramentas como Dependabot e Renovate abrem PRs automaticos para manter dependencias atualizadas sem travar a equipe.","A disciplina recomendada e simples: fixe versoes, audite dependencias novas, remova o que nao usa e trate atualizacao como trabalho continuo, nao como mutirao anual. Dependencia e codigo que voce nao escreveu, mas que voce mantem."]}
+  ],
+  [ // Lote 2 - Web e tipagem
+    {id:"m2-1",category:"Linguagem / TypeScript",readTime:"Tempo estimado de leitura: 5 minutos",title:"TypeScript domina front-end com tipos praticos",
+     preview:"TypeScript vira padrao em front-end e full-stack. Tipos em fronteiras de API, inferencia e ferramentas de refatoracao reduzem bugs silenciosos.",
+     body:["O TypeScript se consolidou como padrao para interfaces complexas. Tipos em props, estados e respostas de API transformam erros que antes so apareciam em runtime em erros de compilacao. A refatoracao fica segura e o onboarding de novos devs fica mais rapido.","O ecossistema acompanha: Vite, Next, Astro, tRPC e Zod formam um conjunto coerente para validar dados na borda. O tipo deixa de ser documentacao e passa a ser contrato executavel entre front e back.","O erro mais comum e abusar de <code>any</code> e de tipos genericos demais. A pratica correta e tipar a fronteira, usar <code>unknown</code> para dados externos e validar com schema em runtime. Tipo bom e aquele que ajuda a pensar, nao o que apenas satisfaz o compilador."]},
+    {id:"m2-2",category:"Linguagem / Python",readTime:"Tempo estimado de leitura: 6 minutos",title:"Python acelera com tipagem e ferramentas modernas",
+     preview:"Python ganha velocidade com type hints, uv, ruff e mypy. A linguagem mantem a simplicidade e soma disciplina de projeto grande.",
+     body:["Python continua imbatível em produtividade para scripts, dados e automacao. A novidade e a maturidade do ecossistema: type hints, <code>uv</code> para gerenciar ambientes em segundos, <code>ruff</code> para lint e formatacao, e <code>mypy</code> para checar tipos em CI.","Essa camada de ferramentas muda o perfil do projeto. Scripts soltos viram pacotes com <code>pyproject.toml</code>, testes com pytest e pipelines reprodutiveis. A linguagem que era vista como prototipo passa a sustentar sistemas em producao com governanca.","A recomendacao e nao abandonar a simplicidade. Use tipos onde eles evitam erro, nao em todo lugar. Mantenha funcoes pequenas, nomes claros e testes para a regra de negocio. Python bom e legivel primeiro, performatico depois."]},
+    {id:"m2-3",category:"Ecossistema / JavaScript",readTime:"Tempo estimado de leitura: 4 minutos",title:"JavaScript amadurece com runtime e padroes novos",
+     preview:"Bun, Deno e Node disputam o runtime moderno. Testes nativos, TypeScript direto e permissões mudam o dia a dia do dev JS.",
+     body:["O ecossistema JavaScript vive uma fase de consolidacao. Node segue como base, Bun foca em velocidade de startup e bundling, e Deno aposta em seguranca por permissao e TypeScript nativo. A disputa beneficia o desenvolvedor com ferramentas mais rapidas e padroes mais claros.","O ponto em comum e a simplificacao: menos configuracao de build, testes nativos, formatacao embutida e compatibilidade crescente com o ecossistema npm. Projetos novos podem comecar pequenos e crescer sem trocar toda a stack.","Para escolher, meça o que importa para o seu projeto: tempo de cold start, compatibilidade com bibliotecas, modelo de deploy e suporte da equipe. Runtime e meio, nao fim. O codigo que roda nele e que define a qualidade."]}
+  ],
+  [ // Lote 3 - Sistemas, JVM e C
+    {id:"m3-1",category:"Linguagem / Java",readTime:"Tempo estimado de leitura: 5 minutos",title:"Java renasce com virtual threads e records",
+     preview:"Java moderno abandona o verboso. Virtual threads, records e pattern matching devolvem produtividade sem perder a robustez da JVM.",
+     body:["O Java atual esta longe do Java verboso de uma decada atras. Records reduzem boilerplate de dados, pattern matching simplifica condicionais e virtual threads permitem milhares de requisicoes concorrentes com codigo sincrono e legivel.","O ecossistema JVM acompanha: Spring Boot, Quarkus e Micronaut adotam startup rapido, imagens nativas e observabilidade embutida. A JVM continua sendo uma das plataformas mais maduras para sistemas de alta carga e longa vida util.","O caminho de modernizacao e incremental. Comece por atualizar o JDK, trocar DTOs por records, isolar IO bloqueante em virtual threads e medir latencia P95. Java moderno premia quem usa as novidades com criterio, nao quem reescreve tudo."]},
+    {id:"m3-2",category:"Linguagem / C e Sistemas",readTime:"Tempo estimado de leitura: 5 minutos",title:"C segue essencial em sistemas e embarcados",
+     preview:"C continua insubstituivel em kernel, firmware e drivers. A linguagem exige disciplina, mas entrega controle total sobre hardware.",
+     body:["C segue como base do kernel, de firmwares e de grande parte da infraestrutura critica. A linguagem oferece controle direto sobre memoria, registradores e layout de dados, sem abstracao que esconda o custo. Para quem trabalha proximo ao hardware, nao ha substituto pratico.","O preco dessa liberdade e a responsabilidade. Falhas de memoria, overflow e uso de ponteiro invalido continuam entre as causas mais comuns de vulnerabilidade. Por isso o ecossistema moderno de C investe em sanitizers, analise estatica, fuzzing e testes de hardware real.","A pratica recomendada e tratar warnings como erros, usar ferramentas como ASan, UBSan e Valgrind em CI, e documentar invariantes de memoria. C bem escrito e simples, pequeno e testado. C complexo e divida tecnica disfarcada de performance."]},
+    {id:"m3-3",category:"Cultura Dev / Open Source",readTime:"Tempo estimado de leitura: 5 minutos",title:"Open source sustenta o ecossistema de linguagens",
+     preview:"Linguagens vivem de comunidades, nao de empresas. Contribuicoes, RFCs e manutencao de bibliotecas definem o futuro do codigo.",
+     body:["Toda linguagem moderna depende de open source. Compiladores, pacotes, documentacao e ferramentas sao mantidos por comunidades que revisam, testam e discutem em publico. Sem essa camada, nenhuma linguagem sobrevive ao longo prazo.","O desafio e a sustentabilidade. Poucos mantenedores carregam bibliotecas usadas por milhares de empresas. Financiar, documentar, revisar PRs e agradecer sao atos de engenharia, nao apenas de gentileza.","Para contribuir, comece pequeno: corrija documentacao, melhore um teste, reporte um bug com reproducao minima. A comunidade que ensina e que acolhe cresce mais rapido do que a que apenas cobra codigo."]}
+  ],
+  [ // Lote 4 - Dados, Shell e carreira
+    {id:"m4-1",category:"Linguagem / SQL e Dados",readTime:"Tempo estimado de leitura: 5 minutos",title:"SQL volta ao centro com dados e IA",
+     preview:"SQL se reafirma como linguagem de dados universal. Consultas declarativas, janelas e CTEs resolvem analise, produto e IA.",
+     body:["SQL vive um renascimento. Com dados em todos os produtos, a capacidade de escrever consultas claras, com CTEs, funcoes de janela e agregacoes bem pensadas, virou diferencial de engenharia, nao apenas de analista.","O ecossistema ajuda: Postgres, DuckDB, BigQuery e Snowflake compartilham grande parte da sintaxe, e ferramentas de dbt e testes de dados transformam SQL em pipeline versionado e testavel. A consulta deixa de ser improviso e passa a ser codigo.","A disciplina e a mesma de qualquer linguagem: nomear bem, evitar SELECT *, testar com dados reais e explicar o plano de execucao. SQL bom e legivel por um humano e eficiente para o banco."]},
+    {id:"m4-2",category:"Linguagem / Shell Script",readTime:"Tempo estimado de leitura: 4 minutos",title:"Shell Script vira superpoder em automacao DevOps",
+     preview:"Bash e POSIX continuam no centro da automacao. Scripts pequenos e bem escritos automatizam deploy, backup e rotina diaria.",
+     body:["Shell Script e a linguagem que esta em todo lugar onde ha Linux. Deploy, backup, monitoramento e rotina de manutencao passam por Bash. Um script de 20 linhas bem escrito economiza horas de trabalho manual por semana.","O ecossistema moderno soma boas praticas: <code>set -euo pipefail</code>, funcoes pequenas, validacao de argumentos e logs claros. Ferramentas como ShellCheck pegam erros comuns antes de rodar em producao.","A regra de ouro e saber quando parar. Shell e otimo para orquestrar comandos. Quando a logica cresce, com funcoes complexas e parsing de JSON, e hora de migrar para Python ou Go. Automacao boa e a que qualquer colega entende e pode manter."]},
+    {id:"m4-3",category:"Carreira / Aprendizado",readTime:"Tempo estimado de leitura: 5 minutos",title:"Aprender linguagens exige projeto, nao tutorial infinito",
+     preview:"Tutorial sem projeto cria ilusao de progresso. Construir, quebrar e corrigir e o que fixa sintaxe, ecossistema e boas praticas.",
+     body:["Aprender uma linguagem nova exige mais do que assistir a videos. A sintaxe se aprende em dias, mas o ecossistema, as convenções e os erros comuns so aparecem em projeto real. Um CLI, uma API ou um automador pequeno ensinam mais do que dez tutoriais.","O metodo eficaz e curto: escolha um problema real, implemente a versao minima, escreva testes e publique o codigo. Depois, revise com olhar critico: o que ficou confuso, o que poderia ser mais simples, o que a comunidade faria diferente.","A profundidade vem da repeticao deliberada. Leia codigo de outros devs, contribua com um PR pequeno e documente o que aprendeu. Linguagem se aprende escrevendo codigo para codigo de verdade, nao apenas copiando exemplo."]}
+  ]
+];
+
+/* ============ LOGICA DE ROTACAO: 3 NOVAS A CADA 6H ============ */
+function getCycle(now){
+  const elapsed = now - PRODUCTION_START;
+  const slot = elapsed < 0 ? 0 : Math.floor(elapsed / SLOT_MS);
+  const batchIndex = slot % BATCHES.length;
+  const totalGenerated = (slot + 1) * NEWS_PER_CYCLE;
+  const nextRotation = new Date(PRODUCTION_START.getTime() + (slot + 1) * SLOT_MS);
+  return { slot, batchIndex, totalGenerated, nextRotation };
+}
+function fmtDate(d){ return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"}) + " " + d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
+function fmtCountdown(ms){
+  if(ms < 0) ms = 0;
+  const h = String(Math.floor(ms/3600000)).padStart(2,"0");
+  const m = String(Math.floor(ms%3600000/60000)).padStart(2,"0");
+  const s = String(Math.floor(ms%60000/1000)).padStart(2,"0");
+  return h+":"+m+":"+s;
+}
+
+/* ============ CONTADOR EM TEMPO REAL ============ */
+function renderCounter(){
+  const now = new Date();
+  const c = getCycle(now);
+  document.getElementById("prodStart").textContent = fmtDate(PRODUCTION_START);
+  document.getElementById("nowDate").textContent = fmtDate(now);
+  document.getElementById("totalGen").textContent = c.totalGenerated + " noticias";
+  document.getElementById("countdown").textContent = fmtCountdown(c.nextRotation - now);
+  if(window.__lastSlot !== undefined && window.__lastSlot !== c.slot){ renderHome(); }
+  window.__lastSlot = c.slot;
+}
+renderCounter();
+setInterval(renderCounter, 1000);
+
+/* ============ SPA: HOME (grade) <-> ARTIGO ============ */
+const app = document.getElementById("app");
+function currentBatch(){ return BATCHES[getCycle(new Date()).batchIndex]; }
+function renderHome(){
+  const batch = currentBatch();
+  const c = getCycle(new Date());
+  app.innerHTML = `
+    <div class="cycle-label"><span>Ciclo #${c.slot + 1} &bull; Lote ${c.batchIndex + 1}</span><span>3 noticias ativas &bull; Anteriores excluidas</span></div>
+    <section class="grid">
+      ${batch.map(a=>`
+        <article class="card">
+          <div class="kicker"><span>${a.category}</span></div>
+          <h2>${a.title}</h2>
+          <p class="preview">${a.preview}</p>
+          <div class="meta">${a.readTime}</div>
+          <a class="read-link" href="#${a.id}" data-id="${a.id}">[Ler noticia completa]</a>
+        </article>`).join("")}
+    </section>`;
+  app.querySelectorAll("[data-id]").forEach(l=>l.addEventListener("click",e=>{e.preventDefault();renderArticle(l.dataset.id);window.scrollTo({top:0,behavior:"smooth"});}));
+}
+function renderArticle(id){
+  const a = currentBatch().find(x=>x.id===id) || currentBatch()[0];
+  app.innerHTML = `
+    <article class="article">
+      <a class="back" href="#" data-back>[&lt;- Voltar para a pagina principal]</a>
+      <div class="kicker"><span>${a.category}</span></div>
+      <h2>${a.title}</h2>
+      <p class="meta">${a.readTime}</p>
+      <p class="lead">${a.preview}</p>
+      ${a.body.map(p=>`<p>${p}</p>`).join("")}
+      <h3>Por que isso importa</h3>
+      <p>Para quem vive de codigo, este tema muda como voce escreve, testa e mantem software. Vale aplicar em um projeto pequeno, medir o resultado e so depois adotar em escala.</p>
+      <a class="back" href="#" data-back style="margin-top:22px;display:inline-block;">[&lt;- Voltar para a pagina principal]</a>
+    </article>`;
+  app.querySelectorAll("[data-back]").forEach(l=>l.addEventListener("click",e=>{e.preventDefault();renderHome();window.scrollTo({top:0,behavior:"smooth"});}));
+}
+renderHome();
+</script>
+</body>
+</html>
